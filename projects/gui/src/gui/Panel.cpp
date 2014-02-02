@@ -2,6 +2,7 @@
 #include <gui/Scroll.h>
 #include <gui/Render.h>
 #include <gui/Gui.h>
+#include <stdio.h>
 
 Panel::Panel(Render* r, int height)
   :Widget(GUI_TYPE_PANEL, "")

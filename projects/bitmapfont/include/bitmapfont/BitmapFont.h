@@ -67,6 +67,7 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <string.h>
 
 // ------------------------------------------------------------------------------
 

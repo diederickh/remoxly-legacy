@@ -1,6 +1,7 @@
 #include <gui/Types.h>
 #include <gui/Gui.h>
 #include <gui/Widget.h>
+#include <stdio.h>
 
 uint32_t Widget::id = 0;
 

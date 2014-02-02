@@ -32,6 +32,8 @@ if(CMAKE_GENERATOR STREQUAL "Visual Studio 11 Win64")
   set(tri_arch "x86_64")
 endif()
 
+message(STATUS ${CMAKE_CXX_COMPILER_ID})
+
 if(APPLE)
   set(tri_platform "mac")
 elseif(WIN32)

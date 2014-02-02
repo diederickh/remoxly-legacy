@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 2.8)
 
-include(${CMAKE_CURRENT_LIST_DIR}/Triplet.cmake)
-
 project(gui)
+
+include(${CMAKE_CURRENT_LIST_DIR}/Triplet.cmake)
 
 set(app "gui")
 
@@ -62,6 +62,26 @@ if(APPLE)
     ${fr_corevideo}
     -lz
     )
+
+elseif(UNIX)
+
+  list(APPEND app_sources
+    ${extern_source_dir}/GLXW/glxw.c
+    )
+  
+  set(app_libs
+    ${extern_lib_dir}/libglfw3.a
+    ${extern_lib_dir}/libpng16.a
+    ${extern_lib_dir}/libz.a
+    GL
+    X11
+    Xxf86vm
+    Xrandr
+    pthread
+    dl
+    Xi
+    )
+
 endif()
 
 if(WIN32)

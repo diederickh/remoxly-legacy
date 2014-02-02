@@ -19,6 +19,7 @@
 
 #include <algorithm>
 #include <sstream>
+#include <iostream>
 #include <fstream>
 #include <stdint.h>
 
@@ -180,21 +181,22 @@ bool BitmapFontBaker::bake(std::string classname, std::string filepath, std::str
   // --------------------------------------------------
   {
     // variable name.
-    std::string varname;
-    std::string uppername;
-    std::transform(classname.begin(), classname.end(), varname.begin(), ::tolower);
-    std::transform(classname.begin(), classname.end(), uppername.begin(), ::toupper);
+    std::string varname = classname;
+    std::string uppername = classname;
+
+    std::transform(varname.begin(), varname.end(), varname.begin(), ::tolower);
+    std::transform(uppername.begin(), uppername.end(), uppername.begin(), ::toupper);
     
     // create code
     std::stringstream ss;
-    ss << "#ifndef " << uppername.c_str() << "_BAKED_H\n"
-       << "#define " << uppername.c_str() << "_BAKED_H\n"
+    ss << "#ifndef " << uppername << "_BAKED_H\n"
+       << "#define " << uppername << "_BAKED_H\n"
        << "\n"
-       << "static uint64_t " << varname.c_str() << "_pixel_data[] = " << pixel_data << "\n"
-       << "static int " << varname.c_str() << "_char_data[] = " << char_data << "\n"
+       << "static uint64_t " << varname << "_pixel_data[] = " << pixel_data << "\n"
+       << "static int " << varname << "_char_data[] = " << char_data << "\n"
        << "";
        
-    ss << "class " << classname.c_str() << " : public BitmapFont {\n"
+    ss << "class " << classname << " : public BitmapFont {\n"
        << "public:\n"
        << "\n"
        << "  bool setup() { \n"
@@ -203,22 +205,22 @@ bool BitmapFontBaker::bake(std::string classname, std::string filepath, std::str
        << "       return false;\n"
        << "    }\n"
        << "\n"
-       << font_info.c_str()
+       << font_info
        << "\n"
        << "    while(i < max_els) {\n"
        << "      Character c;\n"
-       << "      c.id       = " << varname.c_str() << "_char_data[i++];\n"
-       << "      c.x        = " << varname.c_str() << "_char_data[i++];\n"
-       << "      c.y        = " << varname.c_str() << "_char_data[i++];\n"
-       << "      c.width    = " << varname.c_str() << "_char_data[i++];\n"
-       << "      c.height   = " << varname.c_str() << "_char_data[i++];\n"
-       << "      c.xoffset  = " << varname.c_str() << "_char_data[i++];\n"
-       << "      c.yoffset  = " << varname.c_str() << "_char_data[i++];\n"
-       << "      c.xadvance = " << varname.c_str() << "_char_data[i++];\n"
+       << "      c.id       = " << varname << "_char_data[i++];\n"
+       << "      c.x        = " << varname << "_char_data[i++];\n"
+       << "      c.y        = " << varname << "_char_data[i++];\n"
+       << "      c.width    = " << varname << "_char_data[i++];\n"
+       << "      c.height   = " << varname << "_char_data[i++];\n"
+       << "      c.xoffset  = " << varname << "_char_data[i++];\n"
+       << "      c.yoffset  = " << varname << "_char_data[i++];\n"
+       << "      c.xadvance = " << varname << "_char_data[i++];\n"
        << "      chars[c.id] = c;\n"
        << "    }\n"
        << "\n"
-       << "    setupTexture(scale_w, scale_h, (unsigned char*)&" << varname.c_str() << "_pixel_data[0]);\n"
+       << "    setupTexture(scale_w, scale_h, (unsigned char*)&" << varname << "_pixel_data[0]);\n"
        << "\n"
        << "    return true;\n"
        << "  }\n"
@@ -228,7 +230,7 @@ bool BitmapFontBaker::bake(std::string classname, std::string filepath, std::str
        << "";
     
     // write contents to header file.
-    std::ofstream ofs(destpath, std::ios::out);
+    std::ofstream ofs(destpath.c_str(), std::ios::out);
 
     if(!ofs.is_open()) {
       printf("Error: cannot open the out file.\n");

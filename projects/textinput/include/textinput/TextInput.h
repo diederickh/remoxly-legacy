@@ -343,6 +343,10 @@ void TextInput::moveCursorToMostRight() {
 
 void TextInput::removeCharacterAtCurrentPosition() {
 
+  if(char_dx >= contents.size()) {
+    return;
+  }
+
   if(contents.size()) {
     contents.erase(contents.begin() + char_dx);
     updateContents();

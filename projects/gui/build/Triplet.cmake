@@ -27,6 +27,12 @@ elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
   endif()
 endif()
 
+if(CMAKE_GENERATOR STREQUAL "Visual Studio 11 Win64")
+  set(tri_compiler "vs2012")
+  set(tri_arch "x86_64")
+endif()
+
+
 if(APPLE)
   set(tri_platform "mac")
 elseif(WIN32)

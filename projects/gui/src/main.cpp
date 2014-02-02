@@ -15,7 +15,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#if defined(__linux)
+#if defined(__linux) || defined(_WIN32)
 #  include <GLXW/glxw.h>
 #endif
  
@@ -85,7 +85,7 @@ int main() {
   glfwMakeContextCurrent(win);
   glfwSwapInterval(1);
  
-#if defined(__linux)  
+#if defined(__linux) || defined(_WIN32)
   if(glxwInit() != 0) {
     printf("Error: cannot initialize glxw.\n");
     ::exit(EXIT_FAILURE);

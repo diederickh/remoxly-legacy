@@ -44,6 +44,7 @@ endif()
 set(install_dir ${CMAKE_CURRENT_LIST_DIR}/../../../install/${tri_triplet})
 set(extern_source_dir ${CMAKE_CURRENT_LIST_DIR}/../../../extern/${tri_triplet}/src/)
 set(extern_lib_dir ${CMAKE_CURRENT_LIST_DIR}/../../../extern/${tri_triplet}/lib/)
+set(extern_bin_dir ${CMAKE_CURRENT_LIST_DIR}/../../../extern/${tri_triplet}/bin/)
 set(extern_include_dir ${CMAKE_CURRENT_LIST_DIR}/../../../extern/${tri_triplet}/include)
 set(CMAKE_INSTALL_PREFIX ${install_dir})
 

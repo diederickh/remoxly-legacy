@@ -5,11 +5,17 @@
 
   Bakes a BitmapFont. Creates a header with the RGB + Font information 
   as static members, so you don't need any PNG loading or font parsing. 
+  Execute the application from the command line. The appliation gives some
+  info on what arguments it expects.
 
  */
 
 #include <stdlib.h>
 #include <stdio.h>
+
+#if defined(__linux) || defined(_WIN32)
+#  include <GLXW/glxw.h>
+#endif
 
 #define GLFW_INCLUDE_GLCOREARB
 #include <GLFW/glfw3.h>

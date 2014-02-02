@@ -33,6 +33,8 @@ several sub-projects:
  - TextInput: Uses BitmapFont to create a text input type.
  - Gui: This is -the- gui for you OpenGL/DirectX apps.
 
+See [the remoxly website](http://remoxly.roxlu.com) for more information.
+
 _*DirectX is in development_
 
 

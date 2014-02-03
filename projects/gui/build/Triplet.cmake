@@ -9,7 +9,7 @@ cmake_minimum_required(VERSION 2.8)
 # ${extern_lib_dir}       - path to the extern libraries (root)
 # ${extern_include_dir}   - include directories in for the extern libraries
 
-if(NOT ROXLU_USE_32BIT)
+if(NOT REMOXLY_USE_32BIT)
   set(tri_arch "x86_64")
 else()
   set(tri_arch "i386")
@@ -35,6 +35,7 @@ endif()
 
 if(APPLE)
   set(tri_platform "mac")
+  set(CMAKE_OSX_ARCHITECTURES ${tri_arch})
 elseif(WIN32)
   set(tri_platform "win")
 else()

@@ -1,5 +1,7 @@
 #include <gui/Render.h>
 
+Render::Render() {}
+
 bool Render::setup() {  return false; }
 
 void Render::update() { }

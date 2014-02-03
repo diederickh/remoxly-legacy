@@ -22,16 +22,8 @@
 #define GLFW_INCLUDE_GLCOREARB
 #include <GLFW/glfw3.h>
 
-#define GUI_IMPLEMENTATION
-#include <gui/Gui.h>
-#include <gui/Panel.h>
-#include <gui/gl/RenderGL.h>
-#include <gui/Slider.h>
-#include <gui/Button.h>
-#include <gui/IconButton.h>
-#include <gui/Toggle.h>
-#include <gui/ColorRGB.h>
-#include <gui/storage/StorageXML.h>
+#include <gui/Remoxly.h>
+#include <gui/gl/ImplementationGL.h>
 
 #define USE_GUI 0
 #define USE_PANEL 1

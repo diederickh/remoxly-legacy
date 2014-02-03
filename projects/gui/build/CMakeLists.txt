@@ -20,8 +20,7 @@ include_directories(
   ${bd}/../textinput/include/
 )
 
-set(app_sources
-  ${bd}/src/main.cpp
+set(remoxly_lib_sources
   ${bd}/src/gui/Gui.cpp
   ${bd}/src/gui/Utils.cpp
   ${bd}/src/gui/Widget.cpp
@@ -33,15 +32,13 @@ set(app_sources
   ${bd}/src/gui/Toggle.cpp
   ${bd}/src/gui/ColorRGB.cpp
   ${bd}/src/gui/Storage.cpp
+  ${bd}/src/gui/Render.cpp
   ${bd}/src/gui/storage/StorageXML.cpp
 )
 
-set(app_headers
-  ${bd}/include/gui/Gui.h
-  ${bd}/include/gui/Render.h
-  ${bd}/include/gui/Slider.h
-  ${bd}/include/gui/Utils.h
-  ${bd}/include/gui/Widget.h
+set(app_sources
+  ${bd}/src/main.cpp
+  ${remoxly_lib_sources}
 )
 
 if(APPLE)
@@ -118,10 +115,62 @@ endif()
 
 add_executable(${app} ${app_sources})
 
+add_library(remoxly STATIC ${remoxly_lib_sources})
+
 target_link_libraries(${app} ${app_libs})
 
 install(TARGETS ${app} DESTINATION bin)
-install(FILES ${app_headers} DESTINATION include/gui/)
+
+install(TARGETS remoxly DESTINATION lib)
+
+install(FILES 
+  ${bd}/include/gui/Button.h
+  ${bd}/include/gui/ColorRGB.h
+  ${bd}/include/gui/Gui.h
+  ${bd}/include/gui/IconButton.h
+  ${bd}/include/gui/Panel.h
+  ${bd}/include/gui/Remoxly.h
+  ${bd}/include/gui/Render.h
+  ${bd}/include/gui/Scroll.h
+  ${bd}/include/gui/Slider.h
+  ${bd}/include/gui/Storage.h
+  ${bd}/include/gui/Toggle.h
+  ${bd}/include/gui/Types.h
+  ${bd}/include/gui/Utils.h
+  ${bd}/include/gui/Widget.h
+  DESTINATION include/gui/)
+
+install(FILES 
+  ${bd}/include/gui/Button.h
+  ${bd}/include/gui/ColorRGB.h
+  ${bd}/include/gui/Gui.h
+  ${bd}/include/gui/IconButton.h
+  ${bd}/include/gui/Panel.h
+  ${bd}/include/gui/Remoxly.h
+  ${bd}/include/gui/Render.h
+  ${bd}/include/gui/Scroll.h
+  ${bd}/include/gui/Slider.h
+  ${bd}/include/gui/Storage.h
+  ${bd}/include/gui/Toggle.h
+  ${bd}/include/gui/Types.h
+  ${bd}/include/gui/Utils.h
+  ${bd}/include/gui/Widget.h
+  DESTINATION include/gui/)
+
+install(FILES
+  ${bd}/include/gui/storage/StorageXML.h
+  DESTINATION include/gui/storage/
+)
+
+install(FILES
+  ${bd}/include/gui/gl/RenderGL.h
+  ${bd}/include/gui/gl/ImplementationGL.h
+  DESTINATION include/gui/gl/
+)
+
+
+
+
 
 
 

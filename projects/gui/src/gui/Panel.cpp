@@ -97,11 +97,7 @@ void Panel::draw() {
   update();
 
   scroll.beginScissor();
-  {
-    for(std::vector<Gui*>::iterator it = guis.begin(); it != guis.end(); ++it) {
-      (*it)->draw();
-    }
-  }
+    render->draw();
   scroll.endScissor();
 }
 

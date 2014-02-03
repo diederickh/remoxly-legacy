@@ -14,18 +14,21 @@ void gui_fill_color(float r, float g, float b, float a, float* rgba) {
 std::string gui_cleanup_string(std::string str) {
 
   std::string result;
-
+  bool was_underscore = false;
   for(size_t i = 0; i < str.size(); ++i) {
 
     if(std::isalnum(str[i])) {
       result.push_back(str[i]);
+      was_underscore = false;
     }
-    else {
+    else if(!was_underscore && i < (str.size() - 1)){
       result.push_back('_');
+      was_underscore = true;
     }
   }
 
   std::transform(result.begin(), result.end(), result.begin(), ::tolower);
+  
   return result;
 }
 

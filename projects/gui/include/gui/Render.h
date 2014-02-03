@@ -22,6 +22,7 @@ class Character;
 class Render {
 
  public:
+  Render();
   virtual bool setup();       /* initialize the Render object */
   virtual void update();      /* update the vertices, GPU buffers, etc.. if somethings that gets drawn changed */
   virtual void draw();        /* draw everything to screen */

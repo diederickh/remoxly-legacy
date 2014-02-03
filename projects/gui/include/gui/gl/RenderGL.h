@@ -3,8 +3,8 @@
 // H E A D E R
 // ------------------------------------------------------------------------------
 
-#ifndef ROXLU_GUI_RENDER_GL_H
-#define ROXLU_GUI_RENDER_GL_H
+#ifndef REMOXLY_RENDER_GL_H
+#define REMOXLY_RENDER_GL_H
 
 #define TEXT_INPUT_IMPLEMENTATION
 #define BITMAP_FONT_IMPLEMENTATION
@@ -134,7 +134,7 @@ class RenderGL : public Render {
 // I M P L E M E N T A T I O N
 // ------------------------------------------------------------------------------
 
-#if defined(GUI_IMPLEMENTATION)
+#if defined(REMOXLY_IMPLEMENTATION)
 
 // -------------------------------------------
 

@@ -20,8 +20,8 @@
 
  */
 
-#ifndef REMOXLY_WIDGET_H
-#define REMOXLY_WIDGET_H
+#ifndef REMOXLY_GUI_WIDGET_H
+#define REMOXLY_GUI_WIDGET_H
 
 #include <vector>
 #include <string>
@@ -36,11 +36,11 @@ class Widget {
  public:
   Widget(int type, std::string label);
   virtual ~Widget();
-  virtual bool setup(Gui* g);                                      /* setup the widget. sets the gui + render members by default */
   virtual void build();                                            /* build will check if this widget is allowed to be drawn, and if so it will call create() and create() on all of its children */
   virtual void create();                                           /* create the shapes; when needs_redraw is set to true this will be called again */
   virtual void add(Widget* w, Gui* g);                             /* add a child element */
   virtual void position();                                         /* calculate the x/y/w/h etc.. values for the widget itself and for its children. note that x/y will be set by the container which is probably Gui. position() may only be called by the parent container after the x/y are set. */
+  virtual void setGui(Gui* g);                                     /* setup the widget. sets the gui + render members by default, a user shouldn't call this */
   virtual void setBoundingBox();                                   /* calculate the bounding box of this element */
   virtual void print();                                            /* prints some debug info */
 
@@ -90,7 +90,8 @@ class Widget {
  public:
   Gui* gui;                                                        /* the gui in which this widget is contained */
   Render* render;                                                  /* the renderer which takes care of the drawing */
-  static uint32_t id;                                              /* each widget is assigned an auto incremented unique ID. this can be used when doing networked guis */
+  static uint32_t generated_ids;                                   /* each widget is assigned an auto incremented unique ID. this can be used when doing networked guis */
+  uint32_t id;                                                     /* the unique ID assigned to this widget */
   int type;                                                        /* the widget type, see Types.h */
   int state;                                                       /* the current state of the widget, see Types.h for available states */
   int mods;                                                        /* the mods that were pressed on mouse down, will be unsed in onRelease(). This can be used to have a different kind of interaction when someone e.g. drags with SHIFT down. */

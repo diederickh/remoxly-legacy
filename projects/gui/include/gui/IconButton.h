@@ -12,8 +12,8 @@
 
 
  */
-#ifndef REMOXLY_ICON_BUTTON_H
-#define REMOXLY_ICON_BUTTON_H
+#ifndef REMOXLY_GUI_ICON_BUTTON_H
+#define REMOXLY_GUI_ICON_BUTTON_H
 
 #include <gui/Widget.h>
 #include <gui/Types.h>
@@ -24,7 +24,7 @@ class IconButton : public Widget {
 
  public:
   IconButton(int id, unsigned int icon, gui_button_callback cb = NULL, void* user = NULL);
-  bool setup(Gui* g);
+  void setGui(Gui* g);
   void create();
   void call();            /* calls the callback function; can be used by a wrapper widget */
 

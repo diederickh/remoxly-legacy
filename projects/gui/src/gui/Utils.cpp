@@ -15,6 +15,7 @@ std::string gui_cleanup_string(std::string str) {
 
   std::string result;
   bool was_underscore = false;
+
   for(size_t i = 0; i < str.size(); ++i) {
 
     if(std::isalnum(str[i])) {

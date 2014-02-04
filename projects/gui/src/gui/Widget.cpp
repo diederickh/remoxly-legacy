@@ -3,7 +3,7 @@
 #include <gui/Widget.h>
 #include <stdio.h>
 
-uint32_t Widget::id = 0;
+uint32_t Widget::generated_ids = 0;
 
 Widget::Widget(int type, std::string label)
   :type(type)
@@ -25,21 +25,21 @@ Widget::Widget(int type, std::string label)
   ,press_y(0)
 {
   bbox[0] = bbox[1] = bbox[2] = bbox[3] = 0;
-  id++;
+  id = generated_ids;
+  generated_ids++;
 }
 
 Widget::~Widget() {
 }
 
-bool Widget::setup(Gui* g) {
+void Widget::setGui(Gui* g) {
   gui = g; 
   render = g->render;
-  return true; 
 }
 
 void Widget::add(Widget* w, Gui* g) {
 
-  w->setup(g);
+  w->setGui(g);
 
   children.push_back(w);
 }

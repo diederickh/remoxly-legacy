@@ -22,8 +22,8 @@
 
  */
 
-#ifndef REMOXLY_SCROLL_H
-#define REMOXLY_SCROLL_H
+#ifndef REMOXLY_GUI_SCROLL_H
+#define REMOXLY_GUI_SCROLL_H
 
 #include <gui/Widget.h>
 #include <gui/IconButton.h>
@@ -40,7 +40,7 @@ class Scroll : public Widget {
 
  public:
   Scroll();
-  bool setup(Gui* g);
+  void setGui(Gui* g);
   void create();
   void beginScissor();
   void endScissor();

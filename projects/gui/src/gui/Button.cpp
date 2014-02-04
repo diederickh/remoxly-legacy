@@ -17,11 +17,10 @@ Button::Button(std::string title, int id, unsigned int icon, gui_button_callback
   }
 }
 
-bool Button::setup(Gui* g) {
+void Button::setGui(Gui* g) {
 
-  Widget::setup(g);
+  Widget::setGui(g);
   add(&icon_button, g);
-  return true;
 }
 
 void Button::create() {

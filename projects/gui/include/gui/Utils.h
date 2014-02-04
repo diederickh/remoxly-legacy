@@ -1,5 +1,5 @@
-#ifndef REMOXLY_UTILS_H
-#define REMOXLY_UTILS_H
+#ifndef REMOXLY_GUI_UTILS_H
+#define REMOXLY_GUI_UTILS_H
 
 #include <string>
 

@@ -25,7 +25,44 @@
 
 #define TI_CURSOR_WIDTH  9                                        /* the default cursor width; only used when cursor is not behind a character */
 
-// Used to draw the cursor
+#if defined(__APPLE__) && BITMAP_FONT_GL == BITMAP_FONT_GL2
+#  define glGenVertexArrays glGenVertexArraysAPPLE
+#  define glBindVertexArray glBindVertexArrayAPPLE
+#endif
+
+// ------------------------------------------------------------------------------
+#if BITMAP_FONT_GL == BITMAP_FONT_GL2
+static const char* TEXT_INPUT_VS = ""
+  "#version 110\n"
+  "#extension GL_EXT_gpu_shader4 : require\n"
+  "uniform mat4 u_pm;"
+  "uniform vec4 u_pos;"
+  "vec2 pos[4];"
+
+  "void main() {"
+  "  pos[0] = vec2(0.0, 0.0);"
+  "  pos[1] = vec2(0.0, 1.0);"
+  "  pos[2] = vec2(1.0, 0.0);"
+  "  pos[3] = vec2(1.0, 1.0);"
+  "  vec2 p = pos[gl_VertexID];"
+  "  p.x *= u_pos.z;"
+  "  p.y *= u_pos.w;"
+  "  p   += u_pos.xy;"
+  "  gl_Position = u_pm * vec4(p, 0.0, 1.0);"
+  "}"
+  "";
+
+static const char* TEXT_INPUT_FS = "" 
+  "#version 110\n"
+   "void main() {"
+  "  gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);"
+  "}"
+  "";
+#endif
+
+// ------------------------------------------------------------------------------
+
+#if BITMAP_FONT_GL == BITMAP_FONT_GL3
 static const char* TEXT_INPUT_VS = ""
   "#version 150\n"
   "uniform mat4 u_pm;"
@@ -52,46 +89,49 @@ static const char* TEXT_INPUT_FS = ""
   "  fragcolor = vec4(1.0, 0.0, 0.0, 1.0);"
   "}"
   "";
+#endif
+
+// ------------------------------------------------------------------------------
 
 class TextInput {
 
  public:
-  TextInput(float x, float y, float w, BitmapFont& font);       /* create the textinput for the given font at x/y with a maximum width of `w` */
-  void onCharPress(unsigned int key);                                /* call this whenever a plain ascii character is pressed */
-  void onKeyPress(int key, int mods = TI_MOD_NONE);                  /* call this whenever one of the special keys (TI_KEY_*) is pressed */
-  void setValue(std::string value);                             /* fill the input with ascii values, make sure that you've enable()'d the input else this won't work */
-  std::string getValue();                                       /* returns the current contents of the input (same as the contents member) */
-  void draw();                                                  /* draw the current contents to screen */
-  void select();                                                /* selects all text and changes the mode to TI_MODE_SELECT; hitting backspace or delete will remote all contents. arrows move to complete left or complete right */
-  void deselect();                                              /* deselect the text and switch back to TI_MODE_INPUT */
-  void clear();                                                 /* clears all contents, resets the text input */
-  void enable();                                                /* changes the mode to TI_MODE_INPUT which allows new characters to be added */
-  void disable();                                               /* disables the input; you won't be able to add any more text */
+  TextInput(float x, float y, float w, BitmapFont& font);                      /* create the textinput for the given font at x/y with a maximum width of `w` */
+  void onCharPress(unsigned int key);                                          /* call this whenever a plain ascii character is pressed */
+  void onKeyPress(int key, int mods = TI_MOD_NONE);                            /* call this whenever one of the special keys (TI_KEY_*) is pressed */
+  void setValue(std::string value);                                            /* fill the input with ascii values, make sure that you've enable()'d the input else this won't work */
+  std::string getValue();                                                      /* returns the current contents of the input (same as the contents member) */
+  void draw();                                                                 /* draw the current contents to screen */
+  void select();                                                               /* selects all text and changes the mode to TI_MODE_SELECT; hitting backspace or delete will remote all contents. arrows move to complete left or complete right */
+  void deselect();                                                             /* deselect the text and switch back to TI_MODE_INPUT */
+  void clear();                                                                /* clears all contents, resets the text input */
+  void enable();                                                               /* changes the mode to TI_MODE_INPUT which allows new characters to be added */
+  void disable();                                                              /* disables the input; you won't be able to add any more text */
 
  private:
-  bool setupGraphics();                                        /* sets up opengl state (only once) */
-  void updateContents();                                       /* should be called whenever the contents changes */
-  void updateCursor();                                         /* should be called whenever the cursor changes position */
-  void removeCharacterAtCurrentPosition();                     /* delete */
-  void removeCharacterAtPrevPosition();                        /* backspace */
-  bool canMoveCursorToLeft();                                  /* returns true when we can move the cursor to the left (e.g. there are characters) */
-  bool moveCursorToLeft();                                     /* returns true when moved to the left */
-  bool moveCursorToRight();                                    /* returns true when moved to the right */
-  void moveCursorToMostLeft();                                 /* moves the cursor to the most left, done when we're in select mode and the right key has been pressed */
-  void moveCursorToMostRight();                                /* moves the cursor to the most right. */
-  bool canAddContent();                                        /* returns true when we can add content to the input; must have a correct mode and the width cannot exceed the given `w */
-  bool canRemoveContent();                                     /* returns true when we can remove contents from the string and the contents is allowed to be changed */
-
- public:
-  BitmapFont& font;
-  int mode;                                                    /* the current mode; certain keys react differently in a certain mode */
-  float x;                                                     /* x-position where we draw */
-  float y;                                                     /* y-position where we draw */
-  float w;                                                     /* the max width of this input */
-  int char_dx;                                                 /* the current active character index, used with delete/backspace */
-  int cursor_x;                                                /* x position of cursor, relative to `x` */
-  int cursor_w;                                                /* width for the cursor, for the current character, or default width when the cursor is position at the end of the string */
-  float content_w;                                             /* the width of the current content; cannot exceed the `w` member. */
+  bool setupGraphics();                                                        /* sets up opengl state (only once) */
+  void updateContents();                                                       /* should be called whenever the contents changes */
+  void updateCursor();                                                         /* should be called whenever the cursor changes position */
+  void removeCharacterAtCurrentPosition();                                     /* delete */
+  void removeCharacterAtPrevPosition();                                        /* backspace */
+  bool canMoveCursorToLeft();                                                  /* returns true when we can move the cursor to the left (e.g. there are characters) */
+  bool moveCursorToLeft();                                                     /* returns true when moved to the left */
+  bool moveCursorToRight();                                                    /* returns true when moved to the right */
+  void moveCursorToMostLeft();                                                 /* moves the cursor to the most left, done when we're in select mode and the right key has been pressed */
+  void moveCursorToMostRight();                                                /* moves the cursor to the most right. */
+  bool canAddContent();                                                        /* returns true when we can add content to the input; must have a correct mode and the width cannot exceed the given `w */
+  bool canRemoveContent();                                                     /* returns true when we can remove contents from the string and the contents is allowed to be changed */
+                                                                               
+ public:                                                                       
+  BitmapFont& font;                                                            
+  int mode;                                                                    /* the current mode; certain keys react differently in a certain mode */
+  float x;                                                                     /* x-position where we draw */
+  float y;                                                                     /* y-position where we draw */
+  float w;                                                                     /* the max width of this input */
+  int char_dx;                                                                 /* the current active character index, used with delete/backspace */
+  int cursor_x;                                                                /* x position of cursor, relative to `x` */
+  int cursor_w;                                                                /* width for the cursor, for the current character, or default width when the cursor is position at the end of the string */
+  float content_w;                                                             /* the width of the current content; cannot exceed the `w` member. */
   int align;
   std::string contents;
 
@@ -101,6 +141,7 @@ class TextInput {
   static GLuint vert;
   static GLuint frag;
   static GLuint vao;
+  static GLint u_pos;
 };
 #endif // ROXLU_TEXT_INPUT
 
@@ -115,6 +156,7 @@ GLuint TextInput::prog = 0;
 GLuint TextInput::vert = 0;
 GLuint TextInput::frag = 0;
 GLuint TextInput::vao = 0;
+GLint TextInput::u_pos = -1;
 
 TextInput::TextInput(float x, float y, float w, BitmapFont& font)
   :mode(TI_MODE_DISABLED)
@@ -129,7 +171,7 @@ TextInput::TextInput(float x, float y, float w, BitmapFont& font)
   ,align(BITMAP_FONT_ALIGN_LEFT)
 {
   if(!TextInput::is_initialized) {
-    
+
     glGenVertexArrays(1, &vao);
 
     // shader
@@ -145,6 +187,8 @@ TextInput::TextInput(float x, float y, float w, BitmapFont& font)
 
     glUseProgram(prog);
     glUniformMatrix4fv(glGetUniformLocation(prog, "u_pm"), 1, GL_FALSE, pm);
+
+    u_pos = glGetUniformLocation(prog, "u_pos");
     
     TextInput::is_initialized = true;
   }
@@ -408,11 +452,11 @@ void TextInput::draw() {
   glUseProgram(prog);
 
   if(mode == TI_MODE_INPUT) {
-    glUniform4f(glGetUniformLocation(prog, "u_pos"), x + cursor_x, y, cursor_w, font.line_height);
+    glUniform4f(u_pos, x + cursor_x, y, cursor_w, font.line_height);
   }
   else if(mode == TI_MODE_SELECT) {
     int m = (align == BITMAP_FONT_ALIGN_RIGHT) ? -1 : 1;
-    glUniform4f(glGetUniformLocation(prog, "u_pos"), x, y, content_w * m, font.line_height);
+    glUniform4f(u_pos, x, y, content_w * m, font.line_height);
   }
 
   glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);

@@ -18,11 +18,10 @@ IconButton::IconButton(int callid, unsigned int icon, gui_button_callback cb, vo
   h = 22;
 }
 
-bool IconButton::setup(Gui* g) {
+void IconButton::setGui(Gui* g) {
 
-  Widget::setup(g);
+  Widget::setGui(g);
   render->getIconSize(icon, icon_w, icon_h);
-  return true;
 }
 
 void IconButton::create() {
@@ -39,7 +38,6 @@ void IconButton::create() {
     bt_click_offset = 1;
   }
 
-
   int cx = x + (w * 0.5 ) - (icon_w * 0.5) + icon_x;
   int cy = y + (h * 0.5 ) - (icon_h * 0.5) + icon_y;
 
@@ -48,7 +46,6 @@ void IconButton::create() {
 
   needs_redraw = false;
 }
-
 
 void IconButton::onMouseRelease(float mx, float my, int button, int mods) {
 

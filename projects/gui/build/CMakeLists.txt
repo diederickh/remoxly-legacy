@@ -7,6 +7,8 @@ include(${CMAKE_CURRENT_LIST_DIR}/Triplet.cmake)
 set(app "gui")
 
 set(bd ${CMAKE_CURRENT_LIST_DIR}/../)
+set(bitmapfont_bd ${bd}/../bitmapfont/)
+set(textinput_bd ${bd}/../textinput/)
 
 if(CMAKE_BUILD_TYPE STREQUAL Debug)
   set(app "${app}_debug")
@@ -168,7 +170,31 @@ install(FILES
   DESTINATION include/gui/gl/
 )
 
+install(FILES
+  ${bd}/src/gui/Gui.cpp
+  ${bd}/src/gui/Utils.cpp
+  ${bd}/src/gui/Widget.cpp
+  ${bd}/src/gui/Render.cpp
+  ${bd}/src/gui/IconButton.cpp
+  ${bd}/src/gui/Scroll.cpp
+  ${bd}/src/gui/Panel.cpp
+  ${bd}/src/gui/Button.cpp
+  ${bd}/src/gui/Toggle.cpp
+  ${bd}/src/gui/ColorRGB.cpp
+  ${bd}/src/gui/Storage.cpp
+  ${bd}/src/gui/Render.cpp
+  DESTINATION src/gui
+)
 
+install(FILES
+  ${bitmapfont_bd}/include/bitmapfont/BitmapFont.h
+  DESTINATION include/bitmapfont/
+)
+
+install(FILES
+  ${textinput_bd}/include/textinput/TextInput.h
+  DESTINATION include/textinput/
+)
 
 
 

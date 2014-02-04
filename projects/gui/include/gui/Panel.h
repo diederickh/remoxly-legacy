@@ -15,8 +15,8 @@
 
  */
 
-#ifndef REMOXLY_PANEL_H
-#define REMOXLY_PANEL_H
+#ifndef REMOXLY_GUI_PANEL_H
+#define REMOXLY_GUI_PANEL_H
 
 #include <vector>
 #include <gui/Widget.h>

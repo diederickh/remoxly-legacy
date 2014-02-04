@@ -8,8 +8,8 @@
   We use rapidxml for loading the xml.
 
  */
-#ifndef REMOXLY_STORAGE_XML_H
-#define REMOXLY_STORAGE_XML_H
+#ifndef REMOXLY_GUI_STORAGE_XML_H
+#define REMOXLY_GUI_STORAGE_XML_H
 
 #include <gui/Storage.h>
 #include <fstream>

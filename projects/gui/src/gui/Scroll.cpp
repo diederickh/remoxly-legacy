@@ -41,12 +41,11 @@ Scroll::Scroll()
 }
 
 
-bool Scroll::setup(Gui* g) {
+void Scroll::setGui(Gui* g) {
  
-  Widget::setup(g);
-  down_button.setup(g);
-  up_button.setup(g);
-  return true;
+  Widget::setGui(g);
+  down_button.setGui(g);
+  up_button.setGui(g);
 }
 
 void Scroll::create() {

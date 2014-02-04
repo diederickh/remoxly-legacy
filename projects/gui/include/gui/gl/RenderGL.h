@@ -6,6 +6,28 @@
 #ifndef REMOXLY_RENDER_GL_H
 #define REMOXLY_RENDER_GL_H
 
+// -------------------------------------------
+
+#define RENDER_GL2 1                         /* Use GL2, legacy support */
+#define RENDER_GL3 2                         /* Use GL3+ */
+
+#if !defined(RENDER_GL)
+#  define RENDER_GL RENDER_GL3
+#endif
+
+#if RENDER_GL == RENDER_GL3
+#  define BITMAP_FONT_GL BITMAP_FONT_GL3
+#elif RENDER_GL == RENDER_GL2
+#  define BITMAP_FONT_GL BITMAP_FONT_GL2
+#endif
+
+#if defined(__APPLE__) && RENDER_GL == RENDER_GL2
+#  define glGenVertexArrays glGenVertexArraysAPPLE
+#  define glBindVertexArray glBindVertexArrayAPPLE
+#endif
+
+// -------------------------------------------
+
 #define TEXT_INPUT_IMPLEMENTATION
 #define BITMAP_FONT_IMPLEMENTATION
 #include <bitmapfont/BitmapFont.h>
@@ -22,6 +44,30 @@
 
 // -------------------------------------------
 
+#if RENDER_GL == RENDER_GL2
+static const char* GUI_RENDER_VS = ""
+  "#version 110\n"
+  "uniform mat4 u_pm;"
+  "attribute vec4 a_pos;"
+  "attribute vec4 a_color;"
+  "varying vec4 v_color;"
+  "void main() {"
+  "  gl_Position = u_pm * a_pos;"
+  "  v_color = a_color;"
+  "}"
+  "";
+
+static const char* GUI_RENDER_FS = ""
+  "#version 110\n"
+  "varying vec4 v_color;"
+  "void main() {"
+  "  gl_FragColor = v_color;"
+  "}"
+  "";
+#endif
+
+// -------------------------------------------
+#if RENDER_GL == RENDER_GL3
 static const char* GUI_RENDER_VS = ""
   "#version 150\n"
   "uniform mat4 u_pm;"
@@ -42,7 +88,7 @@ static const char* GUI_RENDER_FS = ""
   "  fragcolor = v_color;"
   "}"
   "";
-
+#endif
 // -------------------------------------------
 
 struct GuiVertex {
@@ -73,10 +119,10 @@ void gui_ortho(float l, float r, float b, float t, float n, float f, float* dest
 class RenderGL : public Render {
 
  public:
-  RenderGL();
-  bool setup();
+  RenderGL(int gl = RENDER_GL3);
   void update();
   void draw();
+  void resize(int w, int h);
 
   void getWindowSize(int& ww, int& wh);
   void beginScissor();
@@ -101,6 +147,7 @@ class RenderGL : public Render {
  public:
 
   /* opengl */
+  int gl_version;                                              /* passed into the constructor; either RENDER_GL2 or RENDER_GL3 */
   GLint viewport[4];                                           /* contains the viewport size; is e.g. used in getWindowSize() */
   GLuint vbo;                                                  /* the vbo that keeps the vertices */
   GLuint vao;                                                  /* vao to keep state of the vbo */
@@ -145,8 +192,9 @@ bool RenderGL::is_initialized = false;
 
 // -------------------------------------------
 
-RenderGL::RenderGL() 
-  :vbo(0)
+RenderGL::RenderGL(int gl) 
+  :gl_version(gl)
+  ,vbo(0)
   ,vao(0)
   ,bytes_allocated(0)
   ,needs_update(false)
@@ -154,9 +202,6 @@ RenderGL::RenderGL()
   ,number_input(0.0f, 0.0f, 0.0f, number_input_font)
 {
   viewport[0] = viewport[1] = viewport[2] = viewport[3] = 0;
-}
-
-bool RenderGL::setup() {
 
   if(!is_initialized) {
 
@@ -191,32 +236,31 @@ bool RenderGL::setup() {
 
   if(!text_font.setup()) {
     printf("Error: cannot setup text font.\n");
-    return false;
+    return;
   }
 
   if(!icon_font.setup()) {
     printf("Error: cannot setup icon font.\n");
-    return false;
+    return;
   }
 
   if(!number_font.setup()) {
     printf("Error: cannot setup number font.\n");
-    return false;
+    return;
   }
 
   if(!text_input_font.setup()) {
     printf("Error: cannot setup the text input font.\n");
-    return false;
+    return;
   }
 
   if(!number_input_font.setup()) {
     printf("Error: cannot setup the number input font.\n");
-    return false;
+    return;
   }
 
   number_input.align = BITMAP_FONT_ALIGN_RIGHT;
   text_input.align = BITMAP_FONT_ALIGN_LEFT;
-  return true;
 }
 
 void RenderGL::getWindowSize(int& ww, int& wh) {
@@ -273,6 +317,23 @@ void RenderGL::draw() {
   glDisable(GL_BLEND);
 }
 
+void RenderGL::resize(int w, int h) {
+
+  float pm[16];
+  gui_ortho(0.0f, w, h, 0.0f, 0.0f, 100.0f, pm);
+
+  glUseProgram(prog);
+  glUniformMatrix4fv(glGetUniformLocation(prog, "u_pm"), 1, GL_FALSE, pm);
+  
+  icon_font.resize(w, h);
+  text_font.resize(w, h);
+  number_font.resize(w, h);
+  text_input_font.resize(w, h);
+  number_input_font.resize(w, h);
+
+  viewport[2] = w;
+  viewport[3] = h;
+}
 
 void RenderGL::beginScissor() {
   glEnable(GL_SCISSOR_TEST);
@@ -419,6 +480,7 @@ void RenderGL::addRectangle(float x, float y, float w, float h, float* color, bo
     vertices.push_back(a);
     fg_counts.push_back(vertices.size() - fg_offsets.back());
   }
+
   needs_update = true;
 }
 

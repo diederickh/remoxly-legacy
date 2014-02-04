@@ -36,38 +36,21 @@ Gui::Gui(std::string label, Render* r)
   y = 10;
   w = 275;
   h = 22;
-}
+  
+  setGui(this);
 
-Gui::~Gui() {
-
-  removeChildren();
-}
-
-bool Gui::setup() {
-
-  Widget::setup(this);
-
-  if(render) {
-    if(!render->setup()) {
-      return false;
-    }
-  }
-
-#if 1 
   float theme_fg_color[] = { 0.65, 0.62, 0.52, 1.0 };
   float theme_bg_color[] = { 0.277, 0.253, 0.261, 0.7 };
   float theme_hl_color[] = { 0.394, 0.0f, 0.917, 0.99 };
-#else 
-  float theme_fg_color[] = { 0.0, 1.0, 0.22, 0.4 };
-  float theme_bg_color[] = { 0.77, 0.253, 0.1, 0.7 };
-  float theme_hl_color[] = { 0.394, 0.8f, 0.17, 0.99 };
-#endif
   setColors(theme_bg_color, theme_fg_color, theme_hl_color);
 
-  close_button.setup(this);
-  open_button.setup(this);
+  close_button.setGui(this);
+  open_button.setGui(this);
   open_button.hide();
-  return true;
+}
+
+Gui::~Gui() {
+  removeChildren();
 }
 
 void Gui::setColors(float* bg, float* fg, float* highlight) {
@@ -103,6 +86,12 @@ float* Gui::getBackgroundStateColor(Widget* w, int flag) {
 }
 
 void Gui::add(Widget* w) {
+  
+  if(!gui) {
+    printf("Error: first call setup() on the Gui before adding elements.\n");
+    return;
+  }
+
   Widget::add(w, this);
 }
 

@@ -1,5 +1,5 @@
-#ifndef REMOXLY_TYPES_H
-#define REMOXLY_TYPES_H
+#ifndef REMOXLY_GUI_TYPES_H
+#define REMOXLY_GUI_TYPES_H
 
 #define GUI_IS_INSIDE_WIDGET(wid, mx, my) ((mx >= wid->x) && (mx <= (wid->x + wid->w)) && (my >= wid->y)  && (my <= (wid->y + wid->h)))
 #define GUI_IS_INSIDE(mx, my, x, y, w, h) ((mx >= x) && (mx <= (x+w)) && (my >= y) && (my <= (y+h)))

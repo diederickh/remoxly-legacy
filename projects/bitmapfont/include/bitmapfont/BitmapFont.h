@@ -75,8 +75,53 @@
 #define BITMAP_FONT_ALIGN_CENTER    2
 #define BITMAP_FONT_ALIGN_RIGHT     3
 
+#define BITMAP_FONT_GL2             1
+#define BITMAP_FONT_GL3             2
+
+#if !defined(BITMAP_FONT_GL)
+#  define BITMAP_FONT_GL BITMAP_FONT_GL3
+#endif
+
+#if defined(__APPLE__) && BITMAP_FONT_GL == BITMAP_FONT_GL2
+#  define glGenVertexArrays glGenVertexArraysAPPLE
+#  define glBindVertexArray glBindVertexArrayAPPLE
+#endif
+
 // ------------------------------------------------------------------------------
 
+#if BITMAP_FONT_GL == BITMAP_FONT_GL2
+static const char* BITMAP_FONT_VS = ""
+  "#version 110\n"
+  "uniform mat4 u_pm;"
+  "attribute vec4 a_pos;"
+  "attribute vec2 a_tex;"
+  "attribute vec4 a_fg_color; "
+  "varying vec2 v_tex;"
+  "varying vec4 v_fg_color;"
+  ""
+  "void main() {"
+  "   gl_Position = u_pm * a_pos; "
+  "   v_tex = a_tex;"
+  "   v_fg_color = a_fg_color;"
+  "}"
+  "";
+
+static const char* BITMAP_FONT_FS = ""
+  "#version 110\n"
+  "uniform sampler2DRect u_font_tex;"
+  "varying vec2 v_tex;"
+  "varying vec4 v_fg_color;"
+  ""
+  "void main() {"
+  "  float col = texture2DRect(u_font_tex, v_tex).r;"
+  "  gl_FragColor = col * v_fg_color * v_fg_color.a;"
+  "}"
+  "";
+#endif
+
+// ------------------------------------------------------------------------------
+
+#if BITMAP_FONT_GL == BITMAP_FONT_GL3
 static const char* BITMAP_FONT_VS = ""
   "#version 150\n"
   "uniform mat4 u_pm;"
@@ -105,6 +150,7 @@ static const char* BITMAP_FONT_FS = ""
   "  fragcolor = col * v_fg_color * v_fg_color.a;"
   "}"
   "";
+#endif
 
 // ------------------------------------------------------------------------------
 
@@ -147,7 +193,7 @@ class BitmapFont {
   void write(float x, float y, Character& c);                  /* write a specific character */
   void draw();
   void setColor(float r, float g, float b, float a = 1.0);
-  void resize(int winW, int winH);
+  void resize(int winW, int winH);                             /* whenever the viewport changes call this; it will recalculate the ortho matrix */
   void print(); 
 
   bool getChar(unsigned int code, Character& result);          /* get a specific character, returns false when the font doesn't have the char */
@@ -160,6 +206,7 @@ class BitmapFont {
 
   
  public:
+
   /* state */
   bool needs_update;
   int win_w;
@@ -241,7 +288,7 @@ static void bitmapfont_ortho(float l, float r, float b, float t, float n, float 
 
 // -----------------------------------------------------------------------------
 
-BitmapFont::BitmapFont() 
+BitmapFont::BitmapFont()
   :needs_update(false)
   ,win_w(0)
   ,win_h(0)
@@ -258,10 +305,10 @@ BitmapFont::BitmapFont()
   color[0] = color[1] = color[2] = color[3] = 1.0f;
 }
 
-
 bool BitmapFont::setupGraphics() {
 
   if(!BitmapFont::is_initialized) {
+
     const char* atts[] = { "a_pos", "a_tex", "a_fg_color" } ;
     vert = bitmapfont_create_shader(GL_VERTEX_SHADER, BITMAP_FONT_VS);
     frag = bitmapfont_create_shader(GL_FRAGMENT_SHADER, BITMAP_FONT_FS);
@@ -280,6 +327,7 @@ bool BitmapFont::setupGraphics() {
 
   glGenVertexArrays(1, &vao);
   glBindVertexArray(vao);
+
   glEnableVertexAttribArray(0);  // pos
   glEnableVertexAttribArray(1);  // tex
   glEnableVertexAttribArray(2);  // fg_color

@@ -113,18 +113,13 @@ int main() {
   gui0.add(new Slider<int>("Particle Lifetime", lifetime, 0, 10, 1));
   gui0.add(new Slider<float>("Particle Mass", mass, 0.0f, 100.0f, 0.001f));
 
-  if(!gui0.setup()) {
-    printf("Error: cannot setup gui.\n");
-    ::exit(EXIT_FAILURE);
-  }
-
   gui_ptr0 = &gui0;
 
   Gui gui1("Drawings", new RenderGL());
   gui1.add(new Slider<float>("Line size", line_size, 0.0f, 200.0f, 0.1f));
   gui1.x = 300;
   gui_ptr1 = &gui1;
-  gui1.setup();
+
 
 #endif
 
@@ -132,7 +127,9 @@ int main() {
   Panel panel(new RenderGL(), 300);
 
   Gui* g0 = panel.addGui("Particles");
-  g0->add(new ColorRGB("Color (work in progress)", color));
+  g0->add(new ColorRGB("Pastel Colors", color, 50, 0.5f));
+  g0->add(new ColorRGB("Bright Colors", color, 150, 0.9f, 1.0f));
+  g0->add(new ColorRGB("Limited Range", color, 15, 0.7f, 0.9f));
   g0->add(new Button("Save Settings", 3, GUI_ICON_FLOPPY_O, on_gui_button_click, NULL, 1));
   g0->add(new Button("Load Settings", 4, GUI_ICON_REFRESH, on_gui_button_click, NULL, 1));
   g0->add(new Slider<int>("Particle velocity", velocity, 0, 100, 1));

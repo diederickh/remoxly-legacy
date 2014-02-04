@@ -9,8 +9,8 @@
 class Button : public Widget {
 
  public:
-  Button(std::string title, int id, unsigned int icon, gui_button_callback cb, void* user, int iconx = 0, int icony = 1);
-  bool setup(Gui* g);
+  Button(std::string title, int id, unsigned int icon, gui_button_callback cb, void* user = NULL, int iconx = 0, int icony = 1);
+  void setGui(Gui* g);
   void create();
   void position();
   void setBoundingBox();

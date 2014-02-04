@@ -2,6 +2,7 @@
 #include <gui/Widget.h>
 #include <gui/Slider.h>
 #include <gui/Toggle.h>
+#include <gui/ColorRGB.h>
 #include <gui/storage/StorageXML.h>
 #include <rapidxml.hpp>
 
@@ -50,6 +51,12 @@ bool StorageXML::save() {
         case GUI_TYPE_TOGGLE: {
           Toggle* toggle = static_cast<Toggle*>(widget);
           ss << "    <widget type=\"" << widget->type << "\" name=\"" << name.c_str() << "\">" << toggle->value << "</widget>\n";
+          break;
+        }
+
+        case GUI_TYPE_COLOR_RGB: {
+          ColorRGB* color = static_cast<ColorRGB*>(widget);
+          ss << "    <widget type=\"" << widget->type << "\" name=\"" << name.c_str() << "\">" << color->perc_value << "</widget>\n";
           break;
         }
 
@@ -138,7 +145,6 @@ bool StorageXML::load() {
       // iterate over all widgets in gui
       xml_node<>* xwidget = xgui->first_node("widget"); 
       if(!xwidget) {
-        printf("Error: it seems that the gui `%s` does not have any widgets that are saved.\n", gui_name.c_str());
         xgui = xgui->next_sibling();
         continue;
       }
@@ -178,6 +184,14 @@ bool StorageXML::load() {
             std::string str_value = xwidget->value();
             toggle->value = gui_string_to_bool(str_value);
             toggle->needs_redraw = true;
+            break;
+          }
+
+          case GUI_TYPE_COLOR_RGB: {
+            ColorRGB* color = static_cast<ColorRGB*>(widget);
+            std::string str_value = xwidget->value();
+            color->setPercentageValue(gui_string_to_float(str_value));
+            color->needs_redraw = true;
             break;
           }
 

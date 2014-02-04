@@ -8,6 +8,8 @@ void Render::update() { }
 
 void Render::draw() { }
 
+void Render::resize(int w, int h) { } 
+
 void Render::getWindowSize(int& ww, int& wh) { }
 
 void Render::beginScissor() { } 

@@ -7,8 +7,8 @@
   clicks on the widget. 
 
  */
-#ifndef REMOXLY_TOGGLE_H
-#define REMOXLY_TOGGLE_H
+#ifndef REMOXLY_GUI_TOGGLE_H
+#define REMOXLY_GUI_TOGGLE_H
 
 #include <gui/Widget.h>
 #include <gui/Types.h>

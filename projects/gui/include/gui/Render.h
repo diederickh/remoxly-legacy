@@ -23,9 +23,10 @@ class Render {
 
  public:
   Render();
-  virtual bool setup();       /* initialize the Render object */
-  virtual void update();      /* update the vertices, GPU buffers, etc.. if somethings that gets drawn changed */
-  virtual void draw();        /* draw everything to screen */
+  virtual bool setup();                     /* initialize the Render object */
+  virtual void update();                    /* update the vertices, GPU buffers, etc.. if somethings that gets drawn changed */
+  virtual void draw();                      /* draw everything to screen */
+  virtual void resize(int w, int h);        /* the resize function should be called whenever the window size changes so that the renderer can recreate the ortho matrix */
 
   /* masking / scrissor */
   virtual void getWindowSize(int& ww, int& wh);

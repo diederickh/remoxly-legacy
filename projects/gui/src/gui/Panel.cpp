@@ -18,16 +18,11 @@ Panel::Panel(Render* r, int height)
 Gui* Panel::addGui(std::string title) {
 
   Gui* g = new Gui(title, render);
-
-  if(!g->setup()) {
-    printf("Cannot setup the gui.\n");
-    return NULL;
-  }
-
+  
   g->lockPosition();
  
   if(!guis.size()) {
-    scroll.setup(g);
+    scroll.setGui(g);
     gui = g;
   }
 
@@ -146,3 +141,4 @@ void Panel::onMouseMove(float mx, float my) {
 bool Panel::needsRedraw() {
   return needs_redraw || scroll.needs_redraw || needsRedrawChildren();
 }
+

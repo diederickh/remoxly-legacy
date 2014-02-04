@@ -28,7 +28,7 @@ class Slider : public Widget {
 
  public:
   Slider(std::string label, T& value, T minv, T maxv, T step);
-  bool setup(Gui* g);
+  void setGui(Gui* g);
   void create();
   void position();
   bool needsRedraw();
@@ -121,9 +121,9 @@ Slider<T>::Slider(std::string label, T& value, T minv, T maxv, T step)
 }
 
 template<class T>
-bool Slider<T>::setup(Gui* g) {
+void Slider<T>::setGui(Gui* g) {
 
-  Widget::setup(g);
+  Widget::setGui(g);
 
   needs_redraw = true;
   h = 22;
@@ -132,9 +132,8 @@ bool Slider<T>::setup(Gui* g) {
   plus_button.icon_y = 1;
   plus_button.icon_x = 1;
 
-  min_button.setup(g);
-  plus_button.setup(g);
-  return true;
+  min_button.setGui(g);
+  plus_button.setGui(g);
 }
 
 template<class T>

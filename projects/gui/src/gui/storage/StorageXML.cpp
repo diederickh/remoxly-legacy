@@ -22,12 +22,12 @@ bool StorageXML::save() {
 
   ss << "<settings>\n";
 
-  for(std::vector<Gui*>::iterator it = guis.begin(); it != guis.end(); ++it) {
+  for(std::vector<Group*>::iterator it = groups.begin(); it != groups.end(); ++it) {
 
-    Gui* g = *it;
+    Group* g = *it;
     name = gui_cleanup_string(g->label);
     
-    ss << "  <gui name=\"" << name.c_str() << "\">\n";
+    ss << "  <group name=\"" << name.c_str() << "\">\n";
 
     for(std::vector<Widget*>::iterator wit = g->children.begin(); wit != g->children.end(); ++wit) {
 
@@ -74,20 +74,20 @@ bool StorageXML::save() {
       name.clear();
     }
 
-    ss << "  </gui>\n";
+    ss << "  </group>\n";
   }
   ss << "</settings>\n";
 
   std::string xml = ss.str();
 
   if(!xml.size()) {
-    printf("Warning: trying to save a gui/panel, but we didn't find any elements to serialize.\n");
+    printf("Warning: trying to save a group/panel, but we didn't find any elements to serialize.\n");
     return false;
   }
 
   std::ofstream ofs(filepath.c_str());
   if(!ofs.is_open()) {
-    printf("Error: cannot open the xml file to save gui settings: `%s`.\n", filepath.c_str());
+    printf("Error: cannot open the xml file to save group settings: `%s`.\n", filepath.c_str());
     return false;
   }
 
@@ -124,28 +124,28 @@ bool StorageXML::load() {
     xml_node<>* xroot = doc.first_node("settings"); 
     REMOXLY_XML_CHECK(xroot, "Error: Cannot find the setting element.\n");
 
-    xml_node<>* xgui = xroot->first_node("gui");    
-    REMOXLY_XML_CHECK(xgui, "Error: Cannot find any GUIs in the loaded xml.\n");
+    xml_node<>* xgroup = xroot->first_node("group");    
+    REMOXLY_XML_CHECK(xgroup, "Error: Cannot find any groups in the loaded xml.\n");
 
-    while(xgui) {
+    while(xgroup) {
 
-      // find the gui
-      xml_attribute<>* xgui_name = xgui->first_attribute("name"); 
-      REMOXLY_XML_CHECK(xgui_name, "Error: gui element does not have a name field.\n");
+      // find the group
+      xml_attribute<>* xgroup_name = xgroup->first_attribute("name"); 
+      REMOXLY_XML_CHECK(xgroup_name, "Error: group element does not have a name field.\n");
 
-      std::string gui_name = xgui_name->value();
+      std::string group_name = xgroup_name->value();
 
-      Gui* gui = findGui(gui_name);
-      if(!gui) {
-        printf("Error: cannot find the gui: %s\n", gui_name.c_str());
-        xgui = xgui->next_sibling();
+      Group* group = findGroup(group_name);
+      if(!group) {
+        printf("Error: cannot find the group: %s\n", group_name.c_str());
+        xgroup = xgroup->next_sibling();
         continue;
       }
 
-      // iterate over all widgets in gui
-      xml_node<>* xwidget = xgui->first_node("widget"); 
+      // iterate over all widgets in group
+      xml_node<>* xwidget = xgroup->first_node("widget"); 
       if(!xwidget) {
-        xgui = xgui->next_sibling();
+        xgroup = xgroup->next_sibling();
         continue;
       }
 
@@ -153,7 +153,7 @@ bool StorageXML::load() {
 
         xml_attribute<>* xwidget_name = xwidget->first_attribute("name"); REMOXLY_XML_CHECK(xwidget_name, "Error: cannot find the name for the current widget. Wrong XML.\n");
         std::string widget_name = xwidget_name->value();
-        Widget* widget = findWidget(gui, widget_name);
+        Widget* widget = findWidget(group, widget_name);
 
         if(!widget) {
           printf("Error: cannot find the widget: %s\n", widget_name.c_str());
@@ -208,7 +208,7 @@ bool StorageXML::load() {
         xwidget = xwidget->next_sibling();
       }
 
-      xgui = xgui->next_sibling();
+      xgroup = xgroup->next_sibling();
     }
 
   }
@@ -220,19 +220,19 @@ bool StorageXML::load() {
   return true;
 }
 
-Gui* StorageXML::findGui(std::string name) {
+Group* StorageXML::findGroup(std::string name) {
 
-  for(std::vector<Gui*>::iterator it = guis.begin(); it != guis.end(); ++it) {
-    Gui* g = *it;
-    std::string gui_name = gui_cleanup_string(g->label);
-    if(gui_name == name) {
+  for(std::vector<Group*>::iterator it = groups.begin(); it != groups.end(); ++it) {
+    Group* g = *it;
+    std::string group_name = gui_cleanup_string(g->label);
+    if(group_name == name) {
       return g;
     }
   }
   return NULL;
 }
 
-Widget* StorageXML::findWidget(Gui* g, std::string name) {
+Widget* StorageXML::findWidget(Group* g, std::string name) {
   
   for(std::vector<Widget*>::iterator it = g->children.begin(); it != g->children.end(); ++it) {
     Widget* wid = *it;

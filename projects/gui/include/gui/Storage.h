@@ -12,7 +12,7 @@
 
 #include <vector>
 
-class Gui;
+class Group;
 class Panel;
 
 class Storage {
@@ -21,10 +21,10 @@ class Storage {
   virtual bool save();
   virtual bool load();
   void addPanel(Panel* p);
-  void addGui(Gui* g);
+  void addGroup(Group* g);
 
  public:
-  std::vector<Gui*> guis;
+  std::vector<Group*> groups;
 };
 
 #endif

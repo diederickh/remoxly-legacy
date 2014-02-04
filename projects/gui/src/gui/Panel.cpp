@@ -1,7 +1,7 @@
 #include <gui/Panel.h>
 #include <gui/Scroll.h>
 #include <gui/Render.h>
-#include <gui/Gui.h>
+#include <gui/Group.h>
 #include <stdio.h>
 
 Panel::Panel(Render* r, int height)
@@ -15,20 +15,20 @@ Panel::Panel(Render* r, int height)
   scroll.render = r;
 }
 
-Gui* Panel::addGui(std::string title) {
+Group* Panel::addGroup(std::string title) {
 
-  Gui* g = new Gui(title, render);
+  Group* g = new Group(title, render);
   
   g->lockPosition();
  
-  if(!guis.size()) {
-    scroll.setGui(g);
-    gui = g;
+  if(!groups.size()) {
+    scroll.setGroup(g);
+    group = g;
   }
 
   add(g, g);
 
-  guis.push_back(g);
+  groups.push_back(g);
 
   return g;
 }
@@ -42,9 +42,9 @@ void Panel::position() {
   int gh = h;
   int content_h = 0;
 
-  for(std::vector<Gui*>::iterator it = guis.begin(); it != guis.end(); ++it) {
+  for(std::vector<Group*>::iterator it = groups.begin(); it != groups.end(); ++it) {
 
-    Gui* g = *it;
+    Group* g = *it;
 
     g->x = gx;
     g->y = gy;
@@ -56,11 +56,11 @@ void Panel::position() {
     content_h += g->bbox[3] + g->padding;
   }
 
-  content_h += gui->padding; 
+  content_h += group->padding; 
 
   scroll.x = x;
   scroll.y = y;
-  scroll.setVisibleArea(x - gui->padding, y - gui->padding, gw + gui->padding * 2, h, content_h); 
+  scroll.setVisibleArea(x - group->padding, y - group->padding, gw + group->padding * 2, h, content_h); 
   scroll.position();
 
   // @todo - we need a better fix for this. when the content height changes, i.e. becomes smaller, then we need to reposition; this is kind of a hack which works okay, but is not perfect. 
@@ -71,7 +71,7 @@ void Panel::position() {
 
 void Panel::create() {
   
-  render->addRectangle(x - gui->padding, y, w + gui->padding * 2, h, gui->panel_color); // background
+  render->addRectangle(x - group->padding, y, w + group->padding * 2, h, group->panel_color); // background
   needs_redraw = false;
 }
 
@@ -101,9 +101,9 @@ void Panel::onMousePress(float mx, float my, int button, int modkeys) {
   if(GUI_IS_INSIDE(mx, my, scroll.visible_x, scroll.visible_y, scroll.visible_w, scroll.visible_h)) {
     Widget::onMousePress(mx, my, button, modkeys);
 
-    // check if we pressed inside a header of gui to allow dragging
-    for(std::vector<Gui*>::iterator it = guis.begin(); it != guis.end(); ++it) {
-      Gui* g = *it;
+    // check if we pressed inside a header of group to allow dragging
+    for(std::vector<Group*>::iterator it = groups.begin(); it != groups.end(); ++it) {
+      Group* g = *it;
       if(GUI_IS_INSIDE(mx, my, g->x, g->y, (g->w - g->close_button.w) , g->h)) {
         state |= GUI_STATE_DOWN_INSIDE;
       }

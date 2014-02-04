@@ -1,5 +1,5 @@
 #include <gui/Types.h>
-#include <gui/Gui.h>
+#include <gui/Group.h>
 #include <gui/Widget.h>
 #include <stdio.h>
 
@@ -10,7 +10,7 @@ Widget::Widget(int type, std::string label)
   ,state(GUI_STATE_NONE)
   ,mods(GUI_MOD_NONE)
   ,label(label)
-  ,gui(NULL)
+  ,group(NULL)
   ,render(NULL)
   ,x(0)
   ,y(0)
@@ -32,14 +32,14 @@ Widget::Widget(int type, std::string label)
 Widget::~Widget() {
 }
 
-void Widget::setGui(Gui* g) {
-  gui = g; 
+void Widget::setGroup(Group* g) {
+  group = g; 
   render = g->render;
 }
 
-void Widget::add(Widget* w, Gui* g) {
+void Widget::add(Widget* w, Group* g) {
 
-  w->setGui(g);
+  w->setGroup(g);
 
   children.push_back(w);
 }
@@ -248,7 +248,7 @@ void Widget::setBoundingBox() {
     bbox[3] += wid->bbox[3];
 
     if(wid->isDrawn()) {
-      bbox[3] += gui->padding;
+      bbox[3] += group->padding;
     }
   }
 }

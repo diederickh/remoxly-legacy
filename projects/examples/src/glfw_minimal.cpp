@@ -1,7 +1,7 @@
 /*
 
   This file contains a minimal example on how to use Remoxly.
-  We create a panel with two Guis.
+  We create a panel with two Groups
 
  */
 #include <stdlib.h>
@@ -92,29 +92,29 @@ int main() {
   float trail_color[3] = { 0.0f } ;
 
   // create a panel with a height of 300 pixels. A panel 
-  // is a collection of Guis. You can add as many as Guis
+  // is a collection of Groups. You can add as many as Groups
   // to your panel.
   Panel panel(new RenderGL(), 300);       
 
   // Set the panel_ptr, that is used in the GLFW callbacks
   panel_ptr = &panel;
 
-  // Create a new Gui for our particle settings.
-  Gui* particle_gui = panel.addGui("Particles");
-  particle_gui->add(new ColorRGB("Particle Color", particle_color));
-  particle_gui->add(new ColorRGB("Trail color", trail_color, 15, 0.5f)); // create 15 color selection; and a saturation level of 0.5f
-  particle_gui->add(new Slider<float>("Trail Width", trail_width, 0.0f, 100.0f, 0.1f)); // range: [0.0f - 100.0f], step: 0.1f
-  particle_gui->add(new Slider<float>("Speed", speed, 0.0f, 50.0f, 0.01)); 
-  particle_gui->add(new Slider<int>("Number Of Particles", num_particles, 0, 500, 1));
-  particle_gui->add(new Slider<int>("Trail Length", trail_length, 0, 100, 2));
-  particle_gui->add(new Toggle("Render Particles", render_particles));
-  particle_gui->add(new Toggle("Render Trails", render_trails));
-  particle_gui->add(new Toggle("Render Effects", render_effects));
-  particle_gui->add(new Toggle("Spawn Particles", spawn_particles));
+  // Create a new Group for our particle settings.
+  Group* particle_group = panel.addGroup("Particles");
+  particle_group->add(new ColorRGB("Particle Color", particle_color));
+  particle_group->add(new ColorRGB("Trail color", trail_color, 15, 0.5f)); // create 15 color selection; and a saturation level of 0.5f
+  particle_group->add(new Slider<float>("Trail Width", trail_width, 0.0f, 100.0f, 0.1f)); // range: [0.0f - 100.0f], step: 0.1f
+  particle_group->add(new Slider<float>("Speed", speed, 0.0f, 50.0f, 0.01)); 
+  particle_group->add(new Slider<int>("Number Of Particles", num_particles, 0, 500, 1));
+  particle_group->add(new Slider<int>("Trail Length", trail_length, 0, 100, 2));
+  particle_group->add(new Toggle("Render Particles", render_particles));
+  particle_group->add(new Toggle("Render Trails", render_trails));
+  particle_group->add(new Toggle("Render Effects", render_effects));
+  particle_group->add(new Toggle("Spawn Particles", spawn_particles));
 
-  Gui* storage_gui = panel.addGui("Save and Load");
-  storage_gui->add(new Button("Save", 0, GUI_ICON_FLOPPY_O, button_click));
-  storage_gui->add(new Button("Load", 1, GUI_ICON_REFRESH, button_click));
+  Group* storage_group = panel.addGroup("Save and Load");
+  storage_group->add(new Button("Save", 0, GUI_ICON_FLOPPY_O, button_click));
+  storage_group->add(new Button("Load", 1, GUI_ICON_REFRESH, button_click));
   
   while(!glfwWindowShouldClose(win)) {
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);

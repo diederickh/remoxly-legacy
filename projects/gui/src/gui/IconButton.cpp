@@ -1,7 +1,7 @@
 #include <assert.h>
 #include <gui/IconButton.h>
 #include <gui/Render.h>
-#include <gui/Gui.h>
+#include <gui/Group.h>
 
 IconButton::IconButton(int callid, unsigned int icon, gui_button_callback cb, void* user)
   :Widget(GUI_TYPE_ICON_BUTTON, "")
@@ -18,15 +18,15 @@ IconButton::IconButton(int callid, unsigned int icon, gui_button_callback cb, vo
   h = 22;
 }
 
-void IconButton::setGui(Gui* g) {
+void IconButton::setGroup(Group* g) {
 
-  Widget::setGui(g);
+  Widget::setGroup(g);
   render->getIconSize(icon, icon_w, icon_h);
 }
 
 void IconButton::create() {
 
-  assert(gui && render);
+  assert(group && render);
 
   if(state & GUI_STATE_HIDDEN) {
     return;
@@ -41,8 +41,8 @@ void IconButton::create() {
   int cx = x + (w * 0.5 ) - (icon_w * 0.5) + icon_x;
   int cy = y + (h * 0.5 ) - (icon_h * 0.5) + icon_y;
 
-  render->addRectangle(x, y, w, h, gui->getButtonStateColor(this), true);
-  render->writeIcon(cx, cy + bt_click_offset, icon, gui->label_color);
+  render->addRectangle(x, y, w, h, group->getButtonStateColor(this), true);
+  render->writeIcon(cx, cy + bt_click_offset, icon, group->label_color);
 
   needs_redraw = false;
 }

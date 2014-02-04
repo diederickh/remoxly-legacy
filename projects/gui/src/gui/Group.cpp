@@ -1,20 +1,20 @@
 #include <gui/Utils.h>
-#include <gui/Gui.h>
+#include <gui/Group.h>
 
 // -------------------------------------------
 
-void gui_close_click(int id, void* user) {
+void group_close_click(int id, void* user) {
 
-  Gui* g = static_cast<Gui*>(user);
+  Group* g = static_cast<Group*>(user);
   g->closeChildren();
   g->close_button.hide();
   g->open_button.show();
   g->needs_redraw = true;
 }
 
-void gui_open_click(int id, void* user) {
+void group_open_click(int id, void* user) {
 
-  Gui* g = static_cast<Gui*>(user);
+  Group* g = static_cast<Group*>(user);
   g->openChildren();
   g->close_button.show();
   g->open_button.hide();
@@ -23,37 +23,37 @@ void gui_open_click(int id, void* user) {
 
 // -------------------------------------------
 
-Gui::Gui(std::string label, Render* r) 
-  :Widget(GUI_TYPE_GUI, label)
+Group::Group(std::string label, Render* r) 
+  :Widget(GUI_TYPE_GROUP, label)
   ,render(r)
   ,padding(1)
   ,xindent(5)
   ,yindent(4)
-  ,close_button(0, GUI_ICON_CARET_DOWN, gui_close_click, this)
-  ,open_button(0, GUI_ICON_CARET_RIGHT, gui_open_click, this)
+  ,close_button(0, GUI_ICON_CARET_DOWN, group_close_click, this)
+  ,open_button(0, GUI_ICON_CARET_RIGHT, group_open_click, this)
 {
   x = 10;
   y = 10;
   w = 275;
   h = 22;
   
-  setGui(this);
+  setGroup(this);
 
   float theme_fg_color[] = { 0.65, 0.62, 0.52, 1.0 };
   float theme_bg_color[] = { 0.277, 0.253, 0.261, 0.7 };
   float theme_hl_color[] = { 0.394, 0.0f, 0.917, 0.99 };
   setColors(theme_bg_color, theme_fg_color, theme_hl_color);
 
-  close_button.setGui(this);
-  open_button.setGui(this);
+  close_button.setGroup(this);
+  open_button.setGroup(this);
   open_button.hide();
 }
 
-Gui::~Gui() {
+Group::~Group() {
   removeChildren();
 }
 
-void Gui::setColors(float* bg, float* fg, float* highlight) {
+void Group::setColors(float* bg, float* fg, float* highlight) {
   gui_fill_color(0.0f, 0.f, 0.0f, 0.9f, panel_color);
   gui_fill_color(1.0f, 1.0f, 1.0f, 0.6f, label_color);
   gui_fill_color(1.0f, 1.0f, 1.0f, 0.7f, number_color);
@@ -63,7 +63,7 @@ void Gui::setColors(float* bg, float* fg, float* highlight) {
   gui_fill_color(highlight[0], highlight[1], highlight[2], highlight[3], highlight_color);
 }
 
-float* Gui::getStateColor(Widget* w, int flag, float* off, float* on) {
+float* Group::getStateColor(Widget* w, int flag, float* off, float* on) {
 
   if(w->state & flag) {
     return on;
@@ -73,29 +73,29 @@ float* Gui::getStateColor(Widget* w, int flag, float* off, float* on) {
   }
 }
 
-float* Gui::getButtonStateColor(Widget* w, int flag) {
+float* Group::getButtonStateColor(Widget* w, int flag) {
   return getStateColor(w, flag, button_color, highlight_color);
 }
 
-float* Gui::getForegroundStateColor(Widget* w, int flag) {
+float* Group::getForegroundStateColor(Widget* w, int flag) {
   return getStateColor(w, flag, fg_color, highlight_color);
 }
 
-float* Gui::getBackgroundStateColor(Widget* w, int flag) {
+float* Group::getBackgroundStateColor(Widget* w, int flag) {
   return getStateColor(w, flag, bg_color, highlight_color);
 }
 
-void Gui::add(Widget* w) {
+void Group::add(Widget* w) {
   
-  if(!gui) {
-    printf("Error: first call setup() on the Gui before adding elements.\n");
+  if(!group) {
+    printf("Error: first call setup() on the Group before adding elements.\n");
     return;
   }
 
   Widget::add(w, this);
 }
 
-void Gui::create() {
+void Group::create() {
 
   render->addRectangle(x - padding, y - padding, w + padding * 2, bbox[3] + padding * 2, panel_color, true);
   render->addRectangle(x, y, w, h, highlight_color, true);
@@ -107,14 +107,14 @@ void Gui::create() {
   needs_redraw = false;
 }
 
-void Gui::draw() {
+void Group::draw() {
 
   update();
 
   render->draw();
 }
 
-void Gui::update() {
+void Group::update() {
 
   if(needsRedraw()) {
     render->clear();
@@ -124,7 +124,7 @@ void Gui::update() {
   }
 }
 
-void Gui::position() {
+void Group::position() {
 
   int curr_x = x;
   int curr_y = y + h + padding;
@@ -160,7 +160,7 @@ void Gui::position() {
   setBoundingBox();
 }
 
-void Gui::onMousePress(float mx, float my, int button, int modkeys) {
+void Group::onMousePress(float mx, float my, int button, int modkeys) {
 
   Widget::onMousePress(mx, my, button, modkeys);
 
@@ -172,7 +172,7 @@ void Gui::onMousePress(float mx, float my, int button, int modkeys) {
   open_button.onMousePress(mx, my, button, modkeys);
 }
 
-void Gui::onMouseRelease(float mx, float my, int button, int modkeys) {
+void Group::onMouseRelease(float mx, float my, int button, int modkeys) {
   
   Widget::onMouseRelease(mx, my, button, modkeys);
 
@@ -182,7 +182,7 @@ void Gui::onMouseRelease(float mx, float my, int button, int modkeys) {
   open_button.onMouseRelease(mx, my, button, modkeys);
 }
 
-void Gui::onMouseMove(float mx, float my) {
+void Group::onMouseMove(float mx, float my) {
   
   // mouse down in header
   if(state & GUI_STATE_DOWN_INSIDE) {
@@ -196,11 +196,11 @@ void Gui::onMouseMove(float mx, float my) {
   Widget::onMouseMove(mx, my);
 }
 
-bool Gui::needsRedraw() {
+bool Group::needsRedraw() {
   return Widget::needsRedraw() || close_button.needs_redraw || open_button.needs_redraw;
 }
 
-void Gui::unsetNeedsRedraw() {
+void Group::unsetNeedsRedraw() {
   needs_redraw = false;
   close_button.needs_redraw = false;
   open_button.needs_redraw = false;

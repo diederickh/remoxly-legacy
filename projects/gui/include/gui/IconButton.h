@@ -18,13 +18,13 @@
 #include <gui/Widget.h>
 #include <gui/Types.h>
 
-class Gui;
+class Group;
 
 class IconButton : public Widget {
 
  public:
   IconButton(int id, unsigned int icon, gui_button_callback cb = NULL, void* user = NULL);
-  void setGui(Gui* g);
+  void setGroup(Group* g);
   void create();
   void call();            /* calls the callback function; can be used by a wrapper widget */
 

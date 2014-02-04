@@ -11,7 +11,7 @@
 
 #include <string>
 #include <cmath>
-#include <gui/Gui.h>
+#include <gui/Group.h>
 #include <gui/Render.h>
 #include <gui/IconButton.h>
 #include <gui/Utils.h>
@@ -28,7 +28,7 @@ class Slider : public Widget {
 
  public:
   Slider(std::string label, T& value, T minv, T maxv, T step);
-  void setGui(Gui* g);
+  void setGroup(Group* g);
   void create();
   void position();
   bool needsRedraw();
@@ -121,9 +121,9 @@ Slider<T>::Slider(std::string label, T& value, T minv, T maxv, T step)
 }
 
 template<class T>
-void Slider<T>::setGui(Gui* g) {
+void Slider<T>::setGroup(Group* g) {
 
-  Widget::setGui(g);
+  Widget::setGroup(g);
 
   needs_redraw = true;
   h = 22;
@@ -132,8 +132,8 @@ void Slider<T>::setGui(Gui* g) {
   plus_button.icon_y = 1;
   plus_button.icon_x = 1;
 
-  min_button.setGui(g);
-  plus_button.setGui(g);
+  min_button.setGroup(g);
+  plus_button.setGroup(g);
 }
 
 template<class T>
@@ -143,7 +143,7 @@ void Slider<T>::position() {
 
   plus_button.y = y;
   plus_button.x = x + w - plus_button.w;
-  min_button.x = plus_button.x - min_button.w - gui->padding;
+  min_button.x = plus_button.x - min_button.w - group->padding;
   min_button.y = y;
 }
 
@@ -151,20 +151,20 @@ template<class T>
 void Slider<T>::create() {
   
   num_w = 75;
-  num_x = min_button.x - num_w - gui->padding;
-  text_w = w - (min_button.w + plus_button.w + num_w + 3 * gui->padding);
+  num_x = min_button.x - num_w - group->padding;
+  text_w = w - (min_button.w + plus_button.w + num_w + 3 * group->padding);
   text_x = x;
 
-  render->addRectangle(x, y, text_w, h, gui->bg_color, true);
-  render->addRectangle(num_x, y, num_w, h, gui->bg_color, true);
-  render->addRectangle(text_x, y, text_w * perc_value, h, gui->getForegroundStateColor(this), true);
-  render->writeText(x + gui->xindent, y + gui->yindent, label, gui->label_color);
+  render->addRectangle(x, y, text_w, h, group->bg_color, true);
+  render->addRectangle(num_x, y, num_w, h, group->bg_color, true);
+  render->addRectangle(text_x, y, text_w * perc_value, h, group->getForegroundStateColor(this), true);
+  render->writeText(x + group->xindent, y + group->yindent, label, group->label_color);
 
   if(state & GUI_STATE_EDITABLE) {
-    render->enableNumberInput(num_x + (num_w - gui->xindent - gui->padding - GUI_CURSOR_WIDTH), y + gui->yindent, num_w - 15, value, gui->number_color);
+    render->enableNumberInput(num_x + (num_w - group->xindent - group->padding - GUI_CURSOR_WIDTH), y + group->yindent, num_w - 15, value, group->number_color);
   }
   else {
-    render->writeNumber(num_x + (num_w - gui->xindent - gui->padding - GUI_CURSOR_WIDTH), y + gui->yindent, value, gui->number_color);
+    render->writeNumber(num_x + (num_w - group->xindent - group->padding - GUI_CURSOR_WIDTH), y + group->yindent, value, group->number_color);
   }
 
   min_button.create();

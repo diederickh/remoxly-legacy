@@ -1,9 +1,9 @@
 /*
 
-  Gui
+  Group
   ----
 
-  "The Gui", this is a collection of widgets with on top a header. The 
+  The Group this is a collection of widgets with on top a header. The 
   header can be used to drag around the contains widgets. 
 
   IMPORTANT:
@@ -14,8 +14,8 @@
   the bbox member).
 
  */
-#ifndef REMOXLY_GUI_H
-#define REMOXLY_GUI_H
+#ifndef REMOXLY_GUI_GROUP_H
+#define REMOXLY_GUI_GROUP_H
 
 #include <string>
 #include <gui/Types.h>
@@ -25,20 +25,20 @@
 
 // -------------------------------------------
 
-static void gui_close_click(int id, void* user);
-static void gui_open_click(int id, void* user);
+static void group_close_click(int id, void* user);
+static void group_open_click(int id, void* user);
 
 // -------------------------------------------
 
-class Gui : public Widget {
+class Group : public Widget {
 
  public:
-  Gui(std::string label, Render* r);
-  ~Gui();
+  Group(std::string label, Render* r);
+  ~Group();
 
-  bool setup();                                                /* sets up the gui, initializes some basic colors etc.. */
-  void add(Widget* w);                                         /* add a widget to the gui */
-  void draw();                                                 /* will draw the gui */
+  bool setup();                                                /* sets up the group, initializes some basic colors etc.. */
+  void add(Widget* w);                                         /* add a widget to the group */
+  void draw();                                                 /* will draw the group */
   void create();                                               /* is called when you need to the shapes for the element(s) */
   void position();
 
@@ -74,7 +74,7 @@ class Gui : public Widget {
   float number_color[4];          /* used when drawiing numeric values */
   float button_color[4];          /* color for buttons, based on the color sheme */
   float highlight_color[4];       /* e.g. for button highlight colors */
-  float panel_color[4];           /* this background of the complete gui */
+  float panel_color[4];           /* this background of the complete group */
 
   /* interaction */
   IconButton close_button;

@@ -1,5 +1,5 @@
 #include <gui/ColorRGB.h>
-#include <gui/Gui.h>
+#include <gui/Group.h>
 #include <gui/Render.h>
 #include <gui/Utils.h>
 
@@ -38,7 +38,7 @@ void ColorRGB::create() {
   float curr_col[] = { curr_rect.rgba[0], curr_rect.rgba[1], curr_rect.rgba[2], 1.0 } ;
 
   render->addRectangle(x + w - 22, y, 22, h, curr_col);
-  render->writeText(x + gui->xindent, y + gui->yindent, label, gui->label_color);
+  render->writeText(x + group->xindent, y + group->yindent, label, group->label_color);
 }
 
 void ColorRGB::onMousePress(float mx, float my, int button, int modkeys) {

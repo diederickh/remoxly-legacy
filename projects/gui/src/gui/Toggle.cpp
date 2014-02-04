@@ -1,4 +1,4 @@
-#include <gui/Gui.h>
+#include <gui/Group.h>
 #include <gui/Render.h>
 #include <gui/Toggle.h>
 
@@ -17,16 +17,16 @@ void Toggle::create() {
     bt_click_offset = 1;
   }
 
-  render->addRectangle(x, y, w, h, gui->getBackgroundStateColor(this), true);
+  render->addRectangle(x, y, w, h, group->getBackgroundStateColor(this), true);
 
   if(value) {
-    render->writeIcon(x + gui->xindent, y + gui->yindent + bt_click_offset, GUI_ICON_CHECK_CIRCLE, gui->highlight_color);
+    render->writeIcon(x + group->xindent, y + group->yindent + bt_click_offset, GUI_ICON_CHECK_CIRCLE, group->highlight_color);
   }
   else {
-    render->writeIcon(x + gui->xindent, y + gui->yindent + bt_click_offset, GUI_ICON_TIMES_CIRCLE, gui->label_color);
+    render->writeIcon(x + group->xindent, y + group->yindent + bt_click_offset, GUI_ICON_TIMES_CIRCLE, group->label_color);
   }
 
-  render->writeText(x + gui->xindent + 20, y + gui->yindent + bt_click_offset, label, gui->label_color);
+  render->writeText(x + group->xindent + 20, y + group->yindent + bt_click_offset, label, group->label_color);
 }
 
 

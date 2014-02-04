@@ -1,7 +1,7 @@
 #include <cmath>
 #include <gui/Scroll.h>
 #include <gui/Render.h>
-#include <gui/Gui.h>
+#include <gui/Group.h>
 
 // -------------------------------------------
 
@@ -41,19 +41,19 @@ Scroll::Scroll()
 }
 
 
-void Scroll::setGui(Gui* g) {
+void Scroll::setGroup(Group* g) {
  
-  Widget::setGui(g);
-  down_button.setGui(g);
-  up_button.setGui(g);
+  Widget::setGroup(g);
+  down_button.setGroup(g);
+  up_button.setGroup(g);
 }
 
 void Scroll::create() {
  
-  render->addRectangle(visible_x, y, visible_w - gui->padding, visible_h - gui->padding, gui->panel_color, false);  // backround on visible area; e.g. adds the border at the bottom 
-  render->addRectangle(scroll_bar_x, scroll_bar_y, w + gui->padding, visible_h + gui->padding, gui->panel_color);  // background scrollbar
-  render->addRectangle(scroll_bar_x, track_y, w, track_h, gui->getBackgroundStateColor(this, GUI_STATE_DOWN_CUSTOM0)); // the track 
-  render->addRectangle(scroll_bar_x, grip_y, w, grip_h, gui->getButtonStateColor(this, GUI_STATE_DOWN_INSIDE), true); // the grip
+  render->addRectangle(visible_x, y, visible_w - group->padding, visible_h - group->padding, group->panel_color, false);  // backround on visible area; e.g. adds the border at the bottom 
+  render->addRectangle(scroll_bar_x, scroll_bar_y, w + group->padding, visible_h + group->padding, group->panel_color);  // background scrollbar
+  render->addRectangle(scroll_bar_x, track_y, w, track_h, group->getBackgroundStateColor(this, GUI_STATE_DOWN_CUSTOM0)); // the track 
+  render->addRectangle(scroll_bar_x, grip_y, w, grip_h, group->getButtonStateColor(this, GUI_STATE_DOWN_INSIDE), true); // the grip
 
   up_button.create();
   down_button.create();
@@ -155,22 +155,22 @@ void Scroll::setVisibleArea(int visx, int visy, int visw, int vish, int contenth
 
   int div = prev_content_h - content_h;
   if(div) {
-    // @todo - when then contents becomes smaller/bigger we need to adjust the percentage. reproduce: Create a panel with these guis and widgets: https://gist.github.com/roxlu/218d6ab2039e9967cf7c . 1) open all guis, 2) scroll down, 3) close water simulation 4) open water simulation. This is now fixed by calling Panel::position() again in Panel::position() when the offsets change.
+    // @todo - when then contents becomes smaller/bigger we need to adjust the percentage. reproduce: Create a panel with these groups and widgets: https://gist.github.com/roxlu/218d6ab2039e9967cf7c . 1) open all groups 2) scroll down, 3) close water simulation 4) open water simulation. This is now fixed by calling Panel::position() again in Panel::position() when the offsets change.
   }
 }
 
 void Scroll::position() {
 
   up_button.x = visible_x + visible_w;
-  up_button.y = visible_y + gui->padding;
+  up_button.y = visible_y + group->padding;
   down_button.x = visible_x + visible_w;
-  down_button.y = visible_y + visible_h - (down_button.h + gui->padding);
+  down_button.y = visible_y + visible_h - (down_button.h + group->padding);
 
   // scrollbar, track and grip size
   scroll_bar_x = visible_x + visible_w;
-  scroll_bar_y = y - gui->padding;
-  track_y = scroll_bar_y + up_button.h + gui->padding * 2;
-  track_h = visible_h - (down_button.h + up_button.h + gui->padding * 4);
+  scroll_bar_y = y - group->padding;
+  track_y = scroll_bar_y + up_button.h + group->padding * 2;
+  track_h = visible_h - (down_button.h + up_button.h + group->padding * 4);
  
   float content_ratio = float(visible_h) / content_h;
   grip_h = gui_clamp<int>(content_ratio * track_h, 10, track_h * 0.9);
@@ -209,7 +209,7 @@ void Scroll::beginScissor() {
 
   render->scissor(visible_x, 
                   win_h - (visible_h + visible_y), 
-                  visible_w + w + gui->padding,
+                  visible_w + w + group->padding,
                   visible_h);
 }
 

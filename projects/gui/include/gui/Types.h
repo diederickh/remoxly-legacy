@@ -5,7 +5,7 @@
 #define GUI_IS_INSIDE(mx, my, x, y, w, h) ((mx >= x) && (mx <= (x+w)) && (my >= y) && (my <= (y+h)))
 
 #define GUI_TYPE_NONE                        0
-#define GUI_TYPE_GUI                         1          /* The Gui instance. */
+#define GUI_TYPE_GROUP                       1          /* The Group instance. */
 #define GUI_TYPE_SLIDER_INT                  2          /* Slider for integer values. */
 #define GUI_TYPE_SLIDER_FLOAT                3          /* Slider for float values. */
 #define GUI_TYPE_BUTTON                      4          /* A basic "clickable" button. */
@@ -13,12 +13,12 @@
 #define GUI_TYPE_COLOR_RGB                   6          /* A simple RGB color picker */
 #define GUI_TYPE_ICON_BUTTON                 7          /* Square button with an icon. */
 #define GUI_TYPE_SCROLL                      8          /* Takes care of drawing a scrollbar; not to be "added" to a gui. */
-#define GUI_TYPE_PANEL                       9          /* A Panel element can hold many Gui element and stacks them on top of each other. It creates a scroll bar */
+#define GUI_TYPE_PANEL                       9          /* A Panel element can hold many Group element and stacks them on top of each other. It creates a scroll bar */
 
 #define GUI_CURSOR_WIDTH                     9          /* Default cursor width for text/number inputs.*/                                             
 
 #define GUI_STATE_NONE                       0x0000     /* Default state of a widget. */
-#define GUI_STATE_EDITABLE                   0x0001     /* The text of the widget is editable; only one per gui. */
+#define GUI_STATE_EDITABLE                   0x0001     /* The text of the widget is editable; only one per group. */
 #define GUI_STATE_HIDDEN                     0x0002     /* The widget is hidden, will not be used for interaction etc... */
 #define GUI_STATE_CLOSED                     0x0004
 #define GUI_STATE_UNUSED                     0x0006     /* Combination of CLOSED and HIDDEN. Widget is not draw or used in measurements. This is used in combination with close()/open() and show()/hide(). Using a open-close and show-hide we are able to open and keep hidden widgets hidden */

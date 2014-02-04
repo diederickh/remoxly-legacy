@@ -28,7 +28,7 @@
 #include <stdint.h>
 #include <gui/Types.h>
 
-class Gui;
+class Group;
 class Render;
 
 class Widget {
@@ -38,9 +38,9 @@ class Widget {
   virtual ~Widget();
   virtual void build();                                            /* build will check if this widget is allowed to be drawn, and if so it will call create() and create() on all of its children */
   virtual void create();                                           /* create the shapes; when needs_redraw is set to true this will be called again */
-  virtual void add(Widget* w, Gui* g);                             /* add a child element */
+  virtual void add(Widget* w, Group* g);                           /* add a child element */
   virtual void position();                                         /* calculate the x/y/w/h etc.. values for the widget itself and for its children. note that x/y will be set by the container which is probably Gui. position() may only be called by the parent container after the x/y are set. */
-  virtual void setGui(Gui* g);                                     /* setup the widget. sets the gui + render members by default, a user shouldn't call this */
+  virtual void setGroup(Group* g);                                 /* setup the widget. sets the gui + render members by default, a user shouldn't call this */
   virtual void setBoundingBox();                                   /* calculate the bounding box of this element */
   virtual void print();                                            /* prints some debug info */
 
@@ -88,7 +88,7 @@ class Widget {
   void setBoundingBoxChildren();                                   /* calculate bounding boxes for all children */
 
  public:
-  Gui* gui;                                                        /* the gui in which this widget is contained */
+  Group* group;                                                      /* the group in which this widget is contained */
   Render* render;                                                  /* the renderer which takes care of the drawing */
   static uint32_t generated_ids;                                   /* each widget is assigned an auto incremented unique ID. this can be used when doing networked guis */
   uint32_t id;                                                     /* the unique ID assigned to this widget */

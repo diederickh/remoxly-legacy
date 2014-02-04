@@ -3,13 +3,13 @@
   Panel
   ------
 
-  A panel is a container for multiple Gui. The panel will add a 
-  scrollbar so you can add a lot of Guis. For now make sure that 
+  A panel is a container for multiple Groups. The panel will add a 
+  scrollbar so you can add a lot of Groups. For now make sure that 
   you use a new render object for each panel you create!
 
   IMPORTANT: I repeat: for each panel you create, you need to 
   add a new Render object. Each Render object will keep it's 
-  own state (vbo/vao) for the panel (or gui) that is drawn.
+  own state (vbo/vao) for the panel (or group) that is drawn.
   For performance issues the renderer should make sure that 
   it only initialize the shader/programs once. 
 
@@ -20,14 +20,14 @@
 
 #include <vector>
 #include <gui/Widget.h>
-#include <gui/Gui.h>
+#include <gui/Group.h>
 #include <gui/Scroll.h>
 
 class Panel : public Widget {
 
  public:
   Panel(Render* render, int h = 200);
-  Gui* addGui(std::string title);
+  Group* addGroup(std::string title);
 
   void create();
   void draw();
@@ -43,7 +43,7 @@ class Panel : public Widget {
 
  public:
   Scroll scroll;
-  std::vector<Gui*> guis;
+  std::vector<Group*> groups;
 };
 
 #endif

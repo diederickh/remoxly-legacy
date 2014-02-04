@@ -40,7 +40,7 @@ class Scroll : public Widget {
 
  public:
   Scroll();
-  void setGui(Gui* g);
+  void setGroup(Group* g);
   void create();
   void beginScissor();
   void endScissor();

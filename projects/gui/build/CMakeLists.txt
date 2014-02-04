@@ -23,7 +23,7 @@ include_directories(
 )
 
 set(remoxly_lib_sources
-  ${bd}/src/gui/Gui.cpp
+  ${bd}/src/gui/Group.cpp
   ${bd}/src/gui/Utils.cpp
   ${bd}/src/gui/Widget.cpp
   ${bd}/src/gui/Render.cpp
@@ -128,24 +128,7 @@ install(TARGETS remoxly DESTINATION lib)
 install(FILES 
   ${bd}/include/gui/Button.h
   ${bd}/include/gui/ColorRGB.h
-  ${bd}/include/gui/Gui.h
-  ${bd}/include/gui/IconButton.h
-  ${bd}/include/gui/Panel.h
-  ${bd}/include/gui/Remoxly.h
-  ${bd}/include/gui/Render.h
-  ${bd}/include/gui/Scroll.h
-  ${bd}/include/gui/Slider.h
-  ${bd}/include/gui/Storage.h
-  ${bd}/include/gui/Toggle.h
-  ${bd}/include/gui/Types.h
-  ${bd}/include/gui/Utils.h
-  ${bd}/include/gui/Widget.h
-  DESTINATION include/gui/)
-
-install(FILES 
-  ${bd}/include/gui/Button.h
-  ${bd}/include/gui/ColorRGB.h
-  ${bd}/include/gui/Gui.h
+  ${bd}/include/gui/Group.h
   ${bd}/include/gui/IconButton.h
   ${bd}/include/gui/Panel.h
   ${bd}/include/gui/Remoxly.h
@@ -171,7 +154,7 @@ install(FILES
 )
 
 install(FILES
-  ${bd}/src/gui/Gui.cpp
+  ${bd}/src/gui/Group.cpp
   ${bd}/src/gui/Utils.cpp
   ${bd}/src/gui/Widget.cpp
   ${bd}/src/gui/Render.cpp

@@ -1,9 +1,9 @@
 /*
 
-  Gui
+  Group
   ---
 
-  This class is used for the development of the Gui and its
+  This class is used for the development of the Group and its
   widgets. It's not supposed to be an simple example because we 
   needs to add some code to setup an opengl context, include some
   implementation etc.. Though if you want to create new widgets
@@ -25,10 +25,10 @@
 #include <gui/Remoxly.h>
 #include <gui/gl/ImplementationGL.h>
 
-#define USE_GUI 0
+#define USE_GROUP 0
 #define USE_PANEL 1
-Gui* gui_ptr0 = NULL;
-Gui* gui_ptr1 = NULL;
+Group* group_ptr0 = NULL;
+Group* group_ptr1 = NULL;
 Panel* panel_ptr = NULL;
 
 #define ROXLU_USE_ALL
@@ -42,7 +42,7 @@ void char_callback(GLFWwindow* win, unsigned int key);
 void error_callback(int err, const char* desc);
 void resize_callback(GLFWwindow* window, int width, int height);
 
-void on_gui_button_click(int id, void* user);
+void on_group_button_click(int id, void* user);
  
 int main() {
 
@@ -63,7 +63,7 @@ int main() {
   int w = 1280;
   int h = 720;
  
-  win = glfwCreateWindow(w, h, "Gui", NULL, NULL);
+  win = glfwCreateWindow(w, h, "Group", NULL, NULL);
   if(!win) {
     glfwTerminate();
     exit(EXIT_FAILURE);
@@ -105,20 +105,20 @@ int main() {
   bool render_marker = true;
   float color[3] = { 0 } ;
 
-#if USE_GUI
-  Gui gui0("Particles", new RenderGL());
-  gui0.add(new Slider<int>("Particle Forces", forces, 0, 100, 1));
-  gui0.add(new Slider<int>("Particle Velocity", velocity, 0, 100, 1));
-  gui0.add(new Slider<int>("Particle Amount", amount, 0, 10, 1));
-  gui0.add(new Slider<int>("Particle Lifetime", lifetime, 0, 10, 1));
-  gui0.add(new Slider<float>("Particle Mass", mass, 0.0f, 100.0f, 0.001f));
+#if USE_GROUP
+  Group group0("Particles", new RenderGL());
+  group0.add(new Slider<int>("Particle Forces", forces, 0, 100, 1));
+  group0.add(new Slider<int>("Particle Velocity", velocity, 0, 100, 1));
+  group0.add(new Slider<int>("Particle Amount", amount, 0, 10, 1));
+  group0.add(new Slider<int>("Particle Lifetime", lifetime, 0, 10, 1));
+  group0.add(new Slider<float>("Particle Mass", mass, 0.0f, 100.0f, 0.001f));
 
-  gui_ptr0 = &gui0;
+  group_ptr0 = &group0;
 
-  Gui gui1("Drawings", new RenderGL());
-  gui1.add(new Slider<float>("Line size", line_size, 0.0f, 200.0f, 0.1f));
-  gui1.x = 300;
-  gui_ptr1 = &gui1;
+  Group group1("Drawings", new RenderGL());
+  group1.add(new Slider<float>("Line size", line_size, 0.0f, 200.0f, 0.1f));
+  group1.x = 300;
+  group_ptr1 = &group1;
 
 
 #endif
@@ -126,15 +126,15 @@ int main() {
 #if USE_PANEL
   Panel panel(new RenderGL(), 300);
 
-  Gui* g0 = panel.addGui("Particles");
+  Group* g0 = panel.addGroup("Particles");
   g0->add(new ColorRGB("Pastel Colors", color, 50, 0.5f));
   g0->add(new ColorRGB("Bright Colors", color, 150, 0.9f, 1.0f));
   g0->add(new ColorRGB("Limited Range", color, 15, 0.7f, 0.9f));
-  g0->add(new Button("Save Settings", 3, GUI_ICON_FLOPPY_O, on_gui_button_click, NULL, 1));
-  g0->add(new Button("Load Settings", 4, GUI_ICON_REFRESH, on_gui_button_click, NULL, 1));
+  g0->add(new Button("Save Settings", 3, GUI_ICON_FLOPPY_O, on_group_button_click, NULL, 1));
+  g0->add(new Button("Load Settings", 4, GUI_ICON_REFRESH, on_group_button_click, NULL, 1));
   g0->add(new Slider<int>("Particle velocity", velocity, 0, 100, 1));
 
-  Gui* g1 = panel.addGui("Water Simulation");
+  Group* g1 = panel.addGroup("Water Simulation");
   g1->add(new Slider<int>("Particle Lifetime", lifetime, 0, 10, 1));
   g1->add(new Slider<int>("Particle Amount", amount, 0, 10, 1));
   g1->add(new Toggle("Render Particles", render_particles));
@@ -142,7 +142,7 @@ int main() {
   g1->add(new Toggle("Render Spirals", render_spirals));
   g1->add(new Toggle("Render Marker", render_marker));
 
-  Gui* g2 = panel.addGui("Special FX");
+  Group* g2 = panel.addGroup("Special FX");
 
   Slider<float>* aging_slider = new Slider<float>("Aging", aging, 0.0f, 50.0f, 0.1f);
   //aging_slider->hide();
@@ -158,9 +158,9 @@ int main() {
     g2->add(new Slider<float>("End Angle", end_angle, 0.0f, 200.0f, 0.1f));
   }
 
-  g2->add(new Button("Download", 0, GUI_ICON_DOWNLOAD, on_gui_button_click, NULL, 1));
-  g2->add(new Button("Twitter", 1, GUI_ICON_TWITTER, on_gui_button_click, NULL, 1));
-  g2->add(new Button("Cloud Burst", 2, GUI_ICON_CLOUD, on_gui_button_click, NULL, 1));
+  g2->add(new Button("Download", 0, GUI_ICON_DOWNLOAD, on_group_button_click, NULL, 1));
+  g2->add(new Button("Twitter", 1, GUI_ICON_TWITTER, on_group_button_click, NULL, 1));
+  g2->add(new Button("Cloud Burst", 2, GUI_ICON_CLOUD, on_group_button_click, NULL, 1));
 
   panel_ptr = &panel;
 #endif
@@ -169,9 +169,9 @@ int main() {
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-#if USE_GUI
-    gui0.draw();
-    gui1.draw();
+#if USE_GROUP
+    group0.draw();
+    group1.draw();
 #endif
 
 #if USE_PANEL
@@ -189,12 +189,12 @@ int main() {
  
 void char_callback(GLFWwindow* win, unsigned int key) {
 
-  if(gui_ptr0) {
-    gui_ptr0->onCharPress(key);
+  if(group_ptr0) {
+    group_ptr0->onCharPress(key);
   }
 
-  if(gui_ptr1) {
-    gui_ptr1->onCharPress(key);
+  if(group_ptr1) {
+    group_ptr1->onCharPress(key);
   }
 
   if(panel_ptr) {
@@ -205,11 +205,11 @@ void char_callback(GLFWwindow* win, unsigned int key) {
 void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods) {
   
   if(action == GLFW_RELEASE) {
-    if(gui_ptr0) {
-      gui_ptr0->onKeyRelease(key, mods);
+    if(group_ptr0) {
+      group_ptr0->onKeyRelease(key, mods);
     }
-    if(gui_ptr1) {
-      gui_ptr1->onKeyRelease(key, mods);
+    if(group_ptr1) {
+      group_ptr1->onKeyRelease(key, mods);
     }
     if(panel_ptr) {
       panel_ptr->onKeyRelease(key, mods);
@@ -221,12 +221,12 @@ void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods) 
     return;
   }
 
-  if(gui_ptr0) {
-    gui_ptr0->onKeyPress(key, mods);
+  if(group_ptr0) {
+    group_ptr0->onKeyPress(key, mods);
   }
 
-  if(gui_ptr1) {
-    gui_ptr1->onKeyPress(key, mods);
+  if(group_ptr1) {
+    group_ptr1->onKeyPress(key, mods);
   }
 
   if(panel_ptr) {
@@ -249,12 +249,12 @@ void resize_callback(GLFWwindow* window, int width, int height) {
 
 void cursor_callback(GLFWwindow* win, double x, double y) {
 
-  if(gui_ptr0) {
-    gui_ptr0->onMouseMove(x, y);
+  if(group_ptr0) {
+    group_ptr0->onMouseMove(x, y);
   }
 
-  if(gui_ptr1) {
-    gui_ptr1->onMouseMove(x, y);
+  if(group_ptr1) {
+    group_ptr1->onMouseMove(x, y);
   }
 
 
@@ -271,11 +271,11 @@ void button_callback(GLFWwindow* win, int bt, int action, int mods) {
   glfwGetCursorPos(win, &mx, &my);
   
   if(action == GLFW_PRESS) {
-    if(gui_ptr0) {
-      gui_ptr0->onMousePress(mx, my, bt, mods);
+    if(group_ptr0) {
+      group_ptr0->onMousePress(mx, my, bt, mods);
     }
-    if(gui_ptr1) {
-      gui_ptr1->onMousePress(mx, my, bt, mods);
+    if(group_ptr1) {
+      group_ptr1->onMousePress(mx, my, bt, mods);
     }
 
     if(panel_ptr) {
@@ -283,11 +283,11 @@ void button_callback(GLFWwindow* win, int bt, int action, int mods) {
     }
   }
   else if(action == GLFW_RELEASE) {
-    if(gui_ptr0) {
-      gui_ptr0->onMouseRelease(mx, my, bt, mods);
+    if(group_ptr0) {
+      group_ptr0->onMouseRelease(mx, my, bt, mods);
     }
-    if(gui_ptr1) {
-      gui_ptr1->onMouseRelease(mx, my, bt, mods);
+    if(group_ptr1) {
+      group_ptr1->onMouseRelease(mx, my, bt, mods);
     }
     if(panel_ptr) {
       panel_ptr->onMouseRelease(mx, my, bt, mods);
@@ -299,7 +299,7 @@ void error_callback(int err, const char* desc) {
   printf("GLFW error: %s (%d)\n", desc, err);
 }
 
-void on_gui_button_click(int id, void* user) {
+void on_group_button_click(int id, void* user) {
 
   if(id == 3 && panel_ptr) {
     StorageXML xml("panel.xml");

@@ -1,5 +1,5 @@
 #include <gui/Storage.h>
-#include <gui/Gui.h>
+#include <gui/Group.h>
 #include <gui/Panel.h>
 
 bool Storage::load() {
@@ -16,18 +16,18 @@ void Storage::addPanel(Panel* p) {
     return;
   }
 
-  for(std::vector<Gui*>::iterator it = p->guis.begin(); it != p->guis.end(); ++it) {
-    addGui(*it);
+  for(std::vector<Group*>::iterator it = p->groups.begin(); it != p->groups.end(); ++it) {
+    addGroup(*it);
   }
 }
 
-void Storage::addGui(Gui* g) {
+void Storage::addGroup(Group* g) {
 
   if(!g) {
     return;
   }
 
-  guis.push_back(g);
+  groups.push_back(g);
 }
 
 

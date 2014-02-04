@@ -1,5 +1,5 @@
 #include <gui/Button.h>
-#include <gui/Gui.h>
+#include <gui/Group.h>
 #include <gui/Render.h>
 
 Button::Button(std::string title, int id, unsigned int icon, gui_button_callback cb, void* user, int iconx, int icony)
@@ -17,9 +17,9 @@ Button::Button(std::string title, int id, unsigned int icon, gui_button_callback
   }
 }
 
-void Button::setGui(Gui* g) {
+void Button::setGroup(Group* g) {
 
-  Widget::setGui(g);
+  Widget::setGroup(g);
   add(&icon_button, g);
 }
 
@@ -30,8 +30,8 @@ void Button::create() {
     bt_click_offset = 1;
   }
 
-  render->addRectangle(x, y, w, h, gui->getButtonStateColor(this), true);
-  render->writeText(x + gui->xindent, y + gui->yindent + bt_click_offset, label, gui->label_color);
+  render->addRectangle(x, y, w, h, group->getButtonStateColor(this), true);
+  render->writeText(x + group->xindent, y + group->yindent + bt_click_offset, label, group->label_color);
 }
 
 void Button::position() {

@@ -2,7 +2,7 @@
 #define REMOXLY_INCLUDES_H
 #  include <gui/Button.h>
 #  include <gui/ColorRGB.h>
-#  include <gui/Gui.h>
+#  include <gui/Group.h>
 #  include <gui/IconButton.h>
 #  include <gui/Panel.h>
 #  include <gui/Remoxly.h>

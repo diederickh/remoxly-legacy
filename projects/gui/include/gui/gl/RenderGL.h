@@ -120,6 +120,7 @@ class RenderGL : public Render {
 
  public:
   RenderGL(int gl = RENDER_GL3);
+  //~RenderGL();
   void update();
   void draw();
   void resize(int w, int h);
@@ -155,6 +156,7 @@ class RenderGL : public Render {
   static GLuint vert;                                          /* the vertex shader for the gui */
   static GLuint frag;                                          /* the fragment shader for the gui */
   static bool is_initialized;                                  /* static member, is set to true when the shaders/prog has been created */
+  //  static int num_instances;                                    /* the number of RenderGL instances that are created; when we reach 0 we will set is_initialized to false */
 
   /* buffers */
   bool needs_update;                                           /* set to true whenever we need to update the vbo */
@@ -189,6 +191,7 @@ GLuint RenderGL::prog = 0;
 GLuint RenderGL::vert = 0;
 GLuint RenderGL::frag = 0;
 bool RenderGL::is_initialized = false;
+//int RenderGL::num_instances = 0;
 
 // -------------------------------------------
 
@@ -201,7 +204,12 @@ RenderGL::RenderGL(int gl)
   ,text_input(0.0f, 0.0f, 0.0f, text_input_font)
   ,number_input(0.0f, 0.0f, 0.0f, number_input_font)
 {
+    
+  // ortho projection 
+  float pm[16];
   viewport[0] = viewport[1] = viewport[2] = viewport[3] = 0;
+  glGetIntegerv(GL_VIEWPORT, viewport);
+  gui_ortho(0.0f, viewport[2], viewport[3], 0.0f, 0.0f, 100.0f, pm);
 
   if(!is_initialized) {
 
@@ -210,11 +218,6 @@ RenderGL::RenderGL(int gl)
     vert = gui_create_shader(GL_VERTEX_SHADER, GUI_RENDER_VS);
     frag = gui_create_shader(GL_FRAGMENT_SHADER, GUI_RENDER_FS);
     prog = gui_create_program(vert, frag, 2, atts);
-
-    // ortho projection 
-    float pm[16];
-    glGetIntegerv(GL_VIEWPORT, viewport);
-    gui_ortho(0.0f, viewport[2], viewport[3], 0.0f, 0.0f, 100.0f, pm);
 
     glUseProgram(prog);
     glUniformMatrix4fv(glGetUniformLocation(prog, "u_pm"), 1, GL_FALSE, pm);
@@ -261,7 +264,20 @@ RenderGL::RenderGL(int gl)
 
   number_input.align = BITMAP_FONT_ALIGN_RIGHT;
   text_input.align = BITMAP_FONT_ALIGN_LEFT;
+
+  //  num_instances++;
 }
+
+/*
+RenderGL::~RenderGL() {
+  printf("RenderGL::~RenderGL()\n");
+  num_instances--;
+
+  if(num_instances <= 0) {
+    printf("Nun instances: %d\n", num_instances);
+  }
+}
+*/
 
 void RenderGL::getWindowSize(int& ww, int& wh) {
   ww = viewport[2];
@@ -300,8 +316,8 @@ void RenderGL::draw() {
   }
 
   glEnable(GL_BLEND);
-
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
   glUseProgram(prog);
   glBindVertexArray(vao);
   glMultiDrawArrays(GL_TRIANGLES, &bg_offsets[0], &bg_counts[0], bg_counts.size());

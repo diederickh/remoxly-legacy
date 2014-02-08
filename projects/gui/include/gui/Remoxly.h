@@ -4,6 +4,7 @@
 #  include <gui/ColorRGB.h>
 #  include <gui/Group.h>
 #  include <gui/IconButton.h>
+#  include <gui/WidgetListener.h>
 #  include <gui/Panel.h>
 #  include <gui/Remoxly.h>
 #  include <gui/Render.h>

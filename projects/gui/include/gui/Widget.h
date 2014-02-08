@@ -30,6 +30,7 @@
 
 class Group;
 class Render;
+class WidgetListener;
 
 class Widget {
 
@@ -87,8 +88,16 @@ class Widget {
   virtual void buildChildren();                                    /* call create() on this element and scalls all create() functions of the child elements of the widget */
   void setBoundingBoxChildren();                                   /* calculate bounding boxes for all children */
 
+  /* events and listeners */
+  virtual void addListener(WidgetListener* l);                     /* add a listener for this widget - will call addListenerChildren() too */
+  virtual void addListenerChildren(WidgetListener* l);             /* adds the listeners to the children of this elements - called from addListener() */
+  virtual void disableNotifications();
+  virtual void enableNotifications();
+  virtual void notify(int event);                                  /* notify event listeners when something changes - will call notifyChildren() too */
+  virtual void notifyChildren(int event);                          /* noities the children too, is called from notify() */
+
  public:
-  Group* group;                                                      /* the group in which this widget is contained */
+  Group* group;                                                    /* the group in which this widget is contained */
   Render* render;                                                  /* the renderer which takes care of the drawing */
   static uint32_t generated_ids;                                   /* each widget is assigned an auto incremented unique ID. this can be used when doing networked guis */
   uint32_t id;                                                     /* the unique ID assigned to this widget */
@@ -103,6 +112,7 @@ class Widget {
   bool needs_redraw;                                               /* this flag is used in needsRedraw() by default (if you didn't override this function). when you set needs_redraw to true your create() function will be called during the next render */
   std::string label;                                               /* the label for this element */
   std::vector<Widget*> children;
+  std::vector<WidgetListener*> listeners;
 
   /* mouse interaction */
   int mouse_x;                                                     /* the "last" mouse x. is set in onPress/onRelease/onMove */

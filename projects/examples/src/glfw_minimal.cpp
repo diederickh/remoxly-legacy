@@ -16,6 +16,7 @@
 
 // Include the GUI types:
 #include <gui/Remoxly.h>
+#include <gui/remote/Client.h>
 
 // After we included the correct GL headers which 
 // is done by the above glfw3.h include, we can include
@@ -90,11 +91,12 @@ int main() {
   bool spawn_particles = false;
   float particle_color[3] = { 0.0f } ;
   float trail_color[3] = { 0.0f } ;
+  int num_files = 5;
 
   // create a panel with a height of 300 pixels. A panel 
   // is a collection of Groups. You can add as many as Groups
   // to your panel.
-  Panel panel(new RenderGL(), 300);       
+  Panel panel(new RenderGL(), 500);       
 
   // Set the panel_ptr, that is used in the GLFW callbacks
   panel_ptr = &panel;
@@ -113,14 +115,20 @@ int main() {
   particle_group->add(new Toggle("Spawn Particles", spawn_particles));
 
   Group* storage_group = panel.addGroup("Save and Load");
+  storage_group->add(new Slider<int>("Number of files", num_files, 0, 15, 1));
   storage_group->add(new Button("Save", 0, GUI_ICON_FLOPPY_O, button_click));
   storage_group->add(new Button("Load", 1, GUI_ICON_REFRESH, button_click));
+
+  Client client("127.0.0.1", 2255, false);
+  client.addPanel(&panel);
+  client.connect();
   
   while(!glfwWindowShouldClose(win)) {
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // draw the panel and all it's containing widgets
+    client.update();
     panel.draw();
     
     glfwSwapBuffers(win);

@@ -3,14 +3,15 @@ cmake_minimum_required(VERSION 2.8)
 project(examples)
 
 include(${CMAKE_CURRENT_LIST_DIR}/Triplet.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/../../remote/build/CMakeLists.txt)
+include(${CMAKE_CURRENT_LIST_DIR}/../../gui/build/CMakeLists.txt)
 
 set(bd ${CMAKE_CURRENT_LIST_DIR}/../)
 set(sd ${bd}/src/)
 set(bitmapfont_bd ${bd}/../bitmapfont/)
 set(textinput_bd ${bd}/../textinput/)
 set(gui_bd ${bd}/../gui/)
-
-include(${gui_bd}/build/CMakeLists.txt)
+set(remote_bd ${bd}/../remote/)
 
 include_directories(
   ${bd}/include/
@@ -18,6 +19,7 @@ include_directories(
   ${bd}/../../shared/tinylib/src/
   ${bd}/../bitmapfont/include/
   ${bd}/../textinput/include/
+  ${bd}/../remote/include/
 )
 
 if(APPLE)
@@ -94,11 +96,18 @@ endif()
 
 # minimal GLFW example
 add_executable(glfw_minimal ${sd}/glfw_minimal.cpp) 
-target_link_libraries(glfw_minimal ${app_libs} remoxly)
-
+target_link_libraries(glfw_minimal ${app_libs} ${remoxly_remote_libs} remoxly remoxly_remote)
 install(TARGETS glfw_minimal DESTINATION bin)
 
+# server example 
+add_executable(remote_server ${sd}/remote_server.cpp) 
+target_link_libraries(remote_server ${remoxly_libs} ${remoxly_remote_libs} remoxly remoxly_remote)
+install(TARGETS remote_server DESTINATION bin)
 
+# client example 
+add_executable(remote_client ${sd}/remote_client.cpp) 
+target_link_libraries(remote_client ${remoxly_libs} ${remoxly_remote_libs} remoxly remoxly_remote)
+install(TARGETS remote_client DESTINATION bin)
 
 
 

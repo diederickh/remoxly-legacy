@@ -15,6 +15,17 @@ Panel::Panel(Render* r, int height)
   scroll.render = r;
 }
 
+Panel::~Panel() {
+
+  for(std::vector<Group*>::iterator it = groups.begin(); it != groups.end(); ++it) {
+    Group* g = *it;
+    delete g;
+    g = NULL;
+  }
+
+  groups.clear();
+}
+
 Group* Panel::addGroup(std::string title) {
 
   Group* g = new Group(title, render);

@@ -62,6 +62,8 @@ if(APPLE)
     -lz
     )
 
+  set(remoxly_libs ${app_libs})
+
 elseif(UNIX)
 
   list(APPEND app_sources
@@ -115,70 +117,72 @@ if(WIN32)
 
 endif()
 
-add_executable(${app} ${app_sources})
 
-add_library(remoxly STATIC ${remoxly_lib_sources})
+if(NOT TARGET ${app})
+  add_executable(${app} ${app_sources})
 
-target_link_libraries(${app} ${app_libs})
+  add_library(remoxly STATIC ${remoxly_lib_sources})
 
-install(TARGETS ${app} DESTINATION bin)
+  target_link_libraries(${app} ${app_libs})
 
-install(TARGETS remoxly DESTINATION lib)
+  install(TARGETS ${app} DESTINATION bin)
 
-install(FILES 
-  ${bd}/include/gui/Button.h
-  ${bd}/include/gui/ColorRGB.h
-  ${bd}/include/gui/Group.h
-  ${bd}/include/gui/IconButton.h
-  ${bd}/include/gui/Panel.h
-  ${bd}/include/gui/Remoxly.h
-  ${bd}/include/gui/Render.h
-  ${bd}/include/gui/Scroll.h
-  ${bd}/include/gui/Slider.h
-  ${bd}/include/gui/Storage.h
-  ${bd}/include/gui/Toggle.h
-  ${bd}/include/gui/Types.h
-  ${bd}/include/gui/Utils.h
-  ${bd}/include/gui/Widget.h
-  DESTINATION include/gui/)
+  install(TARGETS remoxly DESTINATION lib)
 
-install(FILES
-  ${bd}/include/gui/storage/StorageXML.h
-  DESTINATION include/gui/storage/
-)
+  install(FILES 
+    ${bd}/include/gui/Button.h
+    ${bd}/include/gui/ColorRGB.h
+    ${bd}/include/gui/Group.h
+    ${bd}/include/gui/IconButton.h
+    ${bd}/include/gui/Panel.h
+    ${bd}/include/gui/Remoxly.h
+    ${bd}/include/gui/Render.h
+    ${bd}/include/gui/Scroll.h
+    ${bd}/include/gui/Slider.h
+    ${bd}/include/gui/Storage.h
+    ${bd}/include/gui/Toggle.h
+    ${bd}/include/gui/Types.h
+    ${bd}/include/gui/Utils.h
+    ${bd}/include/gui/Widget.h
+    DESTINATION include/gui/)
 
-install(FILES
-  ${bd}/include/gui/gl/RenderGL.h
-  ${bd}/include/gui/gl/ImplementationGL.h
-  DESTINATION include/gui/gl/
-)
+  install(FILES
+    ${bd}/include/gui/storage/StorageXML.h
+    DESTINATION include/gui/storage/
+    )
 
-install(FILES
-  ${bd}/src/gui/Group.cpp
-  ${bd}/src/gui/Utils.cpp
-  ${bd}/src/gui/Widget.cpp
-  ${bd}/src/gui/Render.cpp
-  ${bd}/src/gui/IconButton.cpp
-  ${bd}/src/gui/Scroll.cpp
-  ${bd}/src/gui/Panel.cpp
-  ${bd}/src/gui/Button.cpp
-  ${bd}/src/gui/Toggle.cpp
-  ${bd}/src/gui/ColorRGB.cpp
-  ${bd}/src/gui/Storage.cpp
-  ${bd}/src/gui/Render.cpp
-  DESTINATION src/gui
-)
+  install(FILES
+    ${bd}/include/gui/gl/RenderGL.h
+    ${bd}/include/gui/gl/ImplementationGL.h
+    DESTINATION include/gui/gl/
+    )
 
-install(FILES
-  ${bitmapfont_bd}/include/bitmapfont/BitmapFont.h
-  DESTINATION include/bitmapfont/
-)
+  install(FILES
+    ${bd}/src/gui/Group.cpp
+    ${bd}/src/gui/Utils.cpp
+    ${bd}/src/gui/Widget.cpp
+    ${bd}/src/gui/Render.cpp
+    ${bd}/src/gui/IconButton.cpp
+    ${bd}/src/gui/Scroll.cpp
+    ${bd}/src/gui/Panel.cpp
+    ${bd}/src/gui/Button.cpp
+    ${bd}/src/gui/Toggle.cpp
+    ${bd}/src/gui/ColorRGB.cpp
+    ${bd}/src/gui/Storage.cpp
+    ${bd}/src/gui/Render.cpp
+    DESTINATION src/gui
+    )
 
-install(FILES
-  ${textinput_bd}/include/textinput/TextInput.h
-  DESTINATION include/textinput/
-)
+  install(FILES
+    ${bitmapfont_bd}/include/bitmapfont/BitmapFont.h
+    DESTINATION include/bitmapfont/
+    )
 
+  install(FILES
+    ${textinput_bd}/include/textinput/TextInput.h
+    DESTINATION include/textinput/
+    )
+endif()
 
 
 

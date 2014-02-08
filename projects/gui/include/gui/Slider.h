@@ -330,6 +330,7 @@ void Slider<T>::setAbsoluteValue(T v) {
   setPercentageValue(float(value)/maxv);
 }
 
+// whenever a value changes, this function will be called
 template<class T>
 void Slider<T>::setPercentageValue(float p) {
 
@@ -338,6 +339,8 @@ void Slider<T>::setPercentageValue(float p) {
 
   float tmp = float(value);
   value = floorf((tmp/step)+0.5f) * step;
+
+  notify(GUI_EVENT_VALUE_CHANGED);
 }
 
 template<class T>

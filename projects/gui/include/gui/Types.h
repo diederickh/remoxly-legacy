@@ -28,6 +28,9 @@
 #define GUI_STATE_DOWN_CUSTOM2               0x0040     /* Use this if you have more than three hit areas */
 #define GUI_STATE_DOWN_CUSTOM3               0x0080     /* Use this if you have more than four hit areas */
 #define GUI_STATE_POSITION_LOCKED            0x0100     /* We can lock and unlock the position of a widget. When locked it means we cannot change the position of if. */
+#define GUI_STATE_NOTIFICATIONS_DISABLED     0x0200     /* We can disable notification, which is necessary when we want to set the value of widgets when we receive them over the network */
+
+#define GUI_EVENT_VALUE_CHANGED              0x0001     /* Listeners of widgets will be notified whenever a value changes with this event type */
 
 #define GUI_MOD_NONE                         0x0000
 #define GUI_MOD_SHIFT                        0x0001

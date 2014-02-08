@@ -35,7 +35,7 @@ void Button::create() {
 }
 
 void Button::position() {
-
+  
   icon_button.x = x + (w - icon_button.w);
   icon_button.y = y;
 }

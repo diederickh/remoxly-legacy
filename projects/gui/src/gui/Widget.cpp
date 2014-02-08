@@ -1,6 +1,7 @@
 #include <gui/Types.h>
 #include <gui/Group.h>
 #include <gui/Widget.h>
+#include <gui/WidgetListener.h>
 #include <stdio.h>
 
 uint32_t Widget::generated_ids = 0;
@@ -30,6 +31,18 @@ Widget::Widget(int type, std::string label)
 }
 
 Widget::~Widget() {
+
+  group = NULL;
+  render = NULL;
+  state = GUI_STATE_NONE;
+  mods = GUI_MOD_NONE;
+  x = y = w =  h = 0;
+  bbox[0] = bbox[1] = bbox[2] = bbox[3] = 0;
+  needs_redraw = false;
+  id = 0;
+  label.clear();
+  listeners.clear();
+
 }
 
 void Widget::setGroup(Group* g) {
@@ -318,6 +331,14 @@ void Widget::close() {
   state |= GUI_STATE_CLOSED;
 }
 
+void Widget::disableNotifications() {
+  state |= GUI_STATE_NOTIFICATIONS_DISABLED;
+}
+
+void Widget::enableNotifications() {
+  state &= ~GUI_STATE_NOTIFICATIONS_DISABLED;
+}
+
 void Widget::hide() {
 
   bbox[0] = 0;
@@ -340,5 +361,38 @@ void Widget::unsetNeedsRedrawChildren() {
 
   for(std::vector<Widget*>::iterator it = children.begin(); it != children.end(); ++it) {
     (*it)->unsetNeedsRedraw();
+  }
+}
+
+void Widget::addListener(WidgetListener* l) {
+  
+  listeners.push_back(l);
+  addListenerChildren(l);
+}
+
+void Widget::addListenerChildren(WidgetListener* l) {
+  
+  for(std::vector<Widget*>::iterator it = children.begin(); it != children.end(); ++it) {
+    (*it)->addListener(l);
+  }
+}
+
+void Widget::notify(int event) {
+  
+  if(state & GUI_STATE_NOTIFICATIONS_DISABLED) {
+    return;
+  }
+
+  for(std::vector<WidgetListener*>::iterator it = listeners.begin(); it != listeners.end(); ++it) {
+    (*it)->onEvent(event, this);
+  }
+
+  notifyChildren(event);
+}
+
+void Widget::notifyChildren(int event) {
+
+  for(std::vector<Widget*>::iterator it = children.begin(); it != children.end(); ++it) {
+    (*it)->notify(event);
   }
 }

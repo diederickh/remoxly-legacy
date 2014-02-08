@@ -27,6 +27,8 @@ class Panel : public Widget {
 
  public:
   Panel(Render* render, int h = 200);
+  ~Panel();
+
   Group* addGroup(std::string title);
 
   void create();

@@ -339,30 +339,105 @@ std::string Serializer::serializeTask(int task, std::string& value, int id) {
 
 bool Serializer::serializeChangedValue(Widget* w, std::string& json) {
 
+  json_t* js_value = serializeValueWidget(w);
+
+  if(!js_value) {
+    return false;
+  }
+
+  json = json_dumps(js_value, JSON_COMPACT);
+
+  REMOXLY_FREE_JSON(js_value);
+
+  return true;
+}
+
+json_t* Serializer::serializeValueWidget(Widget* w) {
+
   switch(w->type) {
 
     case GUI_TYPE_SLIDER_INT: {
       Slider<int>* slider = static_cast<Slider<int>* >(w);
-      json_t* js_value = json_pack("{s:i,s:i}", "i", slider->id, "v", slider->value);
-      json = json_dumps(js_value, JSON_COMPACT);
-      REMOXLY_FREE_JSON(js_value);
-      return true;
+      json_t* js_value = serializeValueSliderInt(slider);
+      return js_value;
     }
 
     case GUI_TYPE_SLIDER_FLOAT: { 
       Slider<float>* slider = static_cast<Slider<float> * >(w);
-      json_t* js_value = json_pack("{s:i,s:f}", "i", slider->id, "v", slider->value);
-      json = json_dumps(js_value, JSON_COMPACT);
-      REMOXLY_FREE_JSON(js_value);
-      return true;
+      json_t* js_value = serializeValueSliderFloat(slider);
+      return js_value;
     }
       
     default: {
-      printf("Warning: unhandled widget type for value changed.\n");
-      return false;
+      printf("Warning: unhandled widget type for value changed: %s\n", w->label.c_str());
+      return NULL;
     }
+  }
+  
+  return NULL;
+}
+
+bool Serializer::serializeValues(std::string& json) {
+  
+  json_t* js_array = json_array();
+
+  if(!js_array) {
+    printf("Error: cannot create json array to serialize values.\n");
+    return false;
+  }
+
+  for(std::vector<Panel*>::iterator pit = panels.begin(); pit != panels.end(); ++pit) {
+    Panel* p = *pit;
+    serializeValuesForPanel(p, js_array);
+  }
+
+  json = json_dumps(js_array, JSON_COMPACT);
+  
+  REMOXLY_FREE_JSON(js_array);
+  return true;
+}
+
+bool Serializer::serializeValuesForPanel(Panel* p, json_t* array) {
+
+  if(!p) {
+    return false;
+  }
+
+  for(std::vector<Group*>::iterator git = p->groups.begin(); git != p->groups.end(); ++git) {
+    serializeValuesForGroup((*git), array);
   }
 
   return true;
+}
+
+bool Serializer::serializeValuesForGroup(Group* g, json_t* array) { 
+
+  if(!g) {
+    return false;
+  }
+
+  for(std::vector<Widget*>::iterator it = g->children.begin(); it != g->children.end(); ++it) {
+
+    Widget* w = *it;
+    json_t* js_widget = serializeValueWidget(w);
+
+    if(!js_widget) {
+      printf("Error: cannot serialize the value for the widget: %s\n", w->label.c_str());
+      continue;
+    }
+
+    appendToArray(array, js_widget);
+  }
+  return true;
+}
+
+json_t* Serializer::serializeValueSliderInt(Slider<int>* slider) {
+  json_t* js_value = json_pack("{s:i,s:i}", "i", slider->id, "v", slider->value);
+  return js_value;
+}
+
+json_t* Serializer::serializeValueSliderFloat(Slider<float>* slider) {
+  json_t* js_value = json_pack("{s:i,s:f}", "i", slider->id, "v", slider->value);
+  return js_value;
 }
 

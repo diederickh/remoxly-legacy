@@ -6,6 +6,7 @@
 #define REMOTE_TASK_VALUE_CHANGED 3    /* Whenever a value in a gui changes it should dispatch a json object with this as the task value */
 #define REMOTE_TASK_PROXY         4    /* When the proxy task is used, we will send the exact data we receive to the clients; we will not wrap it some other json object, pure proxy */
 #define REMOTE_TASK_CLOSE         5    /* libwebsocket is using a "interesting" way to close a socket. the protocol handler needs to return -1 to close a socket. what we do: we add a new task, trigger a write request and if the task is REMOTE_TASK_CLOSE we let the callback return -1 which closes the socket */
+#define REMOTE_TASK_GET_VALUES    6    /* Get the current values */
 
 #define REMOTE_STATE_NONE           0x0000 
 #define REMOTE_STATE_CONNECTING     0x0001

@@ -85,6 +85,8 @@ class Client : public WidgetListener {
   int onCallbackReceive(char* data, size_t len); /* gets called whenever there is data to be processed from the server */ 
   bool createSetGuiModelTask();                  /* when possible this will create the SET gui task (in this case the client is used as an application) */
   bool createGetGuiModelTask();                  /* when possible this will create a GET gui task. */
+  bool createGetValuesTask();
+  bool createSetValuesTask();
 
   /* listener implementation */
   void onEvent(int event, Widget* w);             /* gets called whenever a value of one of the created/added widgets notifies us about an event */

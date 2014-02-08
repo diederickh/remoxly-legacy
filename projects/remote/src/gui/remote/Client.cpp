@@ -283,6 +283,14 @@ bool Client::createSetGuiModelTask() {
   return addTask(REMOTE_TASK_SET_GUI_MODEL, 0, gui_model);
 }
 
+bool Client::createGetValuesTask() {
+  return addTask(REMOTE_TASK_GET_VALUES, 0);
+}
+
+bool Client::createSetValuesTask() {
+  return true;
+}
+
 int Client::onCallbackClientWritable() {
 
   int result = 0;

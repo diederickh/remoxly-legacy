@@ -34,6 +34,14 @@ class Serializer {
   std::string serializeTask(int task, std::string& value, int id);   /* generates the json for the given task and connection/gui id. */
   bool serializeChangedValue(Widget* w, std::string& json);          /* generates the json string that represents the value for the given widget. */
 
+  /* serializing the values */
+  bool serializeValues(std::string& json);                           /* serialize the value of the added groups/panels; we assume that all elements have an unique ID */
+  bool serializeValuesForGroup(Group* g, json_t* array);             /* serialize the values for the given group and append them to the array */
+  bool serializeValuesForPanel(Panel* p, json_t* array);             /* serialize the values for the given panel and append them ot the array */
+  json_t* serializeValueWidget(Widget* w);                           /* serialize the widget */
+  json_t* serializeValueSliderInt(Slider<int>* slider);              /* serialize the integer slider value */
+  json_t* serializeValueSliderFloat(Slider<float>* slider);          /* serialize the float slider value */
+
  private:
 
   /* serialization */

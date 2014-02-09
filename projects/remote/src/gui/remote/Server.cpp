@@ -179,8 +179,6 @@ void Server::removeApplicationData(int appID) {
   }
 
   applications.erase(it);
-
-  printf("-- application data removed, new size: %ld\n", applications.size());
 }
 
 void Server::removeConnection(struct libwebsocket* ws) {
@@ -236,6 +234,17 @@ Connection* Server::getConnection(struct libwebsocket* ws) {
   return it->second;
 }
 
+Connection* Server::getApplicationConnection(int appID) {
+  
+  ApplicationData app_data;
+
+  if(!getApplicationData(appID, app_data)) {
+    return NULL;
+  }
+
+  return app_data.connection;
+}
+
 int Server::onCallbackEstablished(struct libwebsocket* ws) {
   addConnection(ws);
   return 0;
@@ -258,9 +267,35 @@ int Server::onReceiveSetGuiModel(struct libwebsocket* ws, int appID, char* data,
   ad.app_id = appID;
   ad.ws = ws;
   ad.json_model.assign(data, len);
+  ad.connection = c;
 
   applications[appID] = ad;
  
+  return 0;
+}
+
+int Server::onReceiveGetValues(struct libwebsocket* ws, int appID, char* data, size_t len) {
+
+  Connection* c = getApplicationConnection(appID);
+
+  if(!c) {
+    printf("Error: cannot find the application: %d for which a client wants to receive values.\n", appID);
+    return -1;
+  }
+
+  ConnectionTask* task = new ConnectionTask();
+  task->task_name = REMOTE_TASK_GET_VALUES;
+  task->task_id = appID;
+  task->task_data.assign(data, len);
+  c->tasks.push_back(task);
+
+  libwebsocket_callback_on_writable(context, c->ws);
+  return 0;
+}
+
+// @todo - Server::onReceiveSetValues(), we proxy the values to all clients now. an optimization would be to only send it to the client which asked for the values.
+int Server::onReceiveSetValues(struct libwebsocket* ws, int appID, char* data, size_t len) {
+  proxyData(appID, data, len);
   return 0;
 }
 
@@ -358,6 +393,14 @@ int Server::onCallbackReceive(struct libwebsocket* ws, char* data, size_t len) {
       return onReceiveGetGuiModel(ws, id, data, len); 
     }      
 
+    case REMOTE_TASK_GET_VALUES: {
+      return onReceiveGetValues(ws, id, data, len);
+    }
+
+    case REMOTE_TASK_SET_VALUES: {
+      return onReceiveSetValues(ws, id, data, len);
+    }
+
     default: {
       printf("Error: unhandled task on server: %d\n", task);
       break;
@@ -390,6 +433,7 @@ int Server::onCallbackServerWritable(struct libwebsocket* ws) {
     
     switch(task->task_name) {
 
+      case REMOTE_TASK_GET_VALUES: 
       case REMOTE_TASK_PROXY: 
       case REMOTE_TASK_SET_GUI_MODEL: {
         c->buffer.set(task->task_data); // task data contains a complete task json string
@@ -401,6 +445,7 @@ int Server::onCallbackServerWritable(struct libwebsocket* ws) {
       case REMOTE_TASK_CLOSE: {
         return -1;
       }
+
 
       default: {
         printf("Warning: cannot handle task: %d.\n", task->task_name);

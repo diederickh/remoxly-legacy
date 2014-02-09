@@ -79,6 +79,8 @@ class Client : public WidgetListener {
   bool addTask(int taskID, int appID, std::string value = "");            /* add a task to the send queue (*/
   bool sendTask(ConnectionTask* task);                                    /* send a specific task, used internally */
   bool onTaskValueChanged(char* data, size_t len, std::string value);     /* gets called when we receive a message from the server that a value has changed */
+  bool onTaskGetValues(char* data, size_t len, std::string value);        /* gets called when a client wants to update all of it's values for the gui */
+  bool onTaskSetValues(char* data, size_t len, std::string value);        /* gets called when a client (which is not the application) wants to update the values */
 
   /* websocket callbacks */
   int onCallbackClientWritable();                /* gets called from the websocket callback when necessary; do not call this your self */

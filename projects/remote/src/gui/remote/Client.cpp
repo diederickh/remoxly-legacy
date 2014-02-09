@@ -22,6 +22,7 @@ int remoxly_client_websocket(struct libwebsocket_context* ctx,
 
       if(!client->isApplication()) {
         client->createGetGuiModelTask();
+        client->createGetValuesTask();
       }
       else {
         client->createSetGuiModelTask();
@@ -118,15 +119,6 @@ bool Client::connect() {
     shutdown();
     return false;
   }
-
-  /*
-  if(!createSetGuiModelTask()) {
-    return false;
-  }
-  if(!createGetGuiModelTask()) {
-    return false;
-  }
-  */
 
   return true;
 }
@@ -301,6 +293,8 @@ int Client::onCallbackClientWritable() {
 
     switch(task->task_name) {
 
+      case REMOTE_TASK_SET_VALUES:
+      case REMOTE_TASK_GET_VALUES:
       case REMOTE_TASK_GET_GUI_MODEL:
       case REMOTE_TASK_SET_GUI_MODEL: {
         sendTask(task);
@@ -339,10 +333,9 @@ void Client::onDisconnected() {
   }
 
   if(tasks.size()) {
-    printf("WARNING - WE STILL HAVE SOME TASKS (?)\n");
+    printf("Error: we should not have any tasks when we are disconnected. @todo Client::onDisconnect() - this situation shouldn't happen. \n");
   }
 }
-
 
 // an "application" calls addGroup/addPanel (which are internally added to the serializer). 
 bool Client::isApplication() {
@@ -369,12 +362,83 @@ bool Client::onTaskValueChanged(char* data, size_t len, std::string value) {
 
   std::map<int, Widget*>::iterator it = widgets.find(id);
   if(it != widgets.end()) {
-    deserializer.deserializeChangedValue(it->second, value);
+    deserializer.deserializeValueChanged(it->second, value);
   }
 
   REMOXLY_FREE_JSON(js_widget);
 
   return true;
+}
+
+bool Client::onTaskSetValues(char* data, size_t len, std::string value) {
+
+  if(isApplication()) {
+    // the serialized values are send to all clients; when the application receives the values it should ignore those, which is done by returning true here
+    return true;
+  }
+  
+  json_error_t err;
+  json_t* js_values = json_loads(value.c_str(), 0, &err);
+
+  if(!js_values) {
+    printf("Error: cannot decode the given values json: %s\n", err.text);
+    return false;
+  }
+
+  if(!json_is_array(js_values)) {
+    printf("Error: the received values are invalid.\n");
+    REMOXLY_FREE_JSON(js_values);
+    return false;
+  }
+
+  int num = json_array_size(js_values);
+  for(int i = 0; i < num; ++i) {
+
+    json_t* js_value = json_array_get(js_values, i);
+
+    if(!js_value) {
+      printf("Warning: invalid values in the big values array.\n");
+      continue;
+    }
+
+    int id = 0;
+
+    if(!remoxly_json_get_int(js_value, "i", id)) {
+      printf("Error: cannot get the id value from the json values array.\n");
+      continue;
+    }
+
+    std::map<int, Widget*>::iterator it = widgets.find(id);
+
+    if(it == widgets.end()) {
+      printf("Error: cannot find the widget with id: %d\n", id);
+      continue;
+    }
+
+    Widget* w = it->second;
+    if(!deserializer.deserializeValueChanged(w, js_value)) {
+      printf("Warning: cannot deserialize a value.\n");
+    }
+  }
+
+  return true;
+}
+
+bool Client::onTaskGetValues(char* data, size_t len, std::string value) {
+
+  if(!isApplication()) {
+    printf("Error: trying to ask values for the gui, but this client is not used for an application.\n");
+    return false;
+  }
+
+  std::string json;
+
+  if(!serializer.serializeValues(json)) {
+    printf("Error: cannot serialize all values.\n");
+    return false;
+  }
+
+  return addTask(REMOTE_TASK_SET_VALUES, 0, json);
 }
 
 int Client::onCallbackReceive(char* data, size_t len) {
@@ -413,12 +477,25 @@ int Client::onCallbackReceive(char* data, size_t len) {
       break;
     }
 
+    case REMOTE_TASK_GET_VALUES: {
+      if(!onTaskGetValues(data, len, value)) {
+        return -1;
+      }
+      break;
+    }
+
+    case REMOTE_TASK_SET_VALUES: { 
+      if(!onTaskSetValues(data, len, value)) {
+        return -1;
+      }
+      break;
+    }
+
     default: {
       printf("Warning: unhandled server task: %d\n", task_id);
       break;
     }
   }
-  printf("Task: %d, App: %d\n", task_id, app_id);
  
   return 0;
 }
@@ -450,7 +527,7 @@ void Client::onEvent(int event, Widget* w) {
 
   std::string widget_json;
 
-  if(!serializer.serializeChangedValue(w, widget_json)) {
+  if(!serializer.serializeValueChanged(w, widget_json)) {
     return;
   }
 

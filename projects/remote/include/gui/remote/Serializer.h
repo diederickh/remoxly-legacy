@@ -32,7 +32,7 @@ class Serializer {
   void clear();                                            /* removes the added panels and groups */
 
   std::string serializeTask(int task, std::string& value, int id);   /* generates the json for the given task and connection/gui id. */
-  bool serializeChangedValue(Widget* w, std::string& json);          /* generates the json string that represents the value for the given widget. */
+  bool serializeValueChanged(Widget* w, std::string& json);          /* generates the json string that represents the value for the given widget. */
 
   /* serializing the values */
   bool serializeValues(std::string& json);                           /* serialize the value of the added groups/panels; we assume that all elements have an unique ID */

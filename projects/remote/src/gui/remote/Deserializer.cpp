@@ -273,7 +273,7 @@ bool Deserializer::deserializeTask(char* data, int& appID, int& taskID, std::str
   return true;
 }
 
-bool Deserializer::deserializeChangedValue(Widget* w, std::string& json) {
+bool Deserializer::deserializeValueChanged(Widget* w, std::string& json) {
 
   json_error_t err;
   json_t* js_changed = json_loads(json.c_str(), 0, &err);
@@ -284,39 +284,34 @@ bool Deserializer::deserializeChangedValue(Widget* w, std::string& json) {
     return false;
   }
 
+  bool r = deserializeValueChanged(w, js_changed);
+
+  REMOXLY_FREE_JSON(js_changed);
+
+  return r;
+}
+
+bool Deserializer::deserializeValueChanged(Widget* w, json_t* js) {
+
   switch(w->type) {
 
     case GUI_TYPE_SLIDER_FLOAT: {
 
-      float v = 0.0f;
-      if(!remoxly_json_get_float(js_changed, "v", v)) {
-        printf("Error: cannot get float value from the changed value.\n");
-        REMOXLY_FREE_JSON(js_changed);
+      Slider<float>* slider = static_cast<Slider<float>* >(w);
+      if(!deserializeValueSliderFloat(slider, js)) {
         return false;
       }
-      
-      Slider<float>* slider = static_cast<Slider<float>* >(w);
-      slider->disableNotifications();
-      slider->setAbsoluteValue(v);
-      slider->enableNotifications();
-      slider->needs_redraw = true;
+
       break;
     }
 
     case GUI_TYPE_SLIDER_INT: { 
 
-      int v = 0;
-      if(!remoxly_json_get_int(js_changed, "v", v)) {
-        printf("Error: cannot get int value from the changed value.\n");
-        REMOXLY_FREE_JSON(js_changed);
+      Slider<int>* slider = static_cast<Slider<int>* >(w);
+      if(!deserializeValueSliderInt(slider, js)) {
         return false;
       }
-      
-      Slider<int>* slider = static_cast<Slider<int>* >(w);
-      slider->disableNotifications();
-      slider->setAbsoluteValue(v);
-      slider->enableNotifications();
-      slider->needs_redraw = true;
+
       break;
     }
 
@@ -326,7 +321,39 @@ bool Deserializer::deserializeChangedValue(Widget* w, std::string& json) {
     }
   }
 
-  REMOXLY_FREE_JSON(js_changed);
+  return true;
+}
+
+bool Deserializer::deserializeValueSliderInt(Slider<int>* slider, json_t* js) {
+
+  int v = 0;
+  if(!remoxly_json_get_int(js, "v", v)) {
+    printf("Error: cannot get int value from the changed value.\n");
+    return false;
+  }
+      
+  slider->disableNotifications();
+  slider->setAbsoluteValue(v);
+  slider->enableNotifications();
+  slider->needs_redraw = true;
+
+  return true;
+}
+
+bool Deserializer::deserializeValueSliderFloat(Slider<float>* slider, json_t* js) {
+
+  float v = 0.0f;
+
+  if(!remoxly_json_get_float(js, "v", v)) {
+    printf("Error: cannot get float value from the changed value.\n");
+    return false;
+  }
+      
+  
+  slider->disableNotifications();
+  slider->setAbsoluteValue(v);
+  slider->enableNotifications();
+  slider->needs_redraw = true;
 
   return true;
 }

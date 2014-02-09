@@ -68,6 +68,7 @@ struct ApplicationData {
   std::string json_model;                                                                /* the representation of the GUI in JSON. this is given to us by an application */
   struct libwebsocket* ws;                                                               /* this is a reference to the websocket that gave us this model. when it disconnects we will disconnect all clients that make use of this model */
   int app_id;                                                                            /* the ID of this gui data, @todo maybe rename to app_id */
+  Connection* connection;
 };
 
 // -----------------------------------------------------------
@@ -91,6 +92,8 @@ class Server {
   int onReceiveSetGuiModel(struct libwebsocket* ws, int appID, char* data, size_t len);    /* gets called when a client sends us a REMOTE_TASK_SET_GUI_MODEL event */
   int onReceiveGetGuiModel(struct libwebsocket* ws, int appID, char* data, size_t len);    /* gets called when a client sends us a REMOTE_TASK_GET_GUI_MODEL event */
   int onReceiveValueChanged(struct libwebsocket* ws, int appID, char* data, size_t len);   /* gets called when a client sends us a REMOTE_TASK_VALUE_CHANGED event */
+  int onReceiveGetValues(struct libwebsocket* ws, int appID, char* data, size_t len);      /* gets called when a client sends us a REMOTE_TASK_GET_VALUES event. */
+  int onReceiveSetValues(struct libwebsocket* ws, int appID, char* data, size_t len);      /* gets called when a client sends us a REMOTE_TASK_SET_VALUES event. */
   void proxyData(int appID, char* data, size_t len);                                       /* proxy the given data to the clients for the given "appID". */
 
   /* connection management */
@@ -98,6 +101,7 @@ class Server {
   void closeConnection(struct libwebsocket* ws);                                           /* remove the given connection and cleanup all related data */
   void removeConnection(struct libwebsocket* ws);                                          /* closing and removing a connection is a two step process with libwebsocket; first we close the connection, then we remove it */
   Connection* getConnection(struct libwebsocket* ws);                                      /* get connection state info based on the given websocket connection */
+  Connection* getApplicationConnection(int appID);
 
   /* application data (gui models) */
   void removeApplicationData(int appID);                                                   /* removes the gui data and all clients which are listening for information about this gui; when this is called it means that the application has been closed */

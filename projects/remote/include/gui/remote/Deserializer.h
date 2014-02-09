@@ -40,7 +40,10 @@ class Deserializer {
 
   /* protocol */
   bool deserializeTask(char* data, int& appID, int& taskID, std::string& value);   /* deserializes a task that we receive from the server; it merely extracts the app id and task id */
-  bool deserializeChangedValue(Widget* w, std::string& json);                      /* deserialize the given json that contains values for the Widget */
+  bool deserializeValueChanged(Widget* w, std::string& json);                      /* deserialize the given json that contains values for the Widget */
+  bool deserializeValueChanged(Widget* w, json_t* js);
+  bool deserializeValueSliderInt(Slider<int>* slider, json_t* js);
+  bool deserializeValueSliderFloat(Slider<float>* slider, json_t* js);
 
  public:
   Generator* gen;

@@ -337,7 +337,7 @@ std::string Serializer::serializeTask(int task, std::string& value, int id) {
   return str;
 }
 
-bool Serializer::serializeChangedValue(Widget* w, std::string& json) {
+bool Serializer::serializeValueChanged(Widget* w, std::string& json) {
 
   json_t* js_value = serializeValueWidget(w);
 

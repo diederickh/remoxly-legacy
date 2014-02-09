@@ -120,7 +120,7 @@ class RenderGL : public Render {
 
  public:
   RenderGL(int gl = RENDER_GL3);
-  //~RenderGL();
+
   void update();
   void draw();
   void resize(int w, int h);
@@ -139,7 +139,9 @@ class RenderGL : public Render {
   void enableTextInput(float x, float y, float maxw, std::string value, float* color); 
   void enableNumberInput(float x, float y, float maxw, std::string value, float* color);
   void disableNumberInput();
+  void disableTextInput();
   void getNumberInputValue(std::string& result);
+  void getTextInputValue(std::string& result);
   bool getIconSize(unsigned int id, int& w, int& h);
 
   void onCharPress(unsigned int key); /* gets called when a key is pressed (called by an editable widget) */
@@ -156,7 +158,6 @@ class RenderGL : public Render {
   static GLuint vert;                                          /* the vertex shader for the gui */
   static GLuint frag;                                          /* the fragment shader for the gui */
   static bool is_initialized;                                  /* static member, is set to true when the shaders/prog has been created */
-  //  static int num_instances;                                    /* the number of RenderGL instances that are created; when we reach 0 we will set is_initialized to false */
 
   /* buffers */
   bool needs_update;                                           /* set to true whenever we need to update the vbo */
@@ -191,7 +192,6 @@ GLuint RenderGL::prog = 0;
 GLuint RenderGL::vert = 0;
 GLuint RenderGL::frag = 0;
 bool RenderGL::is_initialized = false;
-//int RenderGL::num_instances = 0;
 
 // -------------------------------------------
 
@@ -267,17 +267,6 @@ RenderGL::RenderGL(int gl)
 
   //  num_instances++;
 }
-
-/*
-RenderGL::~RenderGL() {
-  printf("RenderGL::~RenderGL()\n");
-  num_instances--;
-
-  if(num_instances <= 0) {
-    printf("Nun instances: %d\n", num_instances);
-  }
-}
-*/
 
 void RenderGL::getWindowSize(int& ww, int& wh) {
   ww = viewport[2];
@@ -429,6 +418,15 @@ void RenderGL::enableTextInput(float x, float y, float maxw, std::string value, 
   text_input.enable();
   text_input.setValue(value);
   text_input.select();
+}
+
+void RenderGL::disableTextInput() {
+  text_input.clear();
+  text_input.disable();
+}
+
+void RenderGL::getTextInputValue(std::string& result) {
+  result = text_input.getValue();
 }
 
 void RenderGL::disableNumberInput() {

@@ -28,6 +28,10 @@ void Render::writeIcon(float x, float y, unsigned int icon, float* color) { }
 
 void Render::enableTextInput(float x, float y, float maxw, std::string value, float* color) { }
 
+void Render::getTextInputValue(std::string& result) { }
+
+void Render::disableTextInput() { } 
+
 bool Render::getIconSize(unsigned int id, int& w, int& h) { w = 0; h = 0; return false; } 
 
 void Render::getNumberInputValue(std::string& result) { }

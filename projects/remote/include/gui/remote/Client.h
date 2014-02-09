@@ -69,6 +69,7 @@ class Client : public WidgetListener {
   void update();                                  /* call this regurlarly to process incoming data */
   void shutdown();                                /* shutsdown the connection and clears up all allocated memory */
   bool isApplication();                           /* a client can be used in two situations. one, a client is used to send a gui model to the server. in this case the user creates and adds the panels and groups to the client. On the other side a client can be used to retrieve a gui model */
+  bool isConnected();                             /* returns true when the client is connected */
   void onDisconnected();                          /* is called when we get disconnected; is also passed on to the listener */
                         
   /* used to serialize + events */
@@ -109,6 +110,7 @@ class Client : public WidgetListener {
   /* websocket */                    
   uint64_t reconnect_timeout;                     /* when we reach this timeout we will reconnect after being disconnected  */
   uint64_t reconnect_delay;                       /* try to reconnect every `reconnect_delay` millis */
+  bool auto_reconnect;                            /* by default this is set to true; it will make sure that the client tries to reconnect when disconnected */
   int state;                                      /* the current state of the Client. used to keep track if we're connected or not */
   lws_context_creation_info info;                 /* used to create a libwebsocket context */
   libwebsocket_context* context;                  /* the libwebsocket context object */

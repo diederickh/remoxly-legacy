@@ -92,6 +92,7 @@ int main() {
   float particle_color[3] = { 0.0f } ;
   float trail_color[3] = { 0.0f } ;
   int num_files = 5;
+  std::string name = "";
 
   // create a panel with a height of 300 pixels. A panel 
   // is a collection of Groups. You can add as many as Groups
@@ -103,6 +104,8 @@ int main() {
 
   // Create a new Group for our particle settings.
   Group* particle_group = panel.addGroup("Particles");
+  //  particle_group->add(new Text("Server", name));
+  //  particle_group->add(new Text("Port", name));
   particle_group->add(new ColorRGB("Particle Color", particle_color));
   particle_group->add(new ColorRGB("Trail color", trail_color, 15, 0.5f)); // create 15 color selection; and a saturation level of 0.5f
   particle_group->add(new Slider<float>("Trail Width", trail_width, 0.0f, 100.0f, 0.1f)); // range: [0.0f - 100.0f], step: 0.1f

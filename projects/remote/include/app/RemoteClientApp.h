@@ -20,6 +20,7 @@ struct ColorRGBValue {
 };
 
 void remote_client_app_button_callback(int id, void* user);
+void remote_client_app_connect_callback(int id, void* user);
 
 class RemoteClientApp : public ClientListener, public Generator {
 
@@ -62,11 +63,25 @@ class RemoteClientApp : public ClientListener, public Generator {
   std::vector<int*> int_values;
   std::vector<bool*> bool_values;
   std::vector<ColorRGBValue*> color_values;
+
+  Group gui;
+  std::string server_host;
+  std::string server_port;
 };
 
 // --------------------------------------------------------
 void remote_client_app_button_callback(int id, void* user) {
-  printf("BUTTON CLICKED: %d\n", id);
+}
+
+void remote_client_app_connect_callback(int id, void* user) {
+
+  RemoteClientApp* app = static_cast<RemoteClientApp*>(user);
+
+  StorageXML xml("remote.xml");
+  xml.addGroup(&app->gui);
+  xml.save();
+ 
+  app->connect();
 }
 
 // --------------------------------------------------------
@@ -74,11 +89,23 @@ void remote_client_app_button_callback(int id, void* user) {
 RemoteClientApp::RemoteClientApp(std::string host, int ip) 
   :client(host, ip, false, this)
   ,deserializer(this)
+  ,gui("Connect", new RenderGL())
 { 
+  gui.add(new Text("Host", server_host));
+  gui.add(new Text("Port", server_port));
+  gui.add(new Button("Connect", 0, GUI_ICON_BOLT, remote_client_app_connect_callback, this));
+  gui.lockPosition();
 
+  client.auto_reconnect = false;
+
+  StorageXML xml("remote.xml");
+  xml.addGroup(&gui);
+  xml.load();
 }
 
 void RemoteClientApp::connect() {
+  client.host = server_host;
+  client.port = gui_string_to_int(server_port);
   client.connect();
 }
 
@@ -90,6 +117,15 @@ void RemoteClientApp::draw() {
 
   for(std::vector<Panel*>::iterator it = panels.begin(); it != panels.end(); ++it) {
     (*it)->draw();
+  }
+  
+  if(!client.isConnected()) {
+    int win_w = 0;
+    int win_h = 0;
+    gui.render->getWindowSize(win_w, win_h);
+    gui.x = (win_w * 0.5) - (gui.w * 0.5);
+    gui.y = 200;
+    gui.draw();
   }
 }
 
@@ -172,30 +208,60 @@ Button* RemoteClientApp::createButton(std::string label, int id, int buttonID, u
 }
 
 void RemoteClientApp::onCharPress(unsigned int key) {
+  
+  if(!client.isConnected()) {
+    gui.onCharPress(key);
+    return;
+  }
+
   for(std::vector<Panel*>::iterator it = panels.begin(); it != panels.end(); ++it) {
     (*it)->onCharPress(key);
   }
 }
 
 void RemoteClientApp::onKeyPress(int key, int modkeys) {
+
+  if(!client.isConnected()) {
+    gui.onKeyPress(key, modkeys);
+    return;
+  }
+
   for(std::vector<Panel*>::iterator it = panels.begin(); it != panels.end(); ++it) {
     (*it)->onKeyPress(key, modkeys);
   }
 }
 
 void RemoteClientApp::onKeyRelease(int key, int modkeys) {
+
+  if(!client.isConnected()) {
+    gui.onKeyRelease(key, modkeys);
+    return;
+  }
+
   for(std::vector<Panel*>::iterator it = panels.begin(); it != panels.end(); ++it) {
     (*it)->onKeyPress(key, modkeys);
   }
 }
 
 void RemoteClientApp::onMousePress(float mx, float my, int button, int modkeys) {
+
+  if(!client.isConnected()) {
+    gui.onMousePress(mx, my, button ,modkeys);
+    return;
+  }
+
   for(std::vector<Panel*>::iterator it = panels.begin(); it != panels.end(); ++it) {
     (*it)->onMousePress(mx, my, button, modkeys);
   }
 }
 
 void RemoteClientApp::onMouseRelease(float mx, float my, int button, int modkeys) {
+
+  if(!client.isConnected()) {
+    gui.onMouseRelease(mx, my, button ,modkeys);
+    return;
+  }
+
   for(std::vector<Panel*>::iterator it = panels.begin(); it != panels.end(); ++it) {
     (*it)->onMouseRelease(mx, my, button, modkeys);
   }
@@ -216,6 +282,7 @@ void RemoteClientApp::onDisconnected() {
   deleteHeap<float>(float_values);
   deleteHeap<int>(int_values);
   deleteHeap<bool>(bool_values);
+  deleteHeap<ColorRGBValue>(color_values);
 }
 
 template<class T> 

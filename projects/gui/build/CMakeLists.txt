@@ -32,6 +32,7 @@ set(remoxly_lib_sources
   ${bd}/src/gui/Panel.cpp
   ${bd}/src/gui/Button.cpp
   ${bd}/src/gui/Toggle.cpp
+  ${bd}/src/gui/Text.cpp
   ${bd}/src/gui/ColorRGB.cpp
   ${bd}/src/gui/Storage.cpp
   ${bd}/src/gui/Render.cpp

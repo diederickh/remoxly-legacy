@@ -43,7 +43,6 @@ int remoxly_client_websocket(struct libwebsocket_context* ctx,
     // reconnect when connection is closed.
     case LWS_CALLBACK_CLOSED:
     case LWS_CALLBACK_CLIENT_CONNECTION_ERROR: {
-      
       client->state = REMOTE_STATE_DISCONNECTED;
       client->reconnect_timeout = remoxly_hrtime() + client->reconnect_delay;
       client->onDisconnected();
@@ -71,6 +70,7 @@ Client::Client(std::string host, int port, bool ssl, ClientListener* listener)
   ,reconnect_timeout(0)
   ,reconnect_delay(1000ULL * 1000000ULL)  
   ,is_application(false)
+  ,auto_reconnect(true)
 {
 
   // setup the creation info.
@@ -86,6 +86,10 @@ Client::Client(std::string host, int port, bool ssl, ClientListener* listener)
   info.extensions = libwebsocket_get_internal_extensions();
 #endif
 
+  if(!createContext()) {
+    printf("Error: cannot create a libwebsocket context. Stopping.\n");
+    ::exit(EXIT_FAILURE);
+  }
 }
 
 Client::~Client() {
@@ -110,10 +114,6 @@ bool Client::connect() {
   
   // when the serializer can serialize at this moment it means the client is used for an application.
   is_application = serializer.canSerialize(); 
-
-  if(!createContext()) {
-    return false;
-  }
   
   if(!createConnection()) {
     shutdown();
@@ -133,7 +133,7 @@ void Client::update() {
 #endif
   
   // reconnect when not connected.
-  if(state == REMOTE_STATE_DISCONNECTED) {
+  if(auto_reconnect && state == REMOTE_STATE_DISCONNECTED) {
 
     uint64_t now = remoxly_hrtime();
 
@@ -340,6 +340,10 @@ void Client::onDisconnected() {
 // an "application" calls addGroup/addPanel (which are internally added to the serializer). 
 bool Client::isApplication() {
   return is_application;
+}
+
+bool Client::isConnected() {
+  return state & REMOTE_STATE_CONNECTED;
 }
 
 bool Client::onTaskValueChanged(char* data, size_t len, std::string value) {

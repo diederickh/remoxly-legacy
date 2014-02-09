@@ -2,6 +2,7 @@
 #include <gui/Widget.h>
 #include <gui/Slider.h>
 #include <gui/Toggle.h>
+#include <gui/Text.h>
 #include <gui/ColorRGB.h>
 #include <gui/storage/StorageXML.h>
 #include <rapidxml.hpp>
@@ -57,6 +58,12 @@ bool StorageXML::save() {
         case GUI_TYPE_COLOR_RGB: {
           ColorRGB* color = static_cast<ColorRGB*>(widget);
           ss << "    <widget type=\"" << widget->type << "\" name=\"" << name.c_str() << "\">" << color->perc_value << "</widget>\n";
+          break;
+        }
+
+        case GUI_TYPE_TEXT: {
+          Text* text = static_cast<Text*>(widget);
+          ss << "    <widget type=\"" << widget->type << "\" name=\"" << name.c_str() << "\">" << text->value << "</widget>\n";
           break;
         }
 
@@ -192,6 +199,13 @@ bool StorageXML::load() {
             std::string str_value = xwidget->value();
             color->setPercentageValue(gui_string_to_float(str_value));
             color->needs_redraw = true;
+            break;
+          }
+
+          case GUI_TYPE_TEXT: {
+            Text* text = static_cast<Text*>(widget);
+            text->value = xwidget->value();
+            text->needs_redraw = true;
             break;
           }
 

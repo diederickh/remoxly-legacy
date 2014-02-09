@@ -43,6 +43,8 @@ class Render {
   virtual void getNumberInputValue(std::string& result);
   virtual void disableNumberInput();
   virtual void enableNumberInput(float x, float y, float maxw, std::string value, float* color);
+  virtual void getTextInputValue(std::string& result);
+  virtual void disableTextInput();
   virtual void enableTextInput(float x, float y, float maxw, std::string value, float* color); 
   virtual void writeText(float x, float y, std::string text, float* color);                          /* write some text */
   virtual void writeNumber(float x, float y, std::string number, float* color);                      /* write a number; we will right align numbers */

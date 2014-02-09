@@ -23,6 +23,8 @@ class Group;
 class Panel;
 class Toggle;
 class Widget;
+class ColorRGB;
+class Button;
 template<class T> class Slider;
 
 class Deserializer {
@@ -37,6 +39,8 @@ class Deserializer {
   Slider<int>*   deserializeSliderInt(json_t* el, std::string label, int id);      /* deserializes a slider<int> */
   Slider<float>* deserializeSliderFloat(json_t* el, std::string label, int id);    /* deserializes a slider<float> */
   Toggle*        deserializeToggle(json_t* el, std::string label, int id);         /* deserializes a toggle */
+  ColorRGB*      deserializeColorRGB(json_t* el, std::string label, int id);       /* deserializes a colorrgb */
+  Button*        deserializeButton(json_t* el, std::string label, int id);         /* deserializes a button */
 
   /* protocol */
   bool deserializeTask(char* data, int& appID, int& taskID, std::string& value);   /* deserializes a task that we receive from the server; it merely extracts the app id and task id */
@@ -44,6 +48,9 @@ class Deserializer {
   bool deserializeValueChanged(Widget* w, json_t* js);
   bool deserializeValueSliderInt(Slider<int>* slider, json_t* js);
   bool deserializeValueSliderFloat(Slider<float>* slider, json_t* js);
+  bool deserializeValueToggle(Toggle* t, json_t* js);
+  bool deserializeValueColorRGB(ColorRGB* col, json_t* js);
+  bool deserializeValueButton(Button* button, json_t* js);
 
  public:
   Generator* gen;

@@ -25,6 +25,8 @@ class ColorRGB : public Widget {
   float* rgb;                                                                                                 /* the selected color, wil be copied once the user clicks on the widget */
   float perc_value;                                                                                           /* the percentage index into the colors vector */
   size_t color_dx;                                                                                            /* the selected index from the colors */
+  float sat;
+  float val;
 };
 
 #endif

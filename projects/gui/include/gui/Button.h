@@ -14,6 +14,7 @@ class Button : public Widget {
   void create();
   void position();
   void setBoundingBox();
+  void call();                  /* force a call of the button */
 
   /* interaction */
   void onMousePress(float mx, float my, int button, int modkeys);

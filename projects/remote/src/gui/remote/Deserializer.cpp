@@ -109,14 +109,20 @@ Group* Deserializer::deserializeGroup(json_t* el, Panel* panel) {
     printf("Error: no `g` element found in the group; no widgets.\n");
     return NULL;
   }
+ 
+  std::string label;
+  if(!remoxly_json_get_string(el, "l", label)) {
+    printf("Error: no `l` element found in the group.\n");
+    return NULL;
+  }
 
   Group* g = NULL;
 
   if(panel) {
-    g = gen->createGroup(panel, "Dummy");
+    g = gen->createGroup(panel, label);
   }
   else {
-    g = gen->createGroup("Dummy");
+    g = gen->createGroup(label);
   }
 
   if(!g) {
@@ -180,6 +186,24 @@ Group* Deserializer::deserializeGroup(json_t* el, Panel* panel) {
         break;
       }
 
+      case GUI_TYPE_COLOR_RGB: {
+        ColorRGB* col = deserializeColorRGB(js_widget, label, id);
+        if(col) {
+          col->id = id;
+          g->add(col);
+        }
+        break;
+      }
+
+      case GUI_TYPE_BUTTON: {
+        Button* button = deserializeButton(js_widget, label, id);
+        if(button) {
+          button->id = id;
+          g->add(button);
+        }
+        break;
+      }
+
       default: {
         printf("Warning: unhandled widget type in deserializer: %d for label: %s\n", type, label.c_str());
         break;
@@ -234,6 +258,40 @@ Toggle* Deserializer::deserializeToggle(json_t* el, std::string label, int id) {
   }
 
   return gen->createToggle(label, id);
+}
+
+ColorRGB* Deserializer::deserializeColorRGB(json_t* el, std::string label, int id) {
+
+  if(!el) {
+    printf("Error: cannot deserialize the color rgb; invalid json_t given.\n");
+    return NULL;
+  }
+
+  int ncolors = 0;
+  float sat = 0.8f;
+  float val = 1.0f;
+
+  remoxly_json_get_int(el, "n", ncolors);
+  remoxly_json_get_float(el, "s", sat);
+  remoxly_json_get_float(el, "v", val);
+
+  return gen->createColorRGB(label, id, ncolors, sat, val);
+}
+
+Button* Deserializer::deserializeButton(json_t* el, std::string label, int id) {
+  
+  if(!el) {
+    printf("Error: cannot deserialize the button; invalid json_t given.\n");
+    return NULL;
+  }
+
+  int icon = 0;
+  int cb_id = id;
+
+  remoxly_json_get_int(el, "c", icon);
+  remoxly_json_get_int(el, "b", cb_id);
+
+  return gen->createButton(label, id, cb_id, icon);
 }
 
 bool Deserializer::deserializeTask(char* data, int& appID, int& taskID, std::string& value) {
@@ -301,7 +359,6 @@ bool Deserializer::deserializeValueChanged(Widget* w, json_t* js) {
       if(!deserializeValueSliderFloat(slider, js)) {
         return false;
       }
-
       break;
     }
 
@@ -311,12 +368,35 @@ bool Deserializer::deserializeValueChanged(Widget* w, json_t* js) {
       if(!deserializeValueSliderInt(slider, js)) {
         return false;
       }
+      break;
+    }
 
+    case GUI_TYPE_TOGGLE: {
+      Toggle* t = static_cast<Toggle*>(w);
+      if(!deserializeValueToggle(t, js)) {
+        return false;
+      }
+      break;
+    }
+
+    case GUI_TYPE_COLOR_RGB: {
+      ColorRGB* col = static_cast<ColorRGB*>(w);
+      if(!deserializeValueColorRGB(col, js)) {
+        return false;
+      }
+      break;
+    }
+
+    case GUI_TYPE_BUTTON: {
+      Button* button = static_cast<Button*>(w);
+      if(!deserializeValueButton(button, js)) {
+        return false;
+      }
       break;
     }
 
     default: {
-      printf("Error: cannot deserialize a change value for widget: %s\n", w->label.c_str());
+      printf("Error: cannot deserialize a change value for widget: %s, id: %d, type: %d\n", w->label.c_str(), w->id, w->type);
       break;
     }
   }
@@ -355,5 +435,44 @@ bool Deserializer::deserializeValueSliderFloat(Slider<float>* slider, json_t* js
   slider->enableNotifications();
   slider->needs_redraw = true;
 
+  return true;
+}
+
+bool Deserializer::deserializeValueToggle(Toggle* toggle, json_t* js) {
+  
+  int v = 0;
+  
+  if(!remoxly_json_get_int(js, "v", v)) {
+    printf("Error: cannot get the toggle value.\n");
+    return false;
+  }
+
+  toggle->disableNotifications();
+  toggle->setValue(v == 1); 
+  toggle->enableNotifications();
+  toggle->needs_redraw = true;
+
+  return true;
+}
+
+bool Deserializer::deserializeValueColorRGB(ColorRGB* col, json_t* js) {
+  
+  float v = 0.0f;
+
+  if(!remoxly_json_get_float(js, "v", v)) {
+    printf("Error: cannot get the color value.\n");
+    return false;
+  }
+
+  col->disableNotifications();
+  col->setPercentageValue(v);
+  col->enableNotifications();
+  col->needs_redraw = true;
+  
+  return true;
+}
+
+bool Deserializer::deserializeValueButton(Button* button, json_t* js) {
+  button->call();
   return true;
 }

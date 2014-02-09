@@ -213,11 +213,13 @@ void error_callback(int err, const char* desc) {
 void button_click(int id, void* user) {
 
   if(id == 0) {
+    printf("Save.\n");
     StorageXML xml("settings.xml");
     xml.addPanel(panel_ptr);
     xml.save();
   }
   else if(id == 1) {
+    printf("Load.\n");
     StorageXML xml("settings.xml");
     xml.addPanel(panel_ptr);
     xml.load();

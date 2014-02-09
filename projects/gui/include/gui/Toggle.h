@@ -20,6 +20,7 @@ class Toggle : public Widget {
   void create();
   void onMousePress(float mx, float my, int button, int modkeys);
   void onMouseRelease(float mx, float my, int button, int modkeys);
+  void setValue(bool v);
 
  public:
   bool& value;

@@ -32,7 +32,8 @@ class IconButton : public Widget {
   void onMousePress(float mx, float my, int button, int mods);
   void onMouseRelease(float mx, float my, int button, int mods);
 
- private:
+ // privately used (needs to be public for (de)serializing.
+ public:
   gui_button_callback cb_click;     /* the callback function, see Utils.h where it's defined */
   void* cb_user;                    /* the user pointer that is passed into the callback function */
   int cb_id;                        /* an id specified by the user. the user can pass a different id for each button, but use the same callback function. using this id the user knows what button was clicked */

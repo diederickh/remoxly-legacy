@@ -71,9 +71,15 @@ void Button::onMouseRelease(float mx, float my, int button, int modkeys) {
   if(state & GUI_STATE_DOWN_INSIDE) {
     icon_button.call();
     needs_redraw = true;
+
+    notify(GUI_EVENT_VALUE_CHANGED); 
   }
 
   state &= ~GUI_STATE_DOWN_INSIDE;
   icon_button.state &= ~GUI_STATE_DOWN_INSIDE;
   Widget::onMouseRelease(mx, my, button, modkeys);
+}
+
+void Button::call() {
+  icon_button.call();
 }

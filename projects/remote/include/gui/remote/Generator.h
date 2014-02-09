@@ -21,6 +21,8 @@ class Generator {
   virtual Slider<int>* createSliderInt(std::string label, int minv, int maxv, int step, int id) = 0;           /* create a slider int */
   virtual Slider<float>* createSliderFloat(std::string label, float minv, float maxv, float step, int id) = 0; /* create a slider float */
   virtual Toggle* createToggle(std::string label, int id) = 0;                                                 /* create a toggle */
+  virtual ColorRGB* createColorRGB(std::string label, int id, int ncolors, float sat, float val) = 0;          /* create a color rgb slider */
+  virtual Button* createButton(std::string label, int id, int buttonID, unsigned int icon) = 0;                /* create a button */
 };
 
 #endif

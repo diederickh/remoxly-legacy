@@ -94,7 +94,6 @@ class Widget {
   virtual void disableNotifications();
   virtual void enableNotifications();
   virtual void notify(int event);                                  /* notify event listeners when something changes - will call notifyChildren() too */
-  virtual void notifyChildren(int event);                          /* noities the children too, is called from notify() */
 
  public:
   Group* group;                                                    /* the group in which this widget is contained */

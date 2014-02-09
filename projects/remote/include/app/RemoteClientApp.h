@@ -12,6 +12,15 @@ extern "C" {
 #include <gui/gl/ImplementationGL.h>
 #include <gui/remote/Remote.h>
 
+struct ColorRGBValue {
+  ColorRGBValue():r(0.0f),g(0.0f),b(0.0f){}
+  float r;
+  float g;
+  float b;
+};
+
+void remote_client_app_button_callback(int id, void* user);
+
 class RemoteClientApp : public ClientListener, public Generator {
 
  public:
@@ -41,6 +50,8 @@ class RemoteClientApp : public ClientListener, public Generator {
   Slider<int>*    createSliderInt(std::string label, int minv, int maxv, int step, int id);
   Slider<float>*  createSliderFloat(std::string label, float minv, float maxv, float step, int id);
   Toggle*         createToggle(std::string label, int id);
+  ColorRGB*       createColorRGB(std::string label, int id, int ncolors, float sat, float val);
+  Button*         createButton(std::string label, int id, int buttonID, unsigned int icon);
 
  public:
   Client client;
@@ -50,8 +61,13 @@ class RemoteClientApp : public ClientListener, public Generator {
   std::vector<float*> float_values;
   std::vector<int*> int_values;
   std::vector<bool*> bool_values;
+  std::vector<ColorRGBValue*> color_values;
 };
 
+// --------------------------------------------------------
+void remote_client_app_button_callback(int id, void* user) {
+  printf("BUTTON CLICKED: %d\n", id);
+}
 
 // --------------------------------------------------------
 
@@ -140,6 +156,20 @@ Toggle* RemoteClientApp::createToggle(std::string label, int id) {
   return t;
 }
 
+ColorRGB* RemoteClientApp::createColorRGB(std::string label, int id, int ncolors, float sat, float val) {
+
+  ColorRGBValue* v = new ColorRGBValue();
+  color_values.push_back(v);
+
+  ColorRGB* col = new ColorRGB(label, &v->r, ncolors, sat, val);
+  return col;
+}
+
+Button* RemoteClientApp::createButton(std::string label, int id, int buttonID, unsigned int icon) {
+
+  Button* button = new Button(label, buttonID, icon, remote_client_app_button_callback, this);
+  return button;
+}
 
 void RemoteClientApp::onCharPress(unsigned int key) {
   for(std::vector<Panel*>::iterator it = panels.begin(); it != panels.end(); ++it) {

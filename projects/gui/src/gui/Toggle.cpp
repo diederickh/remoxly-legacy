@@ -42,10 +42,16 @@ void Toggle::onMouseRelease(float mx, float my, int button, int modkeys) {
   
   if(state & GUI_STATE_DOWN_INSIDE) {
     if(GUI_IS_INSIDE_WIDGET(this, mx, my)) {
-      value = !value;
+      setValue(!value);
     }
     needs_redraw = true;
   }
 
   state &= ~GUI_STATE_DOWN_INSIDE;
+}
+
+void Toggle::setValue(bool v) {
+
+  value = v;
+  notify(GUI_EVENT_VALUE_CHANGED);
 }

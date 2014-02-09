@@ -41,6 +41,9 @@ class Serializer {
   json_t* serializeValueWidget(Widget* w);                           /* serialize the widget */
   json_t* serializeValueSliderInt(Slider<int>* slider);              /* serialize the integer slider value */
   json_t* serializeValueSliderFloat(Slider<float>* slider);          /* serialize the float slider value */
+  json_t* serializeValueToggle(Toggle* toggle);                      /* serialize the toggle value */
+  json_t* serializeValueColorRGB(ColorRGB* col);                     /* serialize the color value */
+  json_t* serializeValueButton(Button* button);                      /* serialize the button value; only used to notify a click */
 
  private:
 
@@ -52,6 +55,8 @@ class Serializer {
   json_t* serializeSlider(Slider<int>* slider);            /* serializes a slider of type int */
   json_t* serializeSlider(Slider<float>* slider);          /* serializes a slider of type float */
   json_t* serializeToggle(Toggle* toggle);                 /* serializes a toggle */
+  json_t* serializeColorRGB(ColorRGB* color);              /* serializes a color rgb */
+  json_t* serializeButton(Button* button);                 /* serializes a button */
 
   /* utils */
   bool appendToArray(json_t* parent, json_t* child);

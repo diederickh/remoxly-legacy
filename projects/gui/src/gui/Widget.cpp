@@ -386,13 +386,4 @@ void Widget::notify(int event) {
   for(std::vector<WidgetListener*>::iterator it = listeners.begin(); it != listeners.end(); ++it) {
     (*it)->onEvent(event, this);
   }
-
-  notifyChildren(event);
-}
-
-void Widget::notifyChildren(int event) {
-
-  for(std::vector<Widget*>::iterator it = children.begin(); it != children.end(); ++it) {
-    (*it)->notify(event);
-  }
 }

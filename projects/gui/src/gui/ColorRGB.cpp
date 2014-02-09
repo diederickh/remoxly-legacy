@@ -8,6 +8,8 @@ ColorRGB::ColorRGB(std::string label, float* rgb, int ncolors, float sat, float 
   ,rgb(rgb)
   ,perc_value(0.0f)
   ,color_dx(0)
+  ,sat(sat)
+  ,val(val)
 {
   h = 22;
 
@@ -83,9 +85,10 @@ void ColorRGB::setPercentageValue(float p) {
   perc_value = gui_clamp<float>(p, 0.0f, 1.0f);
   color_dx = gui_clamp<size_t>(colors.size() * perc_value, 0, colors.size()-1);
 
-  // set the color.
   ColorRect& r = colors[color_dx];
   rgb[0] = r.rgba[0];
   rgb[1] = r.rgba[1];
   rgb[2] = r.rgba[2];
+
+  notify(GUI_EVENT_VALUE_CHANGED);
 }

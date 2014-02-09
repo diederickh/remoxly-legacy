@@ -155,6 +155,24 @@ json_t* Serializer::serializeGroup(Group* group) {
         break;
       }
 
+      case GUI_TYPE_COLOR_RGB: {
+        ColorRGB* col = static_cast<ColorRGB*>(wid);
+        json_t* js_col = serializeColorRGB(col);
+        if(js_col) {
+          appendToArray(js_widgets, js_col);
+        }
+        break;
+      }
+
+      case GUI_TYPE_BUTTON: {
+        Button* button = static_cast<Button*>(wid);
+        json_t* js_but = serializeButton(button);
+        if(js_but) {
+          appendToArray(js_widgets, js_but);
+        }
+        break;
+      }
+
       default: {
         printf("Warning: we're not capable of serializing the type: %d yet, for label: %s.\n", wid->type, wid->label.c_str());
         break;
@@ -166,6 +184,24 @@ json_t* Serializer::serializeGroup(Group* group) {
     // @todo - serializeGroup, do we need to free all elements in the array?
     printf("Error: cannot set the group widgets.\n");
     REMOXLY_FREE_JSON(js_widgets);
+    REMOXLY_FREE_JSON(js_group);
+    return NULL;
+  }
+
+  // add label.
+  json_t* js_label = json_string(group->label.c_str());
+  if(!js_label) {
+    printf("Error: cannot create title json for group.\n");
+    REMOXLY_FREE_JSON(js_widgets);
+    REMOXLY_FREE_JSON(js_group);
+    return NULL;
+  }
+
+  if(json_object_set(js_group, "l", js_label) != 0) {
+    printf("Error: cannot set the label for the group.\n");
+    REMOXLY_FREE_JSON(js_widgets);
+    REMOXLY_FREE_JSON(js_group);
+    REMOXLY_FREE_JSON(js_label);
     return NULL;
   }
 
@@ -304,6 +340,30 @@ json_t* Serializer::serializeToggle(Toggle* toggle) {
   return js_toggle;
 }
 
+json_t* Serializer::serializeColorRGB(ColorRGB* col) {
+
+  json_t* js_color = json_pack("{s:i,s:i,s:s,s:i,s:f,s:f}", 
+                               "t", col->type,                 // type
+                               "i", col->id,                   // id 
+                               "l", col->label.c_str(),        // label
+                               "n", int(col->colors.size()),   // number of colors
+                               "s", col->sat,                  // saturation level
+                               "v", col->val                   // value level
+                               );
+  return js_color;
+}
+
+json_t* Serializer::serializeButton(Button* button) {
+  
+  json_t* js_button = json_pack("{s:i,s:i,s:s,s:i,s:i}",
+                                "t", button->type,               // type
+                                "i", button->id,                 // id
+                                "l", button->label.c_str(),      // label
+                                "c", button->icon_button.icon,   // icon
+                                "b", button->icon_button.cb_id   // callback id
+                                );
+  return js_button;
+}
 
 void Serializer::addGroup(Group* g) {
   groups.push_back(g);
@@ -367,9 +427,27 @@ json_t* Serializer::serializeValueWidget(Widget* w) {
       json_t* js_value = serializeValueSliderFloat(slider);
       return js_value;
     }
+
+    case GUI_TYPE_TOGGLE: {
+      Toggle* toggle = static_cast<Toggle*>(w);
+      json_t* js_value = serializeValueToggle(toggle);
+      return js_value;
+    }
+
+    case GUI_TYPE_COLOR_RGB: {
+      ColorRGB* col = static_cast<ColorRGB*>(w);
+      json_t* js_value = serializeValueColorRGB(col);
+      return js_value;
+    }
+
+    case GUI_TYPE_BUTTON: {
+      Button* button = static_cast<Button*>(w);
+      json_t* js_value = serializeValueButton(button);
+      return js_value;
+    }
       
     default: {
-      printf("Warning: unhandled widget type for value changed: %s\n", w->label.c_str());
+      printf("Warning: unhandled widget type for value changed: %s, type: %d, id: %d\n", w->label.c_str(), w->type, w->id);
       return NULL;
     }
   }
@@ -421,6 +499,11 @@ bool Serializer::serializeValuesForGroup(Group* g, json_t* array) {
     Widget* w = *it;
     json_t* js_widget = serializeValueWidget(w);
 
+    // we don't want to serialize a button value because a value means a click
+    if(w->type == GUI_TYPE_BUTTON) {
+      continue;
+    }
+
     if(!js_widget) {
       printf("Error: cannot serialize the value for the widget: %s\n", w->label.c_str());
       continue;
@@ -441,3 +524,22 @@ json_t* Serializer::serializeValueSliderFloat(Slider<float>* slider) {
   return js_value;
 }
 
+json_t* Serializer::serializeValueToggle(Toggle* toggle) {
+  json_t* js_value = json_pack("{s:i,s:i}", "i", toggle->id, "v", (toggle->value) ? 1 : 0);
+  return js_value;
+}
+
+json_t* Serializer::serializeValueColorRGB(ColorRGB* col) {
+  json_t* js_value = json_pack("{s:i,s:f}",
+                               "i", col->id,
+                               "v", col->perc_value); 
+
+  return js_value;
+}
+
+json_t* Serializer::serializeValueButton(Button* button) {
+  json_t* js_value = json_pack("{s:i}", 
+                               "i", button->id);
+  return js_value;
+                               
+}

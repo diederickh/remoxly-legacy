@@ -446,7 +446,6 @@ int Server::onCallbackServerWritable(struct libwebsocket* ws) {
         return -1;
       }
 
-
       default: {
         printf("Warning: cannot handle task: %d.\n", task->task_name);
         break;

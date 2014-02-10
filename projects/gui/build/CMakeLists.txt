@@ -130,7 +130,7 @@ if(NOT TARGET ${app})
 
   install(TARGETS remoxly DESTINATION lib)
 
-  install(FILES 
+  set(remoxly_lib_gui_headers
     ${bd}/include/gui/Button.h
     ${bd}/include/gui/ColorRGB.h
     ${bd}/include/gui/Group.h
@@ -145,20 +145,22 @@ if(NOT TARGET ${app})
     ${bd}/include/gui/Types.h
     ${bd}/include/gui/Utils.h
     ${bd}/include/gui/Widget.h
-    DESTINATION include/gui/)
-
-  install(FILES
-    ${bd}/include/gui/storage/StorageXML.h
-    DESTINATION include/gui/storage/
     )
 
-  install(FILES
+  set(remoxly_lib_storage_headers
+    ${bd}/include/gui/storage/StorageXML.h
+    )
+
+  set(remoxly_lib_storage_sources
+    ${bd}/src/gui/storage/StorageXML.cpp
+    )
+
+  set(remoxly_lib_gl_headers
     ${bd}/include/gui/gl/RenderGL.h
     ${bd}/include/gui/gl/ImplementationGL.h
-    DESTINATION include/gui/gl/
     )
 
-  install(FILES
+  set(remoxly_lib_gui_sources
     ${bd}/src/gui/Group.cpp
     ${bd}/src/gui/Utils.cpp
     ${bd}/src/gui/Widget.cpp
@@ -171,18 +173,24 @@ if(NOT TARGET ${app})
     ${bd}/src/gui/ColorRGB.cpp
     ${bd}/src/gui/Storage.cpp
     ${bd}/src/gui/Render.cpp
-    DESTINATION src/gui
     )
-
-  install(FILES
+  
+  set(remoxly_lib_bitmapfont_headers
     ${bitmapfont_bd}/include/bitmapfont/BitmapFont.h
-    DESTINATION include/bitmapfont/
     )
 
-  install(FILES
+  set(remoxly_lib_textinput_headers
     ${textinput_bd}/include/textinput/TextInput.h
-    DESTINATION include/textinput/
     )
+
+  install(FILES ${remoxly_lib_gui_headers} DESTINATION include/gui/  )
+  install(FILES ${remoxly_lib_storage_headers} DESTINATION include/gui/storage/ )
+  install(FILES ${remoxly_lib_storage_sources} DESTINATION src/gui/storage/ )
+  install(FILES ${remoxly_lib_gl_headers} DESTINATION include/gui/gl/ )
+  install(FILES ${remoxly_lib_gui_sources} DESTINATION src/gui )
+  install(FILES ${remoxly_lib_bitmapfont_headers} DESTINATION include/bitmapfont/  )
+  install(FILES ${remoxly_lib_textinput_headers} DESTINATION include/textinput/  )
+
 endif()
 
 

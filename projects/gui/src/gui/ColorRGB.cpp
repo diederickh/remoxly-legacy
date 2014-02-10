@@ -44,7 +44,7 @@ void ColorRGB::create() {
 }
 
 void ColorRGB::onMousePress(float mx, float my, int button, int modkeys) {
-  
+
   if(GUI_IS_INSIDE_WIDGET(this, mx, my)) {
     state |= GUI_STATE_DOWN_INSIDE;
     setMousePositionValue(mx);
@@ -53,7 +53,7 @@ void ColorRGB::onMousePress(float mx, float my, int button, int modkeys) {
 }
 
 void ColorRGB::onMouseRelease(float mx, float my, int button, int modkeys) {
-  
+
   if(state & GUI_STATE_DOWN_INSIDE) {
     needs_redraw = true;
   }
@@ -66,6 +66,7 @@ void ColorRGB::onMouseMove(float mx, float my) {
   if(state & GUI_STATE_DOWN_INSIDE) {
     setMousePositionValue(mx);
   }
+
 }
 
 void ColorRGB::setMousePositionValue(int mx) {

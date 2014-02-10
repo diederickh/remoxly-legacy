@@ -157,7 +157,12 @@ void Widget::onMousePress(float mx, float my, int button, int modkeys) {
 void Widget::onMousePressChildren(float mx, float my, int button, int modkeys) {
 
   for(std::vector<Widget*>::iterator it = children.begin(); it != children.end(); ++it) {
-    (*it)->onMousePress(mx, my, button, modkeys);
+
+    Widget* w = *it;
+
+    if(w->isDrawn()) {
+      w->onMousePress(mx, my, button, modkeys);
+    }
   }
 }
 
@@ -177,7 +182,11 @@ void Widget::onMousePressOutside(float mx, float my, int button, int modkeys) {
 void Widget::onMousePressOutsideChildren(float mx, float my, int button, int modkeys) {
   
   for(std::vector<Widget*>::iterator it = children.begin(); it != children.end(); ++it) {
-    (*it)->onMousePressOutside(mx, my, button, modkeys);
+    
+    Widget* w = *it;
+    if(w->isDrawn()) {
+      w->onMousePressOutside(mx, my, button, modkeys);
+    }
   }
 }
 
@@ -198,7 +207,12 @@ void Widget::onMouseRelease(float mx, float my, int button, int modkeys) {
 void Widget::onMouseReleaseChildren(float mx, float my, int button, int modkeys) {
 
   for(std::vector<Widget*>::iterator it = children.begin(); it != children.end(); ++it) {
-    (*it)->onMouseRelease(mx, my, button, modkeys);
+    
+    Widget* w = *it;
+
+    if(w->isDrawn()) {
+      w->onMouseRelease(mx, my, button, modkeys);
+    }
   }
 }
 
@@ -216,7 +230,12 @@ void Widget::onMouseReleaseOutside(float mx, float my, int button, int modkeys) 
 void Widget::onMouseReleaseOutsideChildren(float mx, float my, int button, int modkeys) {
 
   for(std::vector<Widget*>::iterator it = children.begin(); it != children.end(); ++it) {
-    (*it)->onMouseReleaseOutside(mx, my, button, modkeys);
+
+    Widget* w = *it;
+
+    if(w->isDrawn()) {
+      (*it)->onMouseReleaseOutside(mx, my, button, modkeys);
+    }
   }
 }
 

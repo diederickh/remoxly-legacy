@@ -16,7 +16,7 @@
 class Text : public Widget {
 
  public:
-  Text(std::string label, std::string& value);
+  Text(std::string label, std::string& value, int textw = 200);
   void create();
 
   /* interaction */
@@ -24,8 +24,6 @@ class Text : public Widget {
   void onKeyPress(int key, int modkeys);
   void onMousePress(float mx, float my, int button, int modkeys);
   void onMousePressOutside(float mx, float my, int button, int modkeys);
-  void onMouseRelease(float mx, float my, int button, int modkeys);
-  void onMouseReleaseOutside(float mx, float my, int button, int modkeys);
 
   /* text input specific */
   void disableInputAndCopyValue();

@@ -462,5 +462,6 @@ void TextInput::draw() {
   glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
   font.draw();
+
 }
 #endif // TEXT_INPUT_IMPLEMENTATION

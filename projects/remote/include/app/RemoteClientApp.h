@@ -147,6 +147,7 @@ void RemoteClientApp::onTaskSetGuiModel(char* data, size_t len, std::string valu
 
 Panel* RemoteClientApp::createPanel(int h) {
   Panel* p = new Panel(new RenderGL());
+  p->x = panels.size() * (p->w + p->scroll.w) + (panels.size() + 1) * 10;
   panels.push_back(p);
   return p;
 }

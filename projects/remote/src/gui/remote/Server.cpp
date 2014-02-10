@@ -115,7 +115,7 @@ bool Server::start() {
   context = libwebsocket_create_context(&info);
 
   if(context == NULL) {
-    printf("Error: while creating the websocket context.\n");
+    printf("Error: while creating the websocket context (another instance running already?).\n");
     return false;
   }
 
@@ -131,7 +131,7 @@ void Server::update() {
   }
 #endif
 
-  int n = libwebsocket_service(context, 8);
+  int n = libwebsocket_service(context, 0);
 }
 
 bool Server::getApplicationData(int appID, ApplicationData& result) {

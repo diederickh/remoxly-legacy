@@ -2,19 +2,18 @@
 #include <gui/Render.h>
 #include <gui/Group.h>
 
-Text::Text(std::string label, std::string& value)
+Text::Text(std::string label, std::string& value, int textw)
   :Widget(GUI_TYPE_TEXT, label)
   ,value(value)
   ,text_x(0)
-  ,text_w(200)
+  ,text_w(textw)
 {
   h = 22;
 }
 
 void Text::create() {
 
-  int label_w =0;
-  text_w = 200;
+  int label_w = 0;
   label_w = w - text_w;
   text_x = x + label_w;
 
@@ -69,12 +68,6 @@ void Text::onMousePressOutside(float mx, float my, int button, int modkeys) {
   if(state & GUI_STATE_EDITABLE) {
     disableInputAndCopyValue();
   }
-}
-
-void Text::onMouseRelease(float mx, float my, int button, int modkeys) {
-}
-
-void Text::onMouseReleaseOutside(float mx, float my, int button, int modkeys) {
 }
 
 void Text::disableInputAndCopyValue() {

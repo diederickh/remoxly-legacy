@@ -42,6 +42,8 @@ void Render::enableNumberInput(float x, float y, float maxw, std::string value, 
 
 void Render::addRectangle(float x, float y, float w, float h, float* color, bool filled) { }
 
+void Render::addRectangle(float x, float y, float w, float h, TextureInfo* texinfo) { } 
+
 void Render::onCharPress(unsigned int key) { }
 
 void Render::onKeyPress(int key, int mods) { }

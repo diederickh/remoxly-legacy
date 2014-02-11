@@ -19,6 +19,17 @@
 
 class Character;
 
+// -----------------------------------------------------
+
+class TextureInfo { 
+ public:
+  virtual ~TextureInfo() { }
+  virtual int getWidth() = 0;
+  virtual int getHeight() = 0;
+};
+
+// -----------------------------------------------------
+
 class Render {
 
  public:
@@ -51,6 +62,7 @@ class Render {
   virtual void writeIcon(float x, float y, unsigned int icon, float* color);
   virtual bool getIconSize(unsigned int id, int& w, int& h);
   virtual void addRectangle(float x, float y, float w, float h, float* color, bool filled = true);   /* draw a rectangle at x/y with w/h and given color; must have 4 elements */
+  virtual void addRectangle(float x, float y, float w, float h, TextureInfo* texinfo);               /* draw a textured rectangle */
 
   /* helpers */
   template<class T> void writeNumber(float x, float y, T number, float* color);

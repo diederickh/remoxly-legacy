@@ -30,6 +30,11 @@ void ofxRemoxly::draw() {
   for(std::vector<Panel*>::iterator it = panels.begin(); it != panels.end(); ++it) {
     (*it)->draw();
   }
+
+  glBindTexture(GL_TEXTURE_2D, 0);
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glBindVertexArray(0);
+  glUseProgram(0);
 }
 
 bool ofxRemoxly::save(std::string filename) {
@@ -108,11 +113,11 @@ Slider<float>* ofxRemoxly::addSliderFloat(std::string label, float& value, float
   return s;
 }
 
-ColorRGB* ofxRemoxly::addColor(std::string label, ofFloatColor& color) {
+ColorRGB* ofxRemoxly::addColor(std::string label, ofFloatColor& color, int ncolors, float sat, float val) {
 
   OFX_REMOXLY_CHECK_GROUP("Error: no group added, cannot add a color.\n");
 
-  ColorRGB* c = new ColorRGB(label, (float*)&color.r);
+  ColorRGB* c = new ColorRGB(label, (float*)&color.r, ncolors, sat, val);
   curr_group->add(c);
   return c;
 }
@@ -133,6 +138,11 @@ Text* ofxRemoxly::addText(std::string label, std::string& value, int textWidth) 
   Text* t = new Text(label, value, textWidth);
   curr_group->add(t);
   return t;
+}
+
+Texture* ofxRemoxly::addTexture(std::string label, ofImage& img) {
+
+  OFX_REMOXLY_CHECK_GROUP("Error: no group added, cannot add a texture.\n");
 }
 
 void ofxRemoxly::keyReleased(ofKeyEventArgs& args) {

@@ -73,9 +73,10 @@ class ofxRemoxly {
   Toggle* addToggle(std::string label, bool& value);
   Slider<int>* addSliderInt(std::string label, int& value, int minv, int maxv, int stepv);
   Slider<float>* addSliderFloat(std::string label, float& value, float minv, float maxv, float stepv);
-  ColorRGB* addColor(std::string label, ofFloatColor& color);
+  ColorRGB* addColor(std::string label, ofFloatColor& color, int ncolors = 50, float sat = 0.8, float val = 1.0);
   Button* addButton(std::string label, int id, unsigned int icon, gui_button_callback cb, void* user, int iconx = 0, int icony = 0);
   Text* addText(std::string label, std::string& value, int textWidth = 220);
+  Texture* addTexture(std::string label, ofImage& img);
 
   /* interaction */
   void keyReleased(ofKeyEventArgs& args);

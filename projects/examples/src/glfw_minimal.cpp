@@ -23,6 +23,11 @@
 // the GL implementation.
 #include <gui/gl/ImplementationGL.h>
 
+#define ROXLU_USE_PNG
+#define ROXLU_USE_OPENGL
+#define ROXLU_IMPLEMENTATION
+#include <tinylib.h>
+
 // Because we want to access the Panel we create below,
 // we store a pointer to it int panel_ptr.
 Panel* panel_ptr = NULL;
@@ -93,6 +98,8 @@ int main() {
   float trail_color[3] = { 0.0f } ;
   int num_files = 5;
   std::string name = "";
+  std::string filename = "";
+  GLuint tex_id = rx_create_texture(rx_to_data_path("texture.png"));
 
   // create a panel with a height of 300 pixels. A panel 
   // is a collection of Groups. You can add as many as Groups
@@ -118,6 +125,8 @@ int main() {
   particle_group->add(new Toggle("Spawn Particles", spawn_particles));
 
   Group* storage_group = panel.addGroup("Save and Load");
+  storage_group->add(new Text("Filename", filename, 200));
+  storage_group->add(new Texture("Blob", new TextureInfoGL(GL_TEXTURE_2D, tex_id)));
   storage_group->add(new Slider<int>("Number of files", num_files, 0, 15, 1));
   storage_group->add(new Button("Save", 0, GUI_ICON_FLOPPY_O, button_click));
   storage_group->add(new Button("Load", 1, GUI_ICON_REFRESH, button_click));

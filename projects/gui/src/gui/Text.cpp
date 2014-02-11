@@ -78,4 +78,6 @@ void Text::disableInputAndCopyValue() {
 
   state &= ~GUI_STATE_EDITABLE;
   needs_redraw = true;
+
+  notify(GUI_EVENT_VALUE_CHANGED);
 }

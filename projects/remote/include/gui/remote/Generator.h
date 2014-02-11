@@ -23,6 +23,7 @@ class Generator {
   virtual Toggle* createToggle(std::string label, int id) = 0;                                                 /* create a toggle */
   virtual ColorRGB* createColorRGB(std::string label, int id, int ncolors, float sat, float val) = 0;          /* create a color rgb slider */
   virtual Button* createButton(std::string label, int id, int buttonID, unsigned int icon) = 0;                /* create a button */
+  virtual Text* createText(std::string label, int id, int textw) = 0;                                                     /* create a text */
 };
 
 #endif

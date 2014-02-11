@@ -25,6 +25,7 @@ class Toggle;
 class Widget;
 class ColorRGB;
 class Button;
+class Text;
 template<class T> class Slider;
 
 class Deserializer {
@@ -41,6 +42,7 @@ class Deserializer {
   Toggle*        deserializeToggle(json_t* el, std::string label, int id);         /* deserializes a toggle */
   ColorRGB*      deserializeColorRGB(json_t* el, std::string label, int id);       /* deserializes a colorrgb */
   Button*        deserializeButton(json_t* el, std::string label, int id);         /* deserializes a button */
+  Text*          deserializeText(json_t* el, std::string label, int id);           /* deserialzies a text */
 
   /* protocol */
   bool deserializeTask(char* data, int& appID, int& taskID, std::string& value);   /* deserializes a task that we receive from the server; it merely extracts the app id and task id */
@@ -51,6 +53,7 @@ class Deserializer {
   bool deserializeValueToggle(Toggle* t, json_t* js);
   bool deserializeValueColorRGB(ColorRGB* col, json_t* js);
   bool deserializeValueButton(Button* button, json_t* js);
+  bool deserializeValueText(Text* text, json_t* js);
 
  public:
   Generator* gen;

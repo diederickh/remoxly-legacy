@@ -27,6 +27,8 @@ set(app_headers
   ${bd}/include/textinput/TextInput.h
 )
 
+set(remoxly_textinput_headers ${app_headers})
+
 if(APPLE)
 
   find_library(fr_corefoundation CoreFoundation)

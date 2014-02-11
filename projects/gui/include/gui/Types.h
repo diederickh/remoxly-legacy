@@ -15,6 +15,7 @@
 #define GUI_TYPE_SCROLL                      8          /* Takes care of drawing a scrollbar; not to be "added" to a gui. */
 #define GUI_TYPE_PANEL                       9          /* A Panel element can hold many Group element and stacks them on top of each other. It creates a scroll bar */
 #define GUI_TYPE_TEXT                        10         /* Text input */
+#define GUI_TYPE_TEXTURE                     11         /* Texture input */
 
 #define GUI_CURSOR_WIDTH                     9          /* Default cursor width for text/number inputs.*/                                             
 

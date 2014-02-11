@@ -33,6 +33,7 @@ set(remoxly_lib_sources
   ${bd}/src/gui/Button.cpp
   ${bd}/src/gui/Toggle.cpp
   ${bd}/src/gui/Text.cpp
+  ${bd}/src/gui/Texture.cpp
   ${bd}/src/gui/ColorRGB.cpp
   ${bd}/src/gui/Storage.cpp
   ${bd}/src/gui/Render.cpp
@@ -142,9 +143,19 @@ if(NOT TARGET ${app})
     ${bd}/include/gui/Slider.h
     ${bd}/include/gui/Storage.h
     ${bd}/include/gui/Toggle.h
+    ${bd}/include/gui/Text.h
+    ${bd}/include/gui/Texture.h
     ${bd}/include/gui/Types.h
     ${bd}/include/gui/Utils.h
     ${bd}/include/gui/Widget.h
+    ${bd}/include/gui/WidgetListener.h
+    )
+
+  set(remoxly_lib_font_headers
+    ${bd}/include/gui/fonts/FreePixel.h
+    ${bd}/include/gui/fonts/FontAwesome.h
+    ${bd}/include/gui/fonts/SourceCode.h
+    ${bd}/include/gui/fonts/Arial.h
     )
 
   set(remoxly_lib_storage_headers
@@ -170,6 +181,8 @@ if(NOT TARGET ${app})
     ${bd}/src/gui/Panel.cpp
     ${bd}/src/gui/Button.cpp
     ${bd}/src/gui/Toggle.cpp
+    ${bd}/src/gui/Text.cpp
+    ${bd}/src/gui/Texture.cpp
     ${bd}/src/gui/ColorRGB.cpp
     ${bd}/src/gui/Storage.cpp
     ${bd}/src/gui/Render.cpp
@@ -187,6 +200,7 @@ if(NOT TARGET ${app})
   install(FILES ${remoxly_lib_storage_headers} DESTINATION include/gui/storage/ )
   install(FILES ${remoxly_lib_storage_sources} DESTINATION src/gui/storage/ )
   install(FILES ${remoxly_lib_gl_headers} DESTINATION include/gui/gl/ )
+  install(FILES ${remoxly_lib_font_headers} DESTINATION include/gui/gl/fonts )
   install(FILES ${remoxly_lib_gui_sources} DESTINATION src/gui )
   install(FILES ${remoxly_lib_bitmapfont_headers} DESTINATION include/bitmapfont/  )
   install(FILES ${remoxly_lib_textinput_headers} DESTINATION include/textinput/  )

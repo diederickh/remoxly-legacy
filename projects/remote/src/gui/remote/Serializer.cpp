@@ -172,6 +172,15 @@ json_t* Serializer::serializeGroup(Group* group) {
         }
         break;
       }
+        
+      case GUI_TYPE_TEXT: { 
+        Text* text = static_cast<Text*>(wid);
+        json_t* js_text = serializeText(text);
+        if(js_text) {
+          appendToArray(js_widgets, js_text);
+        }
+        break;
+      }
 
       default: {
         printf("Warning: we're not capable of serializing the type: %d yet, for label: %s.\n", wid->type, wid->label.c_str());
@@ -267,11 +276,22 @@ json_t* Serializer::serializePanel(Panel* panel) {
   }
 
   if(json_object_set(js_panel, "p", js_groups) != 0) {
-    printf("Error: cannot set the `p` member of the panels container.\n");
+    printf("Error: cannot set the `p` member of the panel container.\n");
     REMOXLY_FREE_JSON(js_groups);
     REMOXLY_FREE_JSON(js_panel);
     return NULL;
   }
+
+  json_t* js_h = json_integer(panel->h);
+
+  if(json_object_set(js_panel, "h", js_h) != 0) {
+    printf("Error: cannot set the `h` member for the panel container.\n");
+    REMOXLY_FREE_JSON(js_groups);
+    REMOXLY_FREE_JSON(js_panel);
+    return NULL;
+  }
+
+  REMOXLY_FREE_JSON(js_h);
 
   return js_panel;
 }
@@ -365,6 +385,16 @@ json_t* Serializer::serializeButton(Button* button) {
   return js_button;
 }
 
+json_t* Serializer::serializeText(Text* t) {
+  json_t* js_text = json_pack("{s:i,s:i,s:s,s:s,s:i}",
+                              "t",  t->type,
+                              "i",  t->id,
+                              "l",  t->label.c_str(),
+                              "v",  t->value.c_str(),
+                              "tw", t->text_w);
+  return js_text;
+}
+
 void Serializer::addGroup(Group* g) {
   groups.push_back(g);
 }
@@ -443,6 +473,12 @@ json_t* Serializer::serializeValueWidget(Widget* w) {
     case GUI_TYPE_BUTTON: {
       Button* button = static_cast<Button*>(w);
       json_t* js_value = serializeValueButton(button);
+      return js_value;
+    }
+
+    case GUI_TYPE_TEXT: {
+      Text* text = static_cast<Text*>(w);
+      json_t* js_value = serializeValueText(text);
       return js_value;
     }
       
@@ -541,5 +577,11 @@ json_t* Serializer::serializeValueButton(Button* button) {
   json_t* js_value = json_pack("{s:i}", 
                                "i", button->id);
   return js_value;
-                               
+}
+
+json_t* Serializer::serializeValueText(Text* text) {
+  json_t* js_value = json_pack("{s:i,s:s}", 
+                               "i", text->id,
+                               "v", text->value.c_str());
+  return js_value;
 }

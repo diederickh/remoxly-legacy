@@ -81,7 +81,10 @@ Panel* Deserializer::deserializePanel(json_t* el) {
     return NULL;
   }
 
-  Panel* p = gen->createPanel();
+  int h = 0;
+  remoxly_json_get_int(el, "h", h);
+
+  Panel* p = gen->createPanel(h);
 
   if(!p) {
     printf("Error: invalid Panel returned by generator.\n");
@@ -204,6 +207,15 @@ Group* Deserializer::deserializeGroup(json_t* el, Panel* panel) {
         break;
       }
 
+      case GUI_TYPE_TEXT: { 
+        Text* text = deserializeText(js_widget, label, id);
+        if(text) {
+          text->id = id;
+          g->add(text);
+        }
+        break;
+      }
+
       default: {
         printf("Warning: unhandled widget type in deserializer: %d for label: %s\n", type, label.c_str());
         break;
@@ -292,6 +304,20 @@ Button* Deserializer::deserializeButton(json_t* el, std::string label, int id) {
   remoxly_json_get_int(el, "b", cb_id);
 
   return gen->createButton(label, id, cb_id, icon);
+}
+
+Text* Deserializer::deserializeText(json_t* el, std::string label, int id) {
+  
+  if(!el) {
+    printf("Error: cannot deserialize the text; invalid json_t given.\n");
+    return NULL;
+  }
+
+  int text_w = 0;
+
+  remoxly_json_get_int(el, "tw", text_w);
+
+  return gen->createText(label, id, text_w);
 }
 
 bool Deserializer::deserializeTask(char* data, int& appID, int& taskID, std::string& value) {
@@ -395,6 +421,14 @@ bool Deserializer::deserializeValueChanged(Widget* w, json_t* js) {
       break;
     }
 
+    case GUI_TYPE_TEXT: { 
+      Text* text = static_cast<Text*>(w);
+      if(!deserializeValueText(text, js)) {
+        return false;
+      }
+      break;
+    }
+
     default: {
       printf("Error: cannot deserialize a change value for widget: %s, id: %d, type: %d\n", w->label.c_str(), w->id, w->type);
       break;
@@ -474,5 +508,19 @@ bool Deserializer::deserializeValueColorRGB(ColorRGB* col, json_t* js) {
 
 bool Deserializer::deserializeValueButton(Button* button, json_t* js) {
   button->call();
+  return true;
+}
+
+bool Deserializer::deserializeValueText(Text* text, json_t* js) {
+
+  std::string v = "";
+
+  if(!remoxly_json_get_string(js, "v", v)) {
+    printf("Error: cannot get the text string value.\n");
+    return false;
+  }
+
+  text->value = v;
+  text->needs_redraw = true;
   return true;
 }

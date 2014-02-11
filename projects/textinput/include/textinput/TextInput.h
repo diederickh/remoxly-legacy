@@ -35,16 +35,21 @@
 static const char* TEXT_INPUT_VS = ""
   "#version 110\n"
   "#extension GL_EXT_gpu_shader4 : require\n"
+  "attribute vec2 a_pos;"
   "uniform mat4 u_pm;"
   "uniform vec4 u_pos;"
-  "vec2 pos[4];"
+  //  "vec2 pos[4];"
 
   "void main() {"
+#if 0
   "  pos[0] = vec2(0.0, 0.0);"
   "  pos[1] = vec2(0.0, 1.0);"
   "  pos[2] = vec2(1.0, 0.0);"
   "  pos[3] = vec2(1.0, 1.0);"
   "  vec2 p = pos[gl_VertexID];"
+#else 
+  "  vec2 p = a_pos; " 
+#endif
   "  p.x *= u_pos.z;"
   "  p.y *= u_pos.w;"
   "  p   += u_pos.xy;"
@@ -142,6 +147,11 @@ class TextInput {
   static GLuint frag;
   static GLuint vao;
   static GLint u_pos;
+
+# if BITMAP_FONT_GL == BITMAP_FONT_GL2
+  static GLuint vbo; 
+# endif
+
 };
 #endif // ROXLU_TEXT_INPUT
 
@@ -157,6 +167,10 @@ GLuint TextInput::vert = 0;
 GLuint TextInput::frag = 0;
 GLuint TextInput::vao = 0;
 GLint TextInput::u_pos = -1;
+
+#if BITMAP_FONT_GL == BITMAP_FONT_GL2
+GLuint TextInput::vbo = 0;
+#endif
 
 TextInput::TextInput(float x, float y, float w, BitmapFont& font)
   :mode(TI_MODE_DISABLED)
@@ -174,10 +188,28 @@ TextInput::TextInput(float x, float y, float w, BitmapFont& font)
 
     glGenVertexArrays(1, &vao);
 
+#if BITMAP_FONT_GL == BITMAP_FONT_GL2
+    float caret_pos[] = { 0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0, 1.0 } ;
+
+    glBindVertexArray(vao);
+    glGenBuffers(1, &vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(caret_pos), caret_pos, GL_STATIC_DRAW);
+
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, (GLvoid*)0);
+#endif
+
     // shader
     vert = bitmapfont_create_shader(GL_VERTEX_SHADER, TEXT_INPUT_VS);
     frag = bitmapfont_create_shader(GL_FRAGMENT_SHADER, TEXT_INPUT_FS);
+
+#if BITMAP_FONT_GL == BITMAP_FONT_GL2
+    const char* atts[] = { "a_pos" } ;
+    prog = bitmapfont_create_program(vert, frag, 1, atts);
+#else
     prog = bitmapfont_create_program(vert, frag);
+#endif
 
     // ortho matrix
     GLint viewport[4];

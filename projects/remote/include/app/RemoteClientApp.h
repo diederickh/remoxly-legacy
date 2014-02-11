@@ -53,6 +53,7 @@ class RemoteClientApp : public ClientListener, public Generator {
   Toggle*         createToggle(std::string label, int id);
   ColorRGB*       createColorRGB(std::string label, int id, int ncolors, float sat, float val);
   Button*         createButton(std::string label, int id, int buttonID, unsigned int icon);
+  Text*           createText(std::string label, int id, int textw);
 
  public:
   Client client;
@@ -63,6 +64,7 @@ class RemoteClientApp : public ClientListener, public Generator {
   std::vector<int*> int_values;
   std::vector<bool*> bool_values;
   std::vector<ColorRGBValue*> color_values;
+  std::vector<std::string*> string_values;
 
   Group gui;
   std::string server_host;
@@ -146,7 +148,7 @@ void RemoteClientApp::onTaskSetGuiModel(char* data, size_t len, std::string valu
 // --------------------------------------------------------
 
 Panel* RemoteClientApp::createPanel(int h) {
-  Panel* p = new Panel(new RenderGL());
+  Panel* p = new Panel(new RenderGL(), h);
   p->x = panels.size() * (p->w + p->scroll.w) + (panels.size() + 1) * 10;
   panels.push_back(p);
   return p;
@@ -206,6 +208,15 @@ Button* RemoteClientApp::createButton(std::string label, int id, int buttonID, u
 
   Button* button = new Button(label, buttonID, icon, remote_client_app_button_callback, this);
   return button;
+}
+
+Text* RemoteClientApp::createText(std::string label, int id, int textw) {
+  
+  std::string* v = new std::string;
+  string_values.push_back(v);
+
+  Text* t = new Text(label, *v, textw);
+  return t;
 }
 
 void RemoteClientApp::onCharPress(unsigned int key) {
@@ -276,14 +287,13 @@ void RemoteClientApp::onMouseMove(float mx, float my) {
 
 void RemoteClientApp::onDisconnected() {
 
-  printf("RemoteClientApp::onDisconnected().\n");
-
   deleteHeap<Panel>(panels);
   deleteHeap<Group>(groups);
   deleteHeap<float>(float_values);
   deleteHeap<int>(int_values);
   deleteHeap<bool>(bool_values);
   deleteHeap<ColorRGBValue>(color_values);
+  deleteHeap<std::string>(string_values);
 }
 
 template<class T> 

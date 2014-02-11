@@ -25,6 +25,8 @@ set(app_headers
   ${bd}/include/bitmapfont/BitmapFont.h
 )
 
+set(remoxly_bitmapfont_headers ${app_headers})
+
 if(APPLE)
 
   find_library(fr_corefoundation CoreFoundation)

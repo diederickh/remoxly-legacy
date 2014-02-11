@@ -12,6 +12,7 @@
 #  include <gui/Slider.h>
 #  include <gui/Storage.h>
 #  include <gui/Text.h>
+#  include <gui/Texture.h>
 #  include <gui/Toggle.h>
 #  include <gui/Types.h>
 #  include <gui/Utils.h>

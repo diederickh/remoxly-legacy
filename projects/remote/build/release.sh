@@ -4,7 +4,6 @@
 
 is_32bit=0
 cmake_extra_vars=""
-d=${PWD}
 
 if [ "${1}" = "32" ] ; then 
     cmake_extra_vars="-DREMOXLY_USE_32BIT=1"
@@ -20,18 +19,12 @@ cmake -DCMAKE_BUILD_TYPE=Release ${cmake_extra_vars} ../
 cmake --build . --target install
 
 if [ "$(uname)" == "Darwin" ] ; then 
-
-    # Package for i386
-    cd ./../../../../install/mac-clang-i386/thirdparty/
-    tar -zcvf ofxRemoxly-mac-clang-i386.tar.gz ofxRemoxly 
-    cd ${d}/build.release
-    
     if [ ${is_32bit} -eq 1 ] ; then 
         cd ./../../../../install/mac-clang-i386/bin/
     else
         cd ./../../../../install/mac-clang-x86_64/bin/
     fi
-    ./gui
+    ./remote
 else
     cd ./../../../../install/linux-gcc-x86_64/bin/
     ./gui

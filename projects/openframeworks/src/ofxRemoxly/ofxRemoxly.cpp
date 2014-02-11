@@ -143,6 +143,15 @@ Text* ofxRemoxly::addText(std::string label, std::string& value, int textWidth) 
 Texture* ofxRemoxly::addTexture(std::string label, ofImage& img) {
 
   OFX_REMOXLY_CHECK_GROUP("Error: no group added, cannot add a texture.\n");
+
+  ofTexture& tex = img.getTextureReference();
+  ofTextureData& texdata = tex.getTextureData();
+
+  Texture* t = new Texture(label, new TextureInfoGL(texdata.textureTarget, texdata.textureID));
+  curr_group->add(t);
+
+  printf("target: %d = %d, id: %d\n", GL_TEXTURE_2D, texdata.textureTarget, texdata.textureID);
+  return t;
 }
 
 void ofxRemoxly::keyReleased(ofKeyEventArgs& args) {

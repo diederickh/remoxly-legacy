@@ -90,6 +90,15 @@ static const char* GUI_RENDER_PT_FS = ""
   "}"
   "";
 
+static const char* GUI_RENDER_PT_RECT_FS = ""
+  "#version 110\n"
+  "uniform sampler2DRect u_tex;"
+  "varying vec2 v_tex;"
+  ""
+  "void main() {"
+  "  gl_FragColor = texture2DRect(u_tex, v_tex);"
+  "}"
+  "";
 #endif
 
 // -------------------------------------------
@@ -141,7 +150,19 @@ static const char* GUI_RENDER_PT_FS = ""
   "  fragcolor = texture(u_tex, v_tex);"
   "}"
   "";
+
+static const char* GUI_RENDER_PT_RECT_FS = ""
+  "#version 150\n"
+  "uniform sampler2DRect u_tex;"
+  "in vec2 v_tex;"
+  "out vec4 fragcolor;"
+  ""
+  "void main() {"
+  "  fragcolor = texture(u_tex, v_tex);"
+  "}"
+  "";
 #endif
+
 // -------------------------------------------
 
 // position + colors
@@ -202,6 +223,10 @@ struct TextureDrawInfo {
   int offset;
   int count;
   TextureInfoGL* info;
+};
+
+struct TextureDrawInfoSorter {
+  bool operator()(const TextureDrawInfo& a, const TextureDrawInfo& b) { return a.info->type > b.info->type; } 
 };
 
 // -------------------------------------------
@@ -268,8 +293,10 @@ class RenderGL : public Render {
   GLuint vbo_pt;                                               /* vbo for the position + texcoord buffers */
   GLuint vao_pt;                                               /* vao for the position + textcoord buffers */
   static GLuint prog_pt;                                       /* shader program that renders GuiVertexPT */
+  static GLuint prog_pt_rect;
   static GLuint vert_pt;                                       /* vertex shader that renders GuiVertexPT */
   static GLuint frag_pt;                                       /* fragment shader that renders GuiVertexPT */
+  static GLuint frag_pt_rect;
 
   /* GuiVertexPC buffer info */
   bool needs_update_pc;                                        /* set to true whenever we need to update the vbo for the position + color type*/
@@ -312,6 +339,8 @@ GLuint RenderGL::frag_pc = 0;
 GLuint RenderGL::prog_pt = 0;
 GLuint RenderGL::vert_pt = 0;
 GLuint RenderGL::frag_pt = 0;
+GLuint RenderGL::frag_pt_rect = 0;
+GLuint RenderGL::prog_pt_rect = 0;
 bool RenderGL::is_initialized = false;
 
 // -------------------------------------------
@@ -348,12 +377,21 @@ RenderGL::RenderGL(int gl)
     frag_pt = gui_create_shader(GL_FRAGMENT_SHADER, GUI_RENDER_PT_FS);
     prog_pt = gui_create_program(vert_pt, frag_pt, 2, atts_pt);
 
+    // shader for pos + texcoord
+    const char* atts_pt_rect[] = { "a_pos", "a_tex" } ;
+    frag_pt_rect = gui_create_shader(GL_FRAGMENT_SHADER, GUI_RENDER_PT_RECT_FS);
+    prog_pt_rect = gui_create_program(vert_pt, frag_pt_rect, 2, atts_pt_rect);
+
     glUseProgram(prog_pc);
     glUniformMatrix4fv(glGetUniformLocation(prog_pc, "u_pm"), 1, GL_FALSE, pm);
 
     glUseProgram(prog_pt);
     glUniformMatrix4fv(glGetUniformLocation(prog_pt, "u_pm"), 1, GL_FALSE, pm);
     glUniform1i(glGetUniformLocation(prog_pt, "u_tex"), 0);
+
+    glUseProgram(prog_pt_rect);
+    glUniformMatrix4fv(glGetUniformLocation(prog_pt_rect, "u_pm"), 1, GL_FALSE, pm);
+    glUniform1i(glGetUniformLocation(prog_pt_rect, "u_tex"), 0);
 
     is_initialized = true;
   }
@@ -411,8 +449,6 @@ RenderGL::RenderGL(int gl)
 
   number_input.align = BITMAP_FONT_ALIGN_RIGHT;
   text_input.align = BITMAP_FONT_ALIGN_LEFT;
-
-  //  num_instances++;
 }
 
 void RenderGL::getWindowSize(int& ww, int& wh) {
@@ -491,12 +527,33 @@ void RenderGL::draw() {
 
   if(texture_draws.size()) {
 
-    glUseProgram(prog_pt);
     glBindVertexArray(vao_pt);
     glActiveTexture(GL_TEXTURE0);
 
+    GLenum type = 0;
+
     for(std::vector<TextureDrawInfo>::iterator it = texture_draws.begin(); it != texture_draws.end(); ++it) {
+
       TextureDrawInfo& tex = *it;
+
+      if(type != tex.info->type) {
+        if(tex.info->type == GL_TEXTURE_2D) {
+          glUseProgram(prog_pt);
+        }
+#if RENDER_GL == RENDER_GL2
+        else if(tex.info->type == GL_TEXTURE_RECTANGLE_ARB) {
+          glUseProgram(prog_pt_rect);
+        }
+#elif RENDER_GL == RENDER_GL3
+        else if(tex.info->type == GL_TEXTURE_RECTANGLE) {
+          glUseProgram(prog_pt_rect);
+        }
+#endif
+        else {
+          printf("Error: unsupported texture target.\n");
+        }
+      }
+
       glBindTexture(tex.info->type, tex.info->id);
       glDrawArrays(GL_TRIANGLES, tex.offset, tex.count);
     }
@@ -522,6 +579,9 @@ void RenderGL::resize(int w, int h) {
 
   glUseProgram(prog_pt);
   glUniformMatrix4fv(glGetUniformLocation(prog_pt, "u_pm"), 1, GL_FALSE, pm);
+
+  glUseProgram(prog_pt_rect);
+  glUniformMatrix4fv(glGetUniformLocation(prog_pt_rect, "u_pm"), 1, GL_FALSE, pm);
   
   icon_font.resize(w, h);
   text_font.resize(w, h);
@@ -695,15 +755,30 @@ void RenderGL::addRectangle(float x, float y, float w, float h, float* color, bo
 
 void RenderGL::addRectangle(float x, float y, float w, float h, TextureInfo* tex) {
 
-  GuiVertexPT a(x, y + h, 0.0f, 1.0f);     // bottom left
-  GuiVertexPT b(x + w, y + h, 1.0f, 1.0f); // bottom right
-  GuiVertexPT c(x + w, y, 1.0f, 0.0f);     // top right
-  GuiVertexPT d(x, y, 0.0f, 0.0f);         // top left;
+  TextureInfoGL* tex_gl = static_cast<TextureInfoGL*>(tex);
+  float tex_w = 1.0f;
+  float tex_h = 1.0f;
+
+#if RENDER_GL == RENDER_GL2
+  if(tex_gl->type == GL_TEXTURE_RECTANGLE_ARB) {
+    tex_w = tex_gl->tex_w;
+    tex_h = tex_gl->tex_h;
+  }
+#elif RENDER_GL == RENDER_GL3
+  if(tex_gl->type == GL_TEXTURE_RECTANGLE) {
+    tex_w = tex_gl->tex_w;
+    tex_h = tex_gl->tex_h;
+  }
+#endif
+  
+  GuiVertexPT a(x, y + h, 0.0f, tex_h);      // bottom left
+  GuiVertexPT b(x + w, y + h, tex_w, tex_h); // bottom right
+  GuiVertexPT c(x + w, y, tex_w, 0.0f);      // top right
+  GuiVertexPT d(x, y, 0.0f, 0.0f);           // top left;
 
   TextureDrawInfo draw_info;
   draw_info.offset = vertices_pt.size();
-  draw_info.info = static_cast<TextureInfoGL*>(tex);
-
+  draw_info.info = tex_gl;
 
   vertices_pt.push_back(a);
   vertices_pt.push_back(b);
@@ -715,6 +790,8 @@ void RenderGL::addRectangle(float x, float y, float w, float h, TextureInfo* tex
   draw_info.count = vertices_pt.size() - draw_info.offset;
 
   texture_draws.push_back(draw_info);
+
+  std::sort(texture_draws.begin(), texture_draws.end(), TextureDrawInfoSorter());
 
   needs_update_pt = true;
 }

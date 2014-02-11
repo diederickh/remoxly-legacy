@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#if defined(__linux)
+#if defined(__linux) || defined(_WIN32)
 #  include <GLXW/glxw.h>
 #endif
  
@@ -51,7 +51,7 @@ int main() {
     printf("Error: cannot setup glfw.\n");
     return false;
   }
- 
+
   glfwWindowHint(GLFW_SAMPLES, 4);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
@@ -76,7 +76,7 @@ int main() {
   glfwMakeContextCurrent(win);
   glfwSwapInterval(1);
  
-#if defined(__linux)  
+#if defined(__linux)  || defined(_WIN32)
   if(glxwInit() != 0) {
     printf("Error: cannot initialize glxw.\n");
     ::exit(EXIT_FAILURE);
@@ -130,6 +130,10 @@ int main() {
   storage_group->add(new Slider<int>("Number of files", num_files, 0, 15, 1));
   storage_group->add(new Button("Save", 0, GUI_ICON_FLOPPY_O, button_click));
   storage_group->add(new Button("Load", 1, GUI_ICON_REFRESH, button_click));
+
+
+//  data.clear();
+  //  std::copy(str.begin(), str.end(), std::back_inserter(data));
 
   Client client("127.0.0.1", 2255, false);
   client.addPanel(&panel);

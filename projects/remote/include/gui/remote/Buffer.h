@@ -1,5 +1,5 @@
 /*
-  
+
   Buffer
   ------
 
@@ -35,7 +35,6 @@ class Buffer {
   size_t getTotalNumBytes();               /* returns the number of bytes that we added (e.g. using set). the returned value includes the pre/post paddings */
   size_t getDataNumBytes();                /* returns the number of bytes in the payload, w/o the pre/post paddings */
   unsigned char* ptr();
-  
 
   std::vector<char>::iterator begin();
   std::vector<char>::iterator end();
@@ -52,11 +51,11 @@ inline Buffer::Buffer():nbytes_added(0) {
 
 inline void Buffer::set(std::string& str) {
 
-  reserve(str.size());
-  
-  std::copy(str.begin(), str.end(), data.begin());
+  reserve(str.size());  
 
-  nbytes_added = str.size() + LWS_SEND_BUFFER_PRE_PADDING + LWS_SEND_BUFFER_POST_PADDING;
+  std::copy(str.begin(), str.end(), data.begin());
+  
+  nbytes_added = str.size() + LWS_SEND_BUFFER_PRE_PADDING + LWS_SEND_BUFFER_POST_PADDING ;  
 }
 
 inline std::vector<char>::iterator Buffer::begin() {

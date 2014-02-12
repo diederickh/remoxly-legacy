@@ -25,9 +25,9 @@
 #include <tinylib.h>
 
 #define BITMAP_FONT_IMPLEMENTATION
-#include <bitmapfont/BitmapFont.h>
-#include <bitmapfont/BitmapFontXML.h>
-#include <fontbaker/BitmapFontBaker.h>
+#include <gui/bitmapfont/BitmapFont.h>
+#include <gui/bitmapfont/BitmapFontXML.h>
+#include <gui/fontbaker/BitmapFontBaker.h>
 
 using namespace rx;
 

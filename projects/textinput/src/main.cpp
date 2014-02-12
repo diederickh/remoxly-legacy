@@ -23,8 +23,8 @@
 
 #define TEXT_INPUT_IMPLEMENTATION
 #define BITMAP_FONT_IMPLEMENTATION
-#include <bitmapfont/BitmapFont.h>
-#include <textinput/TextInput.h>
+#include <gui/bitmapfont/BitmapFont.h>
+#include <gui/textinput/TextInput.h>
 #include "FreePixel.h"
 
 using namespace rx; 

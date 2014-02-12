@@ -22,8 +22,8 @@
 #define GLFW_INCLUDE_GLCOREARB
 #include <GLFW/glfw3.h>
 
+#define REMOXLY_IMPLEMENTATION
 #include <gui/Remoxly.h>
-#include <gui/gl/ImplementationGL.h>
 
 using namespace rx;
 
@@ -32,6 +32,7 @@ using namespace rx;
 Group* group_ptr0 = NULL;
 Group* group_ptr1 = NULL;
 Panel* panel_ptr = NULL;
+Remoxly* remoxly_ptr = NULL;
 
 #define ROXLU_USE_ALL
 #define ROXLU_IMPLEMENTATION
@@ -167,6 +168,12 @@ int main() {
   panel_ptr = &panel;
 #endif
 
+  remoxly_ptr = new Remoxly();
+  remoxly_ptr->addGroup("New group");
+  remoxly_ptr->addColor("Color", color, 50);
+  remoxly_ptr->curr_panel->x = 350;
+  remoxly_ptr->load("remoxly_test.xml");
+
   while(!glfwWindowShouldClose(win)) {
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -179,6 +186,8 @@ int main() {
 #if USE_PANEL
     panel.draw();
 #endif
+
+    remoxly_ptr->draw();
 
     glfwSwapBuffers(win);
     glfwPollEvents();
@@ -216,6 +225,9 @@ void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods) 
     if(panel_ptr) {
       panel_ptr->onKeyRelease(key, mods);
     }
+    if(remoxly_ptr) {
+      remoxly_ptr->onKeyRelease(key, mods);
+    }
     return;
   }
 
@@ -229,6 +241,10 @@ void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods) 
 
   if(group_ptr1) {
     group_ptr1->onKeyPress(key, mods);
+  }
+
+  if(remoxly_ptr) {
+    remoxly_ptr->onKeyPress(key, mods);
   }
 
   if(panel_ptr) {
@@ -259,9 +275,12 @@ void cursor_callback(GLFWwindow* win, double x, double y) {
     group_ptr1->onMouseMove(x, y);
   }
 
-
   if(panel_ptr) {
     panel_ptr->onMouseMove(x, y);
+  }
+
+  if(remoxly_ptr) {
+    remoxly_ptr->onMouseMove(x, y);
   }
 }
 
@@ -279,9 +298,11 @@ void button_callback(GLFWwindow* win, int bt, int action, int mods) {
     if(group_ptr1) {
       group_ptr1->onMousePress(mx, my, bt, mods);
     }
-
     if(panel_ptr) {
       panel_ptr->onMousePress(mx, my, bt, mods);
+    }
+    if(remoxly_ptr) {
+      remoxly_ptr->onMousePress(mx, my, bt, mods);
     }
   }
   else if(action == GLFW_RELEASE) {
@@ -293,6 +314,9 @@ void button_callback(GLFWwindow* win, int bt, int action, int mods) {
     }
     if(panel_ptr) {
       panel_ptr->onMouseRelease(mx, my, bt, mods);
+    }
+    if(remoxly_ptr) {
+      remoxly_ptr->onMouseRelease(mx, my, bt, mods);
     }
   }
 }
@@ -308,11 +332,17 @@ void on_group_button_click(int id, void* user) {
     xml.addPanel(panel_ptr);
     xml.save();
     printf("Saved.\n");
+    if(remoxly_ptr) {
+      remoxly_ptr->save("remoxly_test.xml");
+    }
   }
   else if(id == 4 && panel_ptr) {
     StorageXML xml("panel.xml");
     xml.addPanel(panel_ptr);
     xml.load();
     printf("Loaded.\n");
+    if(remoxly_ptr) {
+      remoxly_ptr->load("remoxly_test.xml");
+    }
   }
 }

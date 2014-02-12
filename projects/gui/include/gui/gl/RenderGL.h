@@ -1,4 +1,3 @@
-
 // ------------------------------------------------------------------------------
 // H E A D E R
 // ------------------------------------------------------------------------------
@@ -30,8 +29,8 @@
 
 #define TEXT_INPUT_IMPLEMENTATION
 #define BITMAP_FONT_IMPLEMENTATION
-#include <bitmapfont/BitmapFont.h>
-#include <textinput/TextInput.h>
+#include <gui/bitmapfont/BitmapFont.h>
+#include <gui/textinput/TextInput.h>
 
 /* @todo - pick a font in RenderGL header */
 #include <gui/fonts/FreePixel.h>

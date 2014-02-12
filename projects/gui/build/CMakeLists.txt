@@ -112,11 +112,11 @@ if(NOT TARGET ${app})
     )
 
   set(remoxly_lib_bitmapfont_headers
-    ${bitmapfont_bd}/include/bitmapfont/BitmapFont.h
+    ${bitmapfont_bd}/include/gui/bitmapfont/BitmapFont.h
     )
 
   set(remoxly_lib_textinput_headers
-    ${textinput_bd}/include/textinput/TextInput.h
+    ${textinput_bd}/include/gui/textinput/TextInput.h
     )
 
   install(FILES ${remoxly_lib_gui_headers} DESTINATION include/gui/  )
@@ -125,8 +125,8 @@ if(NOT TARGET ${app})
   install(FILES ${remoxly_lib_gl_headers} DESTINATION include/gui/gl/ )
   install(FILES ${remoxly_lib_font_headers} DESTINATION include/gui/gl/fonts )
   install(FILES ${remoxly_lib_gui_sources} DESTINATION src/gui )
-  install(FILES ${remoxly_lib_bitmapfont_headers} DESTINATION include/bitmapfont/  )
-  install(FILES ${remoxly_lib_textinput_headers} DESTINATION include/textinput/  )
+  install(FILES ${remoxly_lib_bitmapfont_headers} DESTINATION include/gui/bitmapfont/  )
+  install(FILES ${remoxly_lib_textinput_headers} DESTINATION include/gui/textinput/  )
 
 endif()
 

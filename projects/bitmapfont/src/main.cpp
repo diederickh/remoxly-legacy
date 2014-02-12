@@ -17,8 +17,8 @@
 #include <GLFW/glfw3.h>
 
 #define BITMAP_FONT_IMPLEMENTATION
-#include <bitmapfont/BitmapFont.h>
-#include <bitmapfont/BitmapFontXML.h>
+#include <gui/bitmapfont/BitmapFont.h>
+#include <gui/bitmapfont/BitmapFontXML.h>
 
 #define ROXLU_USE_ALL
 #define ROXLU_IMPLEMENTATION

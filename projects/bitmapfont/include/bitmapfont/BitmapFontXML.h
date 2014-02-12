@@ -63,6 +63,7 @@ class BitmapFontXML : public BitmapFont {
 };
 
 } // namespace rx
+
 #endif
 
 // ------------------------------------------------------------------------------

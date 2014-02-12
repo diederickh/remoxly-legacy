@@ -4,6 +4,8 @@
 #define RENDER_GL RENDER_GL2
 #include <gui/gl/ImplementationGL.h>
 
+namespace rx { 
+
 ofxRemoxly::ofxRemoxly() 
   :curr_panel(NULL)
   ,curr_group(NULL)
@@ -256,3 +258,5 @@ void ofxRemoxly::resize(int w, int h) {
     (*it)->render->resize(w, h);
   }
 }
+
+} // namespace rx 

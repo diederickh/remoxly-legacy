@@ -48,11 +48,12 @@
 
 #include <gui/Remoxly.h>
 #include <gui/remote/Remote.h>
-
 #include <string>
 #include <vector>
 
 #define OFX_REMOXLY_CHECK_GROUP(err) { if (!curr_group) { printf("%s", err); return NULL; } } 
+
+namespace rx { 
 
 class ofxRemoxly {
 
@@ -102,5 +103,7 @@ class ofxRemoxly {
   Server* server;
   Client* client;
 };
+
+} // namespace rx 
 
 #endif

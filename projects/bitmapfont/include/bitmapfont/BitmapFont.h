@@ -206,7 +206,6 @@ class BitmapFont {
   void setupTexture(int w, int h, unsigned char* pix);
   void updateVertices();
 
-  
  public:
 
   /* state */
@@ -240,6 +239,7 @@ class BitmapFont {
 };
 
 } // namespace rx
+
 #endif
 
 // ------------------------------------------------------------------------------
@@ -447,7 +447,6 @@ void BitmapFont::write(float x, float y, Character& c) {
 
   //printf("x0: %f, y0: %f, x1: %f, y1: %f u0: %f, u1: %f, v0: %f, v1: %f\n", x0, y0, x1, y1, u0, u1, v0, v1);
 }
-
 
 void BitmapFont::draw() {
 

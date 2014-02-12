@@ -41,7 +41,9 @@ int remoxly_server_websocket(struct libwebsocket_context* ctx,
     }
 
     default: {
+#if !defined(NDEBUG)
       printf("Unhandled reason: %s\n", remoxly_websocket_reason_to_string(reason).c_str());
+#endif
       break;
     }
   }
@@ -67,8 +69,6 @@ Connection::Connection(struct libwebsocket* ws)
 }
 
 Connection::~Connection() {
-
-  printf("~Connection()\n");
 
   for(size_t i = 0; i < tasks.size(); ++i) {
     delete tasks[i];
@@ -96,7 +96,11 @@ Server::~Server() {
 
 bool Server::start() {
 
+#if !defined(NDEBUG)
+  lws_set_log_level(LLL_ERR, NULL);
+#else
   lws_set_log_level(LLL_DEBUG, NULL);
+#endif
   
   lws_context_creation_info info;
   memset(&info, 0, sizeof info);
@@ -402,7 +406,9 @@ int Server::onCallbackReceive(struct libwebsocket* ws, char* data, size_t len) {
     }
 
     default: {
+#if !defined(NDEBUG)
       printf("Error: unhandled task on server: %d\n", task);
+#endif
       break;
     }
   }

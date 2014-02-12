@@ -13,8 +13,6 @@ ColorRGB::ColorRGB(std::string label, float* rgb, int ncolors, float sat, float 
 {
   h = 22;
 
-  float h,s,v = 0.0f;
-
   for(int i = 0; i < ncolors; ++i) {
     float p = float(i)/(ncolors-1);
     ColorRect rect;

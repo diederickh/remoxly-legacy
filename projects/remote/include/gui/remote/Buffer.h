@@ -30,7 +30,7 @@ class Buffer {
 
   void set(std::string& str);              /* set the data that we contain to the given string; we will clear all other data and make sure the given data is correctly stored in the buffer (with regard to the pre/post paddings) */
   void clear();
-  void reserve(size_t nbytes);             /* this will make sure that the data member can hold nbytes + the websocket pre and post padding */
+  void resize(size_t nbytes);             /* this will make sure that the data member can hold nbytes + the websocket pre and post padding */
   void push_back(char c); 
   size_t getTotalNumBytes();               /* returns the number of bytes that we added (e.g. using set). the returned value includes the pre/post paddings */
   size_t getDataNumBytes();                /* returns the number of bytes in the payload, w/o the pre/post paddings */
@@ -51,7 +51,7 @@ inline Buffer::Buffer():nbytes_added(0) {
 
 inline void Buffer::set(std::string& str) {
 
-  reserve(str.size());  
+  resize(str.size());  
 
   std::copy(str.begin(), str.end(), data.begin());
   
@@ -92,10 +92,10 @@ inline unsigned char* Buffer::ptr() {
   return (unsigned char*)&data[0];
 }
 
-inline void Buffer::reserve(size_t nbytes) {
+inline void Buffer::resize(size_t nbytes) {
   nbytes += LWS_SEND_BUFFER_PRE_PADDING;
   nbytes += LWS_SEND_BUFFER_POST_PADDING;
-  data.reserve(nbytes);
+  data.resize(nbytes);
 }
 
 #endif

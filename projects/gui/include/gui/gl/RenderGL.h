@@ -522,8 +522,14 @@ void RenderGL::draw() {
 
     glUseProgram(prog_pc);
     glBindVertexArray(vao_pc);
-    glMultiDrawArrays(GL_TRIANGLES, &bg_offsets[0], &bg_counts[0], bg_counts.size());
-    glMultiDrawArrays(GL_LINE_STRIP, &fg_offsets[0], &fg_counts[0], fg_counts.size());
+
+    if(bg_counts.size()) {
+      glMultiDrawArrays(GL_TRIANGLES, &bg_offsets[0], &bg_counts[0], bg_counts.size());
+    }
+
+    if(fg_counts.size()) {
+      glMultiDrawArrays(GL_LINE_STRIP, &fg_offsets[0], &fg_counts[0], fg_counts.size());
+    }
   }
 
   if(texture_draws.size()) {

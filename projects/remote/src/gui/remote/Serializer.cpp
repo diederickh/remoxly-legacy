@@ -182,6 +182,10 @@ json_t* Serializer::serializeGroup(Group* group) {
         break;
       }
 
+      case GUI_TYPE_TEXTURE: {
+        break;
+      }
+
       default: {
         printf("Warning: we're not capable of serializing the type: %d yet, for label: %s.\n", wid->type, wid->label.c_str());
         break;

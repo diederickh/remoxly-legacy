@@ -22,7 +22,6 @@ if [ "$(uname)" == "Darwin" ] ; then
     elif [ "${1}" = "remote_server" ] ; then
         ./remote_server
     fi
-    
 else
     cd ./../../../../install/linux-gcc-x86_64/bin/
     ./glfw_minimal

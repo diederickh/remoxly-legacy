@@ -50,7 +50,9 @@ int remoxly_client_websocket(struct libwebsocket_context* ctx,
     }
 
     default: {
+#if !defined(NDEBUG)
       printf("Unhandled reason: %s\n", remoxly_websocket_reason_to_string(reason).c_str());
+#endif
       break;
     }
   }
@@ -68,7 +70,7 @@ Client::Client(std::string host, int port, bool ssl, ClientListener* listener)
   ,listener(listener)
   ,state(REMOTE_STATE_NONE)
   ,reconnect_timeout(0)
-  ,reconnect_delay(1000ULL * 1000000ULL)  
+  ,reconnect_delay(30ULL * 1000ULL * 1000000ULL)   /* reconnect every 30 seconds */
   ,is_application(false)
   ,auto_reconnect(true)
 {
@@ -84,6 +86,12 @@ Client::Client(std::string host, int port, bool ssl, ClientListener* listener)
 
 #ifndef LWS_NO_EXTENSIONS
   info.extensions = libwebsocket_get_internal_extensions();
+#endif
+
+#if !defined(NDEBUG)
+  lws_set_log_level(LLL_ERR, NULL);
+#else
+  lws_set_log_level(LLL_DEBUG, NULL);
 #endif
 
   if(!createContext()) {
@@ -103,20 +111,24 @@ void Client::shutdown() {
     context = NULL;
   }
 
+  removeTasks();
+}
+
+void Client::removeTasks() {
+
   for(std::vector<ConnectionTask*>::iterator it = tasks.begin(); it != tasks.end(); ++it) {
     delete *it;
   }
-
   tasks.clear();
 }
 
 bool Client::connect() {
-  
+
   // when the serializer can serialize at this moment it means the client is used for an application.
   is_application = serializer.canSerialize(); 
   
   if(!createConnection()) {
-    shutdown();
+    removeTasks();
     return false;
   }
 
@@ -134,7 +146,6 @@ void Client::update() {
   
   // reconnect when not connected.
   if(auto_reconnect && state == REMOTE_STATE_DISCONNECTED) {
-
     uint64_t now = remoxly_hrtime();
 
     if(now < reconnect_timeout) {
@@ -192,9 +203,14 @@ bool Client::createContext() {
 }
 
 bool Client::createConnection() {
-
+  
   if(state == REMOTE_STATE_CONNECTING) {
     printf("Error: already trying to connect.\n");
+    return false;
+  }
+
+  if(!context) {
+    printf("Error: trying to create a connection but the context is invalid.\n");
     return false;
   }
 
@@ -496,7 +512,9 @@ int Client::onCallbackReceive(char* data, size_t len) {
     }
 
     default: {
+#if !defined(NDEBUG)
       printf("Warning: unhandled server task: %d\n", task_id);
+#endif
       break;
     }
   }
@@ -526,7 +544,20 @@ void Client::onEvent(int event, Widget* w) {
 
   if(event != GUI_EVENT_VALUE_CHANGED) {
     return;
+  }
 
+  if(!context) {
+#if !defined(NDEBUG)
+    printf("Warning: no need to handle event because we're not connected.\n");
+#endif
+    return;
+  }
+
+  if(!isConnected()) {
+#if !defined(NDEBUG)
+    printf("Verbose: we're not connected so not handling widget events.\n");
+#endif
+    return;
   }
 
   std::string widget_json;

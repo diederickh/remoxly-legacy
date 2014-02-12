@@ -17,7 +17,7 @@
 #include <sstream>
 #include <string>
 
-class Character;
+struct Character;
 
 // -----------------------------------------------------
 

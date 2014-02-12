@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 
-set(REMOXLY_USE_32BIT ON)
-
-include(${CMAKE_CURRENT_LIST_DIR}/Triplet.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/../../../shared/cmake/Remoxly.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/../../remote/build/CMakeLists.txt)
 include(${CMAKE_CURRENT_LIST_DIR}/../../gui/build/CMakeLists.txt)
 include(${CMAKE_CURRENT_LIST_DIR}/../../bitmapfont/build/CMakeLists.txt)
@@ -30,7 +28,7 @@ install(FILES ${remoxly_remote_extern_headers} DESTINATION thirdparty/ofxRemoxly
 install(FILES ${remoxly_bitmapfont_headers} DESTINATION thirdparty/ofxRemoxly/include/bitmapfont/)
 install(FILES ${remoxly_textinput_headers} DESTINATION thirdparty/ofxRemoxly/include/textinput/)
 install(DIRECTORY ${remoxly_remote_extern_ssl_headers} DESTINATION thirdparty/ofxRemoxly/include/)
-install(FILES ${remoxly_remote_extern_libs} DESTINATION thirdparty/ofxRemoxly/libs/)
+install(FILES ${remoxly_extern_libs} DESTINATION thirdparty/ofxRemoxly/libs/)
 install(FILES ${ofxremoxly_sources} DESTINATION thirdparty/ofxRemoxly/src/)
 install(FILES ${ofxremoxly_headers} DESTINATION thirdparty/ofxRemoxly/include/ofxRemoxly/)
 

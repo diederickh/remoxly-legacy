@@ -97,7 +97,6 @@ int main() {
   float particle_color[3] = { 0.0f } ;
   float trail_color[3] = { 0.0f } ;
   int num_files = 5;
-  std::string name = "";
   std::string filename = "";
   GLuint tex_id = rx_create_texture(rx_to_data_path("texture.png"));
 
@@ -111,8 +110,6 @@ int main() {
 
   // Create a new Group for our particle settings.
   Group* particle_group = panel.addGroup("Particles");
-  //  particle_group->add(new Text("Server", name));
-  //  particle_group->add(new Text("Port", name));
   particle_group->add(new ColorRGB("Particle Color", particle_color));
   particle_group->add(new ColorRGB("Trail color", trail_color, 15, 0.5f)); // create 15 color selection; and a saturation level of 0.5f
   particle_group->add(new Slider<float>("Trail Width", trail_width, 0.0f, 100.0f, 0.1f)); // range: [0.0f - 100.0f], step: 0.1f
@@ -130,10 +127,6 @@ int main() {
   storage_group->add(new Slider<int>("Number of files", num_files, 0, 15, 1));
   storage_group->add(new Button("Save", 0, GUI_ICON_FLOPPY_O, button_click));
   storage_group->add(new Button("Load", 1, GUI_ICON_REFRESH, button_click));
-
-
-//  data.clear();
-  //  std::copy(str.begin(), str.end(), std::back_inserter(data));
 
   Client client("127.0.0.1", 2255, false);
   client.addPanel(&panel);

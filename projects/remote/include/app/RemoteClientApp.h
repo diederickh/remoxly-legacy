@@ -79,7 +79,7 @@ void remote_client_app_connect_callback(int id, void* user) {
 
   RemoteClientApp* app = static_cast<RemoteClientApp*>(user);
 
-  StorageXML xml("remote.xml");
+  StorageXML xml("remote_control.xml");
   xml.addGroup(&app->gui);
   xml.save();
  
@@ -100,7 +100,7 @@ RemoteClientApp::RemoteClientApp(std::string host, int ip)
 
   client.auto_reconnect = false;
 
-  StorageXML xml("remote.xml");
+  StorageXML xml("remote_control.xml");
   xml.addGroup(&gui);
   xml.load();
 }

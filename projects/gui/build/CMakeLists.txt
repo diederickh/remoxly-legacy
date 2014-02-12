@@ -2,13 +2,11 @@ cmake_minimum_required(VERSION 2.8)
 
 project(gui)
 
-include(${CMAKE_CURRENT_LIST_DIR}/Triplet.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/../../../shared/cmake/Remoxly.cmake)
 
 set(app "gui")
 
 set(bd ${CMAKE_CURRENT_LIST_DIR}/../)
-set(bitmapfont_bd ${bd}/../bitmapfont/)
-set(textinput_bd ${bd}/../textinput/)
 
 if(CMAKE_BUILD_TYPE STREQUAL Debug)
   set(app "${app}_debug")
@@ -45,87 +43,12 @@ set(app_sources
   ${remoxly_lib_sources}
 )
 
-if(APPLE)
-
-  find_library(fr_corefoundation CoreFoundation)
-  find_library(fr_cocoa Cocoa)
-  find_library(fr_opengl OpenGL)
-  find_library(fr_iokit IOKit)
-  find_library(fr_corevideo CoreVideo)
-
-  set(app_libs
-    ${extern_lib_dir}/libglfw3.a
-    ${extern_lib_dir}/libpng.a
-    ${fr_corefoundation}
-    ${fr_cocoa}
-    ${fr_opengl}
-    ${fr_iokit}  
-    ${fr_corevideo}
-    -lz
-    )
-
-  set(remoxly_libs ${app_libs})
-
-elseif(UNIX)
-
-  list(APPEND app_sources
-    ${extern_source_dir}/GLXW/glxw.c
-    )
-  
-  set(app_libs
-    ${extern_lib_dir}/libglfw3.a
-    ${extern_lib_dir}/libpng16.a
-    ${extern_lib_dir}/libz.a
-    GL
-    X11
-    Xxf86vm
-    Xrandr
-    pthread
-    dl
-    Xi
-    )
-
-endif()
-
-if(WIN32)
-
-  list(APPEND app_sources
-    ${extern_source_dir}/GLXW/glxw.c
-    )
-
-  add_definitions(
-    -DWIN32_LEAN_AND_MEAN
-    )
-
-  set(app_libs
-    ${extern_lib_dir}/glfw3.lib
-    Opengl32.lib
-    ws2_32.lib
-    psapi.lib
-    iphlpapi.lib
-    )
-
-  if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    list(APPEND app_libs  
-      ${extern_lib_dir}/libpng16_staticd.lib
-      ${extern_lib_dir}/zlibstaticd.lib
-      )
-  else()
-    list(APPEND app_libs  
-      ${extern_lib_dir}/libpng16_static.lib
-      ${extern_lib_dir}/zlibstatic.lib
-      )
-  endif()
-
-endif()
-
-
 if(NOT TARGET ${app})
-  add_executable(${app} ${app_sources})
+  add_executable(${app} ${app_sources} ${remoxly_app_sources})
 
   add_library(remoxly STATIC ${remoxly_lib_sources})
 
-  target_link_libraries(${app} ${app_libs})
+  target_link_libraries(${app} ${remoxly_app_libs})
 
   install(TARGETS ${app} DESTINATION bin)
 
@@ -187,7 +110,7 @@ if(NOT TARGET ${app})
     ${bd}/src/gui/Storage.cpp
     ${bd}/src/gui/Render.cpp
     )
-  
+
   set(remoxly_lib_bitmapfont_headers
     ${bitmapfont_bd}/include/bitmapfont/BitmapFont.h
     )

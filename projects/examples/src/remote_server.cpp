@@ -8,7 +8,7 @@ void sighandler(int sig);
 bool must_run = true;
 
 int main() {
-  printf("Server.\n");
+  printf("Remoxly Standalone Server (20140213).\n");
 
   signal(SIGINT, sighandler);
 

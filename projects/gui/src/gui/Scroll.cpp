@@ -203,9 +203,8 @@ void Scroll::beginScissor() {
   int win_w;
   int win_h;
 
-
   render->getWindowSize(win_w, win_h);
- 
+
   render->beginScissor();
 
   render->scissor(visible_x, 

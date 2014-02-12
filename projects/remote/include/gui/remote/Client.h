@@ -34,9 +34,9 @@
 #include <gui/remote/ClientListener.h>
 #include <gui/WidgetListener.h>
 #include <stdint.h>
+#include <libwebsockets.h>
 
 extern "C" {
-#  include <libwebsockets.h>
 #  include <jansson.h>
 }
 

@@ -15,12 +15,12 @@
 
 #include <string> 
 #include <map>
+#include <libwebsockets.h>
 #include <gui/remote/Utils.h>
 #include <gui/remote/Buffer.h>
 #include <gui/remote/Deserializer.h>
 
 extern "C" {
-#  include <libwebsockets.h>
 #  include <jansson.h>
 }
 

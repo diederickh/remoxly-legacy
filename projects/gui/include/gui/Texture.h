@@ -13,6 +13,8 @@
 #include <gui/Types.h>
 #include <string>
 
+namespace rx { 
+
 class Group;
 class TextureInfo;
 
@@ -27,5 +29,7 @@ class Texture : public Widget {
  public:
   TextureInfo* tex_info;
 };
+
+} // namespace rx
 
 #endif

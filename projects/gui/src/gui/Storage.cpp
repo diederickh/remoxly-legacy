@@ -2,6 +2,8 @@
 #include <gui/Group.h>
 #include <gui/Panel.h>
 
+namespace rx { 
+
 bool Storage::load() {
   return false;
 }
@@ -30,5 +32,5 @@ void Storage::addGroup(Group* g) {
   groups.push_back(g);
 }
 
-
+} // namespace rx
 

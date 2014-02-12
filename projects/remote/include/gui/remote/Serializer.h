@@ -21,15 +21,16 @@ extern "C" {
 #  include <jansson.h>
 }
 
+namespace rx { 
 
 class Serializer {
 
  public:
-  void addGroup(Group* g);                                 /* adds a group that we need to serialize */
-  void addPanel(Panel* p);                                 /* adds a panel that we need to serialize */
-  bool serialize(std::string& result);                     /* serializes all added groups and panels and stores the json result in the given param. returns true on success else false. */
-  bool canSerialize();                                     /* returns true when groups or panels are added and we can serialize */
-  void clear();                                            /* removes the added panels and groups */
+  void addGroup(Group* g);                                           /* adds a group that we need to serialize */
+  void addPanel(Panel* p);                                           /* adds a panel that we need to serialize */
+  bool serialize(std::string& result);                               /* serializes all added groups and panels and stores the json result in the given param. returns true on success else false. */
+  bool canSerialize();                                               /* returns true when groups or panels are added and we can serialize */
+  void clear();                                                      /* removes the added panels and groups */
 
   std::string serializeTask(int task, std::string& value, int id);   /* generates the json for the given task and connection/gui id. */
   bool serializeValueChanged(Widget* w, std::string& json);          /* generates the json string that represents the value for the given widget. */
@@ -49,16 +50,16 @@ class Serializer {
  private:
 
   /* serialization */
-  json_t* serializeGroups(std::vector<Group*>& all);       /* serializes the given vector with groups */
-  json_t* serializeGroup(Group* group);                    /* serializes a specific group */
-  json_t* serializePanels(std::vector<Panel*>& all);       /* serializes all panels and groups inside the given vector */
-  json_t* serializePanel(Panel* panel);                    /* serialize the given panel, and the groups contained */
-  json_t* serializeSlider(Slider<int>* slider);            /* serializes a slider of type int */
-  json_t* serializeSlider(Slider<float>* slider);          /* serializes a slider of type float */
-  json_t* serializeToggle(Toggle* toggle);                 /* serializes a toggle */
-  json_t* serializeColorRGB(ColorRGB* color);              /* serializes a color rgb */
-  json_t* serializeButton(Button* button);                 /* serializes a button */
-  json_t* serializeText(Text* text);                        /* serializes a text field */
+  json_t* serializeGroups(std::vector<Group*>& all);                 /* serializes the given vector with groups */
+  json_t* serializeGroup(Group* group);                              /* serializes a specific group */
+  json_t* serializePanels(std::vector<Panel*>& all);                 /* serializes all panels and groups inside the given vector */
+  json_t* serializePanel(Panel* panel);                              /* serialize the given panel, and the groups contained */
+  json_t* serializeSlider(Slider<int>* slider);                      /* serializes a slider of type int */
+  json_t* serializeSlider(Slider<float>* slider);                    /* serializes a slider of type float */
+  json_t* serializeToggle(Toggle* toggle);                           /* serializes a toggle */
+  json_t* serializeColorRGB(ColorRGB* color);                        /* serializes a color rgb */
+  json_t* serializeButton(Button* button);                           /* serializes a button */
+  json_t* serializeText(Text* text);                                 /* serializes a text field */
 
   /* utils */
   bool appendToArray(json_t* parent, json_t* child);
@@ -67,5 +68,7 @@ class Serializer {
   std::vector<Panel*> panels;
   std::vector<Group*> groups;
 };
+
+} // namespace rx 
 
 #endif

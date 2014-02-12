@@ -2,6 +2,8 @@
 #include <gui/Render.h>
 #include <gui/Group.h>
 
+namespace rx { 
+
 Texture::Texture(std::string label, TextureInfo* info)
   :Widget(GUI_TYPE_TEXTURE, label)
   ,tex_info(info)
@@ -25,7 +27,9 @@ void Texture::setGroup(Group* g) {
 }
 
 void Texture::create() {
+
   render->addRectangle(x, y, w, h, group->bg_color, true);
   render->addRectangle(x, y, w, h, tex_info);
 }
 
+} // namespace rx

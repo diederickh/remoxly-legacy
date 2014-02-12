@@ -23,6 +23,8 @@
 #include <gui/Group.h>
 #include <gui/Scroll.h>
 
+namespace rx { 
+
 class Panel : public Widget {
 
  public:
@@ -47,5 +49,7 @@ class Panel : public Widget {
   Scroll scroll;
   std::vector<Group*> groups;
 };
+
+} // namespace rx
 
 #endif

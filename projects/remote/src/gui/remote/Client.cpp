@@ -3,6 +3,8 @@
 #include <gui/remote/Serializer.h>
 #include <gui/remote/Client.h>
 
+namespace rx { 
+
 // -----------------------------------------------------------
 
 int remoxly_client_websocket(struct libwebsocket_context* ctx,
@@ -575,3 +577,5 @@ void Client::onEvent(int event, Widget* w) {
   // trigger a write
   libwebsocket_callback_on_writable(context, ws);
 }
+
+} // namespace rx 

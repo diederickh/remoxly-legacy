@@ -4,6 +4,8 @@
 #include <gui/remote/Server.h>
 #include <signal.h>
 
+using namespace rx; 
+
 void sighandler(int sig);
 bool must_run = true;
 

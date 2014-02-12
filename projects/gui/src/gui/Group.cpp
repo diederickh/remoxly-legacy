@@ -1,6 +1,8 @@
 #include <gui/Utils.h>
 #include <gui/Group.h>
 
+namespace rx { 
+
 // -------------------------------------------
 
 void group_close_click(int id, void* user) {
@@ -205,3 +207,5 @@ void Group::unsetNeedsRedraw() {
   close_button.needs_redraw = false;
   open_button.needs_redraw = false;
 }
+
+} // namespace rx

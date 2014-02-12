@@ -13,6 +13,8 @@
 
 #include <gui/Remoxly.h>
 
+namespace rx { 
+
 class Generator {
  public:
   virtual Panel* createPanel(int h = 200) = 0;                                                                 /* create a new panel with it's own renderer */
@@ -25,5 +27,7 @@ class Generator {
   virtual Button* createButton(std::string label, int id, int buttonID, unsigned int icon) = 0;                /* create a button */
   virtual Text* createText(std::string label, int id, int textw) = 0;                                                     /* create a text */
 };
+
+} // namespace rx 
 
 #endif

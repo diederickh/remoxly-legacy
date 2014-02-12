@@ -27,12 +27,12 @@ endif()
 
 # minimal GLFW example
 add_executable("glfw_minimal${debug_flag}" ${remoxly_app_sources} ${sd}/glfw_minimal.cpp)
-target_link_libraries("glfw_minimal${debug_flag}" ${remoxly_remote_libs} remoxly remoxly_remote  ${remoxly_app_libs})
+target_link_libraries("glfw_minimal${debug_flag}" ${remoxly_remote_libs} remoxly remoxly_remote  ${remoxly_app_libs} ${remoxly_extern_libs})
 install(TARGETS "glfw_minimal${debug_flag}" DESTINATION bin)
 
 # server example 
 add_executable("remote_server${debug_flag}" ${sd}/remote_server.cpp ${remoxly_app_sources})
-target_link_libraries("remote_server${debug_flag}" ${remoxly_libs} ${remoxly_remote_libs} remoxly remoxly_remote ${remoxly_app_libs})
+target_link_libraries("remote_server${debug_flag}" ${remoxly_libs} ${remoxly_remote_libs} remoxly remoxly_remote ${remoxly_app_libs} ${remoxly_extern_libs})
 install(TARGETS "remote_server${debug_flag}" DESTINATION bin)
 
 

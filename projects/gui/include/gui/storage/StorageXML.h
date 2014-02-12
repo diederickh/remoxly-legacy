@@ -15,6 +15,8 @@
 #include <fstream>
 #include <sstream>
 
+namespace rx { 
+
 class StorageXML : public Storage {
 
  public:
@@ -22,11 +24,13 @@ class StorageXML : public Storage {
   bool save();                                       /* save the added panels/gui into the xml */
   bool load();                                       /* load previously saved settings from the xml */
 
-  Group* findGroup(std::string name);                    /* internally used to find the gui by the given (cleaned up) name */
-  Widget* findWidget(Group* g, std::string name);      /* find a widget with the given (cleaned up) name */
+  Group* findGroup(std::string name);                /* internally used to find the gui by the given (cleaned up) name */
+  Widget* findWidget(Group* g, std::string name);    /* find a widget with the given (cleaned up) name */
 
  public:
   std::string filepath;                              /* filepath where we save/load data into/from */
 };
+
+} // namespace rx 
 
 #endif

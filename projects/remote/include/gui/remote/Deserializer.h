@@ -18,6 +18,8 @@ extern "C" {
 #  include <jansson.h>
 }
 
+namespace rx { 
+
 class Generator;
 class Group;
 class Panel;
@@ -58,6 +60,8 @@ class Deserializer {
  public:
   Generator* gen;
 };
+
+} // namespace rx 
 
 #endif
 

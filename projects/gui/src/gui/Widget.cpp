@@ -4,6 +4,8 @@
 #include <gui/WidgetListener.h>
 #include <stdio.h>
 
+namespace rx { 
+
 uint32_t Widget::generated_ids = 0;
 
 Widget::Widget(int type, std::string label)
@@ -406,3 +408,5 @@ void Widget::notify(int event) {
     (*it)->onEvent(event, this);
   }
 }
+
+} // namespace rx 

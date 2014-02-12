@@ -1,5 +1,7 @@
 #include <gui/Render.h>
 
+namespace rx { 
+
 Render::Render() {}
 
 bool Render::setup() {  return false; }
@@ -48,4 +50,4 @@ void Render::onCharPress(unsigned int key) { }
 
 void Render::onKeyPress(int key, int mods) { }
 
-
+}  // namespace rx 

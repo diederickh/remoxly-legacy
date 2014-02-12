@@ -27,6 +27,8 @@
 #include <textinput/TextInput.h>
 #include "FreePixel.h"
 
+using namespace rx; 
+
 TextInput* text_input_ptr = NULL;
 
 #define ROXLU_USE_ALL

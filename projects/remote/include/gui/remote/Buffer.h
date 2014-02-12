@@ -23,6 +23,8 @@ extern "C" {
 
 // -----------------------------------------------------------
 
+namespace rx { 
+
 class Buffer {
 
  public:
@@ -97,5 +99,7 @@ inline void Buffer::resize(size_t nbytes) {
   nbytes += LWS_SEND_BUFFER_POST_PADDING;
   data.resize(nbytes);
 }
+
+} // namespace rx 
 
 #endif

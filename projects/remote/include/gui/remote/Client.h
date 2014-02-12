@@ -40,6 +40,8 @@ extern "C" {
 #  include <jansson.h>
 }
 
+namespace rx { 
+
 // -----------------------------------------------------------
 
 int remoxly_client_websocket(struct libwebsocket_context* ctx, 
@@ -127,4 +129,5 @@ class Client : public WidgetListener {
   std::map<int, Widget*> widgets;                                          /* the widgets that are added with addPanel/addGroup, used to set changed values */
 };
 
+} // namespace rx
 #endif

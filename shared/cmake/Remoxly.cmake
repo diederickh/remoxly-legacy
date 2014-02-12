@@ -38,9 +38,7 @@ if(APPLE)
   find_library(fr_iokit IOKit)
   find_library(fr_corevideo CoreVideo)
 
-  set(app_libs
-    ${extern_lib_dir}/libglfw3.a
-    ${extern_lib_dir}/libpng.a
+  set(remoxly_app_libs
     ${fr_corefoundation}
     ${fr_cocoa}
     ${fr_opengl}
@@ -49,9 +47,9 @@ if(APPLE)
     -lz
     )
 
-  set(remoxly_libs ${app_libs})
-
   set(remoxly_extern_libs
+    ${extern_lib_dir}/libglfw3.a
+    ${extern_lib_dir}/libpng.a
      ${extern_lib_dir}/libjansson.a
      ${extern_lib_dir}/libwebsockets.a
      ${extern_lib_dir}/libssl.a
@@ -64,7 +62,7 @@ elseif(UNIX)
     ${extern_source_dir}/GLXW/glxw.c
     )
   
-  set(app_libs
+  set(remoxly_app_libs
     ${extern_lib_dir}/libglfw3.a
     ${extern_lib_dir}/libpng16.a
     ${extern_lib_dir}/libz.a
@@ -88,10 +86,6 @@ elseif(WIN32)
     )
 
   set(remoxly_app_libs
-    ${extern_lib_dir}/glfw3.lib
-    ${extern_lib_dir}/libeay32.lib
-    ${extern_lib_dir}/ssleay32.lib
-    ${extern_lib_dir}/websockets_static.lib
     Opengl32.lib
     ws2_32.lib
     psapi.lib
@@ -107,12 +101,6 @@ elseif(WIN32)
 
   if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 
-    list(APPEND remoxly_app_libs  
-      ${extern_lib_dir}/libpng16_staticd.lib
-      ${extern_lib_dir}/zlibstaticd.lib
-      ${extern_lib_dir}/jansson_d.lib
-      )
-
     list(APPEND remoxly_extern_libs
       ${extern_lib_dir}/libpng16_staticd.lib
       ${extern_lib_dir}/zlibstaticd.lib
@@ -126,11 +114,6 @@ elseif(WIN32)
       ${extern_lib_dir}/jansson.lib
       )
 
-    list(APPEND remoxly_app_libs  
-      ${extern_lib_dir}/libpng16_static.lib
-      ${extern_lib_dir}/zlibstatic.lib
-      ${extern_lib_dir}/jansson.lib
-      )
   endif()
 
 endif()

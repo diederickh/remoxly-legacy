@@ -3,6 +3,8 @@
 
 #include <string>
 
+namespace rx { 
+
 /* just a one liner to set the colors in rgba, must be float 4 */
 void gui_fill_color(float r, float g, float b, float a, float* rgba);       
 
@@ -26,5 +28,7 @@ template<class T>
 T gui_clamp(const T& value, const T& low, const T& high) {
   return value < low ? low : (value > high ? high : value);
 }
+
+} // namespace rx 
 
 #endif

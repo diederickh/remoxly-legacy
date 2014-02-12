@@ -13,6 +13,8 @@
 #ifndef REMOXLY_GUI_LISTENER_H
 #define REMOXLY_GUI_LISTENER_H
 
+namespace rx { 
+
 class Widget;
 
 class WidgetListener {
@@ -20,5 +22,7 @@ class WidgetListener {
  public:
   virtual void onEvent(int event, Widget* w) = 0;
 };
+
+} // namespace rx 
 
 #endif

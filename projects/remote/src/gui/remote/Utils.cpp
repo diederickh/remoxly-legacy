@@ -1,5 +1,7 @@
 #include <gui/remote/Utils.h>
 
+namespace rx { 
+
 // -----------------------------------------------------------
 
 int remoxly_websocket_write(struct libwebsocket* ws, 
@@ -177,3 +179,5 @@ std::string remoxly_websocket_reason_to_string(enum libwebsocket_callback_reason
     default: return "UNKNOWN REASON"; 
   }
 }
+
+} // namespace rx 

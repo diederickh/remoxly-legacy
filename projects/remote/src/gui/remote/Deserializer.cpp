@@ -4,6 +4,8 @@
 #include <gui/remote/Deserializer.h>
 #include <gui/remote/Utils.h>
 
+namespace rx { 
+
 Deserializer::Deserializer(Generator* gen)
   :gen(gen)
 {
@@ -524,3 +526,5 @@ bool Deserializer::deserializeValueText(Text* text, json_t* js) {
   text->needs_redraw = true;
   return true;
 }
+
+} // namespace rx

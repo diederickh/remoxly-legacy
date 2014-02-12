@@ -2,6 +2,8 @@
 #include <gui/Render.h>
 #include <gui/Toggle.h>
 
+namespace rx { 
+
 Toggle::Toggle(std::string label, bool& value)
   :Widget(GUI_TYPE_TOGGLE, label)
   ,value(value)
@@ -55,3 +57,5 @@ void Toggle::setValue(bool v) {
   value = v;
   notify(GUI_EVENT_VALUE_CHANGED);
 }
+
+} // namespace rx

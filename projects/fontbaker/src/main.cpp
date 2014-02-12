@@ -29,6 +29,8 @@
 #include <bitmapfont/BitmapFontXML.h>
 #include <fontbaker/BitmapFontBaker.h>
 
+using namespace rx;
+
 int main(int argc, char** argv) {
 
   printf("\nFontBaker v.0.0.0.0.1\n");

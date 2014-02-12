@@ -23,6 +23,8 @@
 #define ROXLU_USE_ALL
 #define ROXLU_IMPLEMENTATION
 #include <tinylib.h>
+
+using namespace rx;
  
 void button_callback(GLFWwindow* win, int bt, int action, int mods);
 void cursor_callback(GLFWwindow* win, double x, double y);

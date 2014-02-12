@@ -24,6 +24,8 @@ extern "C" {
 #  include <jansson.h>
 }
 
+namespace rx  {
+
 // -----------------------------------------------------------
 
 class Server;
@@ -121,5 +123,7 @@ class Server {
   /* protocol */
   Deserializer deserializer;
 };
+
+} // namespace rx 
 
 #endif

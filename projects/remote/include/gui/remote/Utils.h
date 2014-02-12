@@ -16,6 +16,8 @@ extern "C" {
 
 #define REMOXLY_FREE_JSON(el) { if(el) { json_decref(el); el = NULL; } el = NULL; } 
 
+namespace rx { 
+
 std::string remoxly_websocket_reason_to_string(enum libwebsocket_callback_reasons reason);
 
 int remoxly_websocket_write(struct libwebsocket* ws, 
@@ -42,5 +44,7 @@ struct ConnectionTask {
 };
 
 // -----------------------------------------------------------
+
+} // namespace rx 
 
 #endif

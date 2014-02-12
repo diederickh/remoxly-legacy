@@ -28,6 +28,8 @@
 #include <stdint.h>
 #include <gui/Types.h>
 
+namespace rx { 
+
 class Group;
 class Render;
 class WidgetListener;
@@ -125,5 +127,7 @@ class Widget {
 inline bool Widget::isDrawn() {
   return !(state & GUI_STATE_UNUSED);
 }
+
+} // namespace rx
 
 #endif

@@ -152,6 +152,8 @@ static const char* BITMAP_FONT_FS = ""
   "";
 #endif
 
+namespace rx { 
+
 // ------------------------------------------------------------------------------
 
 struct Character {
@@ -237,6 +239,7 @@ class BitmapFont {
   std::vector<CharacterVertex> vertices;
 };
 
+} // namespace rx
 #endif
 
 // ------------------------------------------------------------------------------
@@ -244,6 +247,8 @@ class BitmapFont {
 // ------------------------------------------------------------------------------
 
 #if defined(BITMAP_FONT_IMPLEMENTATION)
+
+namespace rx { 
 
 GLuint BitmapFont::prog = 0;
 GLuint BitmapFont::vert = 0;
@@ -554,5 +559,7 @@ CharacterVertex::CharacterVertex(float x, float y, int s, int t, float* rgba)
   fg_color[2] = rgba[2]; 
   fg_color[3] = rgba[3];
 }
+
+} // namespace rx
 
 #endif // BITMAP_FONT_IMPLEMENTATION

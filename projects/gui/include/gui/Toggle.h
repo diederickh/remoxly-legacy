@@ -13,6 +13,8 @@
 #include <gui/Widget.h>
 #include <gui/Types.h>
 
+namespace rx { 
+
 class Toggle : public Widget {
 
  public:
@@ -25,5 +27,7 @@ class Toggle : public Widget {
  public:
   bool& value;
 };
+
+} // namespace rx 
 
 #endif

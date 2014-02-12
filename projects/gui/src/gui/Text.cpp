@@ -2,6 +2,8 @@
 #include <gui/Render.h>
 #include <gui/Group.h>
 
+namespace rx { 
+
 Text::Text(std::string label, std::string& value, int textw)
   :Widget(GUI_TYPE_TEXT, label)
   ,value(value)
@@ -81,3 +83,5 @@ void Text::disableInputAndCopyValue() {
 
   notify(GUI_EVENT_VALUE_CHANGED);
 }
+
+} // namespace rx

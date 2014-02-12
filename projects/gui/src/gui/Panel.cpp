@@ -4,6 +4,8 @@
 #include <gui/Group.h>
 #include <stdio.h>
 
+namespace rx { 
+
 Panel::Panel(Render* r, int height)
   :Widget(GUI_TYPE_PANEL, "")
 {
@@ -153,3 +155,4 @@ bool Panel::needsRedraw() {
   return needs_redraw || scroll.needs_redraw || needsRedrawChildren();
 }
 
+} // namespace rx

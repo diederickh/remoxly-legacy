@@ -17,6 +17,8 @@
 #include <sstream>
 #include <string>
 
+namespace rx { 
+
 struct Character;
 
 // -----------------------------------------------------
@@ -97,5 +99,6 @@ void Render::getNumberInputValue(T& value) {
   ss >> value;
 }
 
+} // namespace rx
 
 #endif

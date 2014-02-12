@@ -48,7 +48,7 @@ if(NOT TARGET ${app})
 
   add_library(remoxly STATIC ${remoxly_lib_sources})
 
-  target_link_libraries(${app} ${remoxly_app_libs})
+  target_link_libraries(${app} ${remoxly_app_libs} ${remoxly_extern_libs})
 
   install(TARGETS ${app} DESTINATION bin)
 

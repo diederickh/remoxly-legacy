@@ -2,6 +2,8 @@
 #include <gui/Group.h>
 #include <gui/Render.h>
 
+namespace rx { 
+
 Button::Button(std::string title, int id, unsigned int icon, gui_button_callback cb, void* user, int iconx, int icony)
   :Widget(GUI_TYPE_BUTTON, title)
   ,icon_button(id, icon, cb, user)
@@ -83,3 +85,5 @@ void Button::onMouseRelease(float mx, float my, int button, int modkeys) {
 void Button::call() {
   icon_button.call();
 }
+
+} // namespace rx

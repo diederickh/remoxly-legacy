@@ -28,6 +28,8 @@
 #define ROXLU_IMPLEMENTATION
 #include <tinylib.h>
 
+using namespace rx ; 
+
 // Because we want to access the Panel we create below,
 // we store a pointer to it int panel_ptr.
 Panel* panel_ptr = NULL;

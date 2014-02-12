@@ -4,6 +4,8 @@
 #include <gui/remote/Types.h>
 #include <gui/remote/Server.h>
 
+namespace rx { 
+
 // -----------------------------------------------------------
 
 int remoxly_server_websocket(struct libwebsocket_context* ctx,
@@ -476,3 +478,5 @@ int Server::onCallbackDelPollFD(struct libwebsocket* ws) {
   closeConnection(ws);
   return 0;
 }
+
+} // namespace rx 

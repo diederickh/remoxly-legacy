@@ -6,6 +6,8 @@
 #include <gui/Types.h>
 #include <gui/IconButton.h>
 
+namespace rx { 
+
 class Button : public Widget {
 
  public:
@@ -24,5 +26,6 @@ class Button : public Widget {
   IconButton icon_button;
 };
 
+} // namespace rx 
 
 #endif

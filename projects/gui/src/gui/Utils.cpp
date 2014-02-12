@@ -4,6 +4,8 @@
 #include <sstream>
 #include <gui/Utils.h>
 
+namespace rx { 
+
 void gui_fill_color(float r, float g, float b, float a, float* rgba) {
   rgba[0] = r;
   rgba[1] = g;
@@ -69,3 +71,5 @@ void gui_hsv_to_rgb(float h, float s, float v, float& r, float& g, float& b) {
   g = v * (p + tmp_g * s);    
   b = v * (p + tmp_b * s);        
 }
+
+} // namespace rx 

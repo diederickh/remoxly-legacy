@@ -13,6 +13,8 @@
 #include <gui/Types.h>
 #include <string>
 
+namespace rx { 
+
 class Text : public Widget {
 
  public:
@@ -33,5 +35,7 @@ class Text : public Widget {
   int text_x;
   int text_w;
 };
+
+} // namespace rx
 
 #endif

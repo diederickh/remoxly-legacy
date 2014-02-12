@@ -11,6 +11,8 @@
 
 using namespace rapidxml;
 
+namespace rx { 
+
 StorageXML::StorageXML(std::string filepath)
   :filepath(filepath)
 {
@@ -257,3 +259,5 @@ Widget* StorageXML::findWidget(Group* g, std::string name) {
   }
   return NULL;
 }
+
+} // namespace rx

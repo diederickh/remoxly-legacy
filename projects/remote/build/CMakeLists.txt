@@ -51,7 +51,7 @@ if(NOT TARGET ${app})
 
   add_library(remoxly_remote ${remoxly_remote_sources})
 
-  target_link_libraries(${app} ${app_libs} remoxly remoxly_remote ${remoxly_app_libs})
+  target_link_libraries(${app} ${app_libs} remoxly remoxly_remote ${remoxly_app_libs} ${remoxly_extern_libs})
 
   install(TARGETS ${app} DESTINATION bin)
 endif()

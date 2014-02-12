@@ -29,6 +29,8 @@
 #include <gui/IconButton.h>
 #include <gui/Utils.h>
 
+namespace rx { 
+
 // -------------------------------------------
 
 static void scroll_up_click(int id, void* user);
@@ -85,5 +87,7 @@ class Scroll : public Widget {
   IconButton up_button;
   IconButton down_button;
 };
+
+} // namespace rx 
 
 #endif

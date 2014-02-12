@@ -12,6 +12,8 @@
 
 #include <vector>
 
+namespace rx { 
+
 class Group;
 class Panel;
 
@@ -26,5 +28,7 @@ class Storage {
  public:
   std::vector<Group*> groups;
 };
+
+} // namespace rx
 
 #endif

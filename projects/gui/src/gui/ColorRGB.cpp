@@ -3,6 +3,8 @@
 #include <gui/Render.h>
 #include <gui/Utils.h>
 
+namespace rx { 
+
 ColorRGB::ColorRGB(std::string label, float* rgb, int ncolors, float sat, float val)
   :Widget(GUI_TYPE_COLOR_RGB, label)
   ,rgb(rgb)
@@ -91,3 +93,5 @@ void ColorRGB::setPercentageValue(float p) {
 
   notify(GUI_EVENT_VALUE_CHANGED);
 }
+
+} // namespace rx 

@@ -3,6 +3,8 @@
 #include <gui/Render.h>
 #include <gui/Group.h>
 
+namespace rx { 
+
 // -------------------------------------------
 
 void scroll_up_click(int id, void* user) {
@@ -217,3 +219,4 @@ void Scroll::endScissor() {
   render->endScissor();
 }
 
+} // namespace rx 

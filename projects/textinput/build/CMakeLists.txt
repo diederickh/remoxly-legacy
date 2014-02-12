@@ -31,7 +31,7 @@ set(remoxly_textinput_headers ${app_headers})
 
 add_executable(${app} ${app_sources} ${remoxly_app_sources})
 
-target_link_libraries(${app} ${app_libs} ${remoxly_app_libs})
+target_link_libraries(${app} ${app_libs} ${remoxly_app_libs} ${remoxly_extern_libs})
 
 install(TARGETS ${app} DESTINATION bin)
 

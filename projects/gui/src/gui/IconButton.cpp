@@ -3,6 +3,8 @@
 #include <gui/Render.h>
 #include <gui/Group.h>
 
+namespace rx { 
+
 IconButton::IconButton(int callid, unsigned int icon, gui_button_callback cb, void* user)
   :Widget(GUI_TYPE_ICON_BUTTON, "")
   ,cb_id(callid)
@@ -89,3 +91,5 @@ void IconButton::call() {
     cb_click(cb_id, cb_user);
   }
 }
+
+} // namespace rx

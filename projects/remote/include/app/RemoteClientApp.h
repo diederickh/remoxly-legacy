@@ -12,6 +12,8 @@ extern "C" {
 #include <gui/gl/ImplementationGL.h>
 #include <gui/remote/Remote.h>
 
+using namespace rx;
+
 struct ColorRGBValue {
   ColorRGBValue():r(0.0f),g(0.0f),b(0.0f){}
   float r;

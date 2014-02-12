@@ -4,6 +4,8 @@
 #include <gui/Widget.h>
 #include <vector>
 
+namespace rx { 
+
 struct ColorRect {
   float rgba[4];
 };
@@ -28,5 +30,7 @@ class ColorRGB : public Widget {
   float sat;
   float val;
 };
+
+} // namespace rx
 
 #endif

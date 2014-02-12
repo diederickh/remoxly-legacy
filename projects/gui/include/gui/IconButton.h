@@ -18,6 +18,8 @@
 #include <gui/Widget.h>
 #include <gui/Types.h>
 
+namespace rx { 
+
 class Group;
 
 class IconButton : public Widget {
@@ -45,5 +47,7 @@ class IconButton : public Widget {
   int icon_x;             /* used to offset the icon position. */
   int icon_y;             /* used to offset the icon position. */ 
 };
+
+} // namespace rx
 
 #endif

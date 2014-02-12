@@ -166,6 +166,8 @@ static const char* GUI_RENDER_PT_RECT_FS = ""
 
 // -------------------------------------------
 
+namespace rx { 
+
 // position + colors
 struct GuiVertexPC {
 
@@ -324,6 +326,8 @@ class RenderGL : public Render {
   TextInput number_input;
 };
 
+} // namespace rx
+
 #endif
 
 // ------------------------------------------------------------------------------
@@ -331,6 +335,8 @@ class RenderGL : public Render {
 // ------------------------------------------------------------------------------
 
 #if defined(REMOXLY_IMPLEMENTATION)
+
+namespace rx { 
 
 // -------------------------------------------
 
@@ -978,5 +984,7 @@ void gui_ortho(float l, float r, float b, float t, float n, float f, float* dest
   dest[14] = - ((f + n) / (f - n));
   dest[15] = 1.0f;
 }
+
+} // namespace rx
 
 #endif

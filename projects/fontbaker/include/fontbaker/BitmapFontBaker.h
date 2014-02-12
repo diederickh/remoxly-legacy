@@ -30,12 +30,15 @@
 
 // --------------------------------------------------
 
+namespace rx { 
+
 class BitmapFontBaker {
  public:
   BitmapFontBaker();
   bool bake(std::string classname, std::string filepath, std::string destpath, int mode = BAKE_MODE_EMBED_RGB);
 };
 
+} // namespace 
 #endif
 
 
@@ -43,6 +46,8 @@ class BitmapFontBaker {
 // I M P L E M E N T A T I O N
 // ------------------------------------------------------------------------------
 #if defined(BITMAP_FONT_IMPLEMENTATION)
+
+namespace rx { 
 
 BitmapFontBaker::BitmapFontBaker() {
 }
@@ -192,6 +197,8 @@ bool BitmapFontBaker::bake(std::string classname, std::string filepath, std::str
     ss << "#ifndef " << uppername << "_BAKED_H\n"
        << "#define " << uppername << "_BAKED_H\n"
        << "\n"
+       << "namespace rx {\n" 
+       << "\n"
        << "static uint64_t " << varname << "_pixel_data[] = " << pixel_data << "\n"
        << "static int " << varname << "_char_data[] = " << char_data << "\n"
        << "";
@@ -226,6 +233,7 @@ bool BitmapFontBaker::bake(std::string classname, std::string filepath, std::str
        << "  }\n"
        << "};\n"
        << "\n"
+       << "} // namespace rx\n"
        << "#endif\n"
        << "";
     
@@ -244,5 +252,7 @@ bool BitmapFontBaker::bake(std::string classname, std::string filepath, std::str
 
   return true;
 }
+
+} // namespace rx
 
 #endif // BITMAP_FONT_IMPLEMENTATION

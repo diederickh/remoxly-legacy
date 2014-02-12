@@ -97,6 +97,7 @@ static const char* TEXT_INPUT_FS = ""
 #endif
 
 // ------------------------------------------------------------------------------
+namespace rx { 
 
 class TextInput {
 
@@ -153,6 +154,9 @@ class TextInput {
 # endif
 
 };
+
+} // namespace 
+
 #endif // ROXLU_TEXT_INPUT
 
 // ------------------------------------------------------------------------------
@@ -160,6 +164,8 @@ class TextInput {
 // ------------------------------------------------------------------------------
 
 #if defined(TEXT_INPUT_IMPLEMENTATION)
+
+namespace rx { 
 
 bool TextInput::is_initialized = false;
 GLuint TextInput::prog = 0;
@@ -494,6 +500,7 @@ void TextInput::draw() {
   glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
   font.draw();
-
 }
+
+} // namespace 
 #endif // TEXT_INPUT_IMPLEMENTATION

@@ -25,6 +25,8 @@
 #include <gui/Remoxly.h>
 #include <gui/gl/ImplementationGL.h>
 
+using namespace rx;
+
 #define USE_GROUP 0
 #define USE_PANEL 1
 Group* group_ptr0 = NULL;

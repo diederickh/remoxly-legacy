@@ -23,6 +23,8 @@
 #include <gui/Render.h>
 #include <gui/IconButton.h>
 
+namespace rx { 
+
 // -------------------------------------------
 
 static void group_close_click(int id, void* user);
@@ -81,5 +83,6 @@ class Group : public Widget {
   IconButton open_button;
 };
 
+}  // namespace rx
 
 #endif

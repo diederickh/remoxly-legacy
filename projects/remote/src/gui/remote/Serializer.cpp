@@ -3,6 +3,8 @@
 #include <gui/remote/Serializer.h>
 #include <gui/remote/Types.h>
 
+namespace rx { 
+
 bool Serializer::serialize(std::string& result) {
   
   if(!groups.size() && !panels.size()) {
@@ -589,3 +591,5 @@ json_t* Serializer::serializeValueText(Text* text) {
                                "v", text->value.c_str());
   return js_value;
 }
+
+} // namespace rx 

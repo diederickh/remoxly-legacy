@@ -47,6 +47,8 @@
 
 #define BMF_XML_CHECK(node) { if(!node) { return false; }  }
 
+namespace rx { 
+
 class BitmapFontXML : public BitmapFont {
 
  public:
@@ -60,6 +62,7 @@ class BitmapFontXML : public BitmapFont {
   std::string image_path;
 };
 
+} // namespace rx
 #endif
 
 // ------------------------------------------------------------------------------
@@ -75,6 +78,8 @@ class BitmapFontXML : public BitmapFont {
 #include <tinylib.h>
 
 using namespace rapidxml;
+
+namespace rx { 
 
 // ------------------------------------------------------------------------------
 
@@ -172,7 +177,6 @@ bool BitmapFontXML::parseXML(std::string filepath) {
   return true;
 }
 
-
 bool BitmapFontXML::createTextureFromPNG(std::string filepath) {
 
   if(!image_path.size()) {
@@ -194,5 +198,7 @@ bool BitmapFontXML::createTextureFromPNG(std::string filepath) {
   pix = NULL;
   return true;
 }
+
+} // namespace
 
 #endif // defined(BITMAP_FONT_IMPLEMENTATION)

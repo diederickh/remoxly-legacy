@@ -16,6 +16,8 @@
 #include <gui/IconButton.h>
 #include <gui/Utils.h>
 
+namespace rx { 
+
 // -------------------------------------------
 
 static void slider_min_click(int id, void* user);
@@ -349,4 +351,6 @@ void Slider<T>::unsetNeedsRedraw() {
   min_button.needs_redraw = false;
   plus_button.needs_redraw = false;
 }
+
+} // namespace rx
 #endif

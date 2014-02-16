@@ -123,10 +123,10 @@ if(NOT TARGET ${app})
   install(FILES ${remoxly_lib_storage_headers} DESTINATION include/gui/storage/ )
   install(FILES ${remoxly_lib_storage_sources} DESTINATION src/gui/storage/ )
   install(FILES ${remoxly_lib_gl_headers} DESTINATION include/gui/gl/ )
-  install(FILES ${remoxly_lib_font_headers} DESTINATION include/gui/gl/fonts )
+  install(FILES ${remoxly_lib_font_headers} DESTINATION include/gui/fonts )
   install(FILES ${remoxly_lib_gui_sources} DESTINATION src/gui )
-  install(FILES ${remoxly_lib_bitmapfont_headers} DESTINATION include/gui/bitmapfont/  )
-  install(FILES ${remoxly_lib_textinput_headers} DESTINATION include/gui/textinput/  )
+  install(FILES ${remoxly_lib_bitmapfont_headers} DESTINATION include/gui/bitmapfont/ )
+  install(FILES ${remoxly_lib_textinput_headers} DESTINATION include/gui/textinput/ )
 
 endif()
 

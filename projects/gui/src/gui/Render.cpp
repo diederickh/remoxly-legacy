@@ -42,9 +42,11 @@ void Render::disableNumberInput() { }
 
 void Render::enableNumberInput(float x, float y, float maxw, std::string value, float* color) { }
 
-void Render::addRectangle(float x, float y, float w, float h, float* color, bool filled) { }
+void Render::addRectangle(float x, float y, float w, float h, float* color, bool filled, float shadetop, float shadebot) { }
 
 void Render::addRectangle(float x, float y, float w, float h, TextureInfo* texinfo) { } 
+
+void Render::addRoundedRectangle(float x, float y, float w, float h, float radius, float* color, bool filled, int corners) { }
 
 void Render::onCharPress(unsigned int key) { }
 

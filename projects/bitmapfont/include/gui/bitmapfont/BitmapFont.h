@@ -34,22 +34,49 @@
   the calculations for the vertices and may help if you want to create solid
   backgrounds for the characters. 
 
-  Options > Font Settings:    
+  These options give good results:
+  
+  Settings 1: 
+  -------------------------------------
+                Options > Font Settings:    
+                
+                - Size: e.g. 13px         
+                - Height %: 100
+                - Turn off all other checkboxes!
+                
+                
+                Options > Export Options                                  
+                   
+                - Padding: all zero
+                - Spacing: 1, 1
+                - [x] Equalize the cell heights
+                - Texture: Use a power of 2 sized texture 
+                - File Format: XML
+                - Textures: PNG
+                - Turn off all other checkboxes!
 
-  - Size: e.g. 13px         
-  - Height %: 100
-  - Turn off all other checkboxes!
+  Settings 2:  Freetype can give pretty decent results! 
+  -------------------------------------
+                Options > Font Settings:    
+                
+                - Size: e.g. 13px         
+                - Height %: 100
+                - Turn off all other checkboxes!
+                [x] Render from TrueType outline
+                [x] TrueType hinting                     <--- USE THIS WHEN THE KERNING/SPACING SEEMS WIERD
+                [x] Font Smoothing 
+                
+                
+                Options > Export Options                                  
+                   
+                - Padding: all zero
+                - Spacing: 1, 1
+                - [x] Equalize the cell heights
+                - Texture: Use a power of 2 sized texture 
+                - File Format: XML
+                - Textures: PNG
+                - Turn off all other checkboxes!
 
-
-  Options > Export Options                                  
-     
-  - Padding: all zero
-  - Spacing: 1, 1
-  - [x] Equalize the cell heights
-  - Texture: Use a power of 2 sized texture 
-  - File Format: XML
-  - Textures: PNG
-  - Turn off all other checkboxes!
  
   When you've set all the settings, you can create the bitmap font by 
   doing `Options > Save bitmap font as...`. Copy the .fnt and [name]_0.png 
@@ -147,7 +174,7 @@ static const char* BITMAP_FONT_FS = ""
   ""
   "void main() {"
   "  float col = texture(u_font_tex, v_tex).r;"
-  "  fragcolor = col * v_fg_color * v_fg_color.a;"
+  "  fragcolor = col * v_fg_color;"
   "}"
   "";
 #endif

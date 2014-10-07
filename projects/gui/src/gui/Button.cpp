@@ -4,9 +4,14 @@
 
 namespace rx { 
 
-Button::Button(std::string title, int id, unsigned int icon, gui_button_callback cb, void* user, int iconx, int icony)
+Button::Button(std::string title, int id, unsigned int icon, 
+               gui_button_callback cb, void* user, 
+               int iconx, int icony,
+               int corners
+               )
   :Widget(GUI_TYPE_BUTTON, title)
   ,icon_button(id, icon, cb, user)
+  ,corners(corners)
 {
   h = 22;
 
@@ -32,7 +37,9 @@ void Button::create() {
     bt_click_offset = 1;
   }
 
-  render->addRectangle(x, y, w, h, group->getButtonStateColor(this), true);
+  /* @todo cleanup */
+  //render->addRectangle(x, y, w, h, group->getButtonStateColor(this), true);
+  render->addRoundedRectangle(x, y, w, h, 6.0, group->getButtonStateColor(this), true, corners);
   render->writeText(x + group->xindent, y + group->yindent + bt_click_offset, label, group->label_color);
 }
 

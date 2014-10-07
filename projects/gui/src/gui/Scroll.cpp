@@ -21,8 +21,8 @@ void scroll_down_click(int id, void* user) {
 
 Scroll::Scroll()
   :Widget(GUI_TYPE_SCROLL, "")
-  ,up_button(0, GUI_ICON_CHEVRON_UP, scroll_up_click, this)
-  ,down_button(1, GUI_ICON_CHEVRON_DOWN, scroll_down_click, this)
+  ,up_button(0, GUI_ICON_CHEVRON_UP, scroll_up_click, this, GUI_CORNER_TOP)
+  ,down_button(1, GUI_ICON_CHEVRON_DOWN, scroll_down_click, this, GUI_CORNER_BOTTOM)
   ,perc(0.0f)
   ,visible_x(0)
   ,visible_y(0)
@@ -52,10 +52,10 @@ void Scroll::setGroup(Group* g) {
 
 void Scroll::create() {
  
-  render->addRectangle(visible_x, y, visible_w - group->padding, visible_h - group->padding, group->panel_color, false);  // backround on visible area; e.g. adds the border at the bottom 
-  render->addRectangle(scroll_bar_x, scroll_bar_y, w + group->padding, visible_h + group->padding, group->panel_color);  // background scrollbar
-  render->addRectangle(scroll_bar_x, track_y, w, track_h, group->getBackgroundStateColor(this, GUI_STATE_DOWN_CUSTOM0)); // the track 
-  render->addRectangle(scroll_bar_x, grip_y, w, grip_h, group->getButtonStateColor(this, GUI_STATE_DOWN_INSIDE), true); // the grip
+  render->addRectangle(visible_x, y, visible_w - group->padding, visible_h - group->padding, group->panel_color, false, 0.0f, 0.0f);  // backround on visible area; e.g. adds the border at the bottom 
+  render->addRectangle(scroll_bar_x, scroll_bar_y, w + group->padding, visible_h + group->padding, group->panel_color, 0.0f, 0.0f);  // background scrollbar
+  render->addRectangle(scroll_bar_x, track_y, w, track_h, group->getBackgroundStateColor(this, GUI_STATE_DOWN_CUSTOM0), true, 0.0f, 0.0f); // the track 
+  render->addRectangle(scroll_bar_x, grip_y, w, grip_h, group->getSelectedStateColor(this, GUI_STATE_DOWN_INSIDE), true, 0.0f, 0.0f); // the grip
 
   up_button.create();
   down_button.create();

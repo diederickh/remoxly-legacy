@@ -19,7 +19,7 @@ void Toggle::create() {
     bt_click_offset = 1;
   }
 
-  render->addRectangle(x, y, w, h, group->getBackgroundStateColor(this), true);
+  render->addRectangle(x, y, w, h, group->getBackgroundStateColor(this), true, 0.0f, 0.1f);
 
   if(value) {
     render->writeIcon(x + group->xindent, y + group->yindent + bt_click_offset, GUI_ICON_CHECK_CIRCLE, group->highlight_color);

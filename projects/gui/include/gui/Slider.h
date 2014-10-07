@@ -115,8 +115,8 @@ Slider<T>::Slider(std::string label, T& value, T minv, T maxv, T step)
   ,num_w(0)
   ,text_x(0)
   ,text_w(0)
-  ,min_button(0, GUI_ICON_CHEVRON_LEFT, slider_min_click, this)
-  ,plus_button(1, GUI_ICON_CHEVRON_RIGHT, slider_plus_click, this)
+  ,min_button(0, GUI_ICON_CHEVRON_LEFT, slider_min_click, this, GUI_CORNER_LEFT)
+  ,plus_button(1, GUI_ICON_CHEVRON_RIGHT, slider_plus_click, this, GUI_CORNER_RIGHT)
 {
   setType(T(0));
   setAbsoluteValue(value);
@@ -157,16 +157,16 @@ void Slider<T>::create() {
   text_w = w - (min_button.w + plus_button.w + num_w + 3 * group->padding);
   text_x = x;
 
-  render->addRectangle(x, y, text_w, h, group->bg_color, true);
-  render->addRectangle(num_x, y, num_w, h, group->bg_color, true);
-  render->addRectangle(text_x, y, text_w * perc_value, h, group->getForegroundStateColor(this), true);
+  render->addRectangle(x, y, text_w, h, group->bg_color, true, 0.0f, 0.1f);
+  render->addRectangle(num_x, y, num_w, h, group->text_bg_color, true, -0.1f, 0.0f);
+  render->addRectangle(text_x, y, text_w * perc_value, h, group->getSelectedStateColor(this), true, 0.04, -0.1f);
   render->writeText(x + group->xindent, y + group->yindent, label, group->label_color);
 
   if(state & GUI_STATE_EDITABLE) {
     render->enableNumberInput(num_x + (num_w - group->xindent - group->padding - GUI_CURSOR_WIDTH), y + group->yindent, num_w - 15, value, group->number_color);
   }
   else {
-    render->writeNumber(num_x + (num_w - group->xindent - group->padding - GUI_CURSOR_WIDTH), y + group->yindent, value, group->number_color);
+    render->writeNumber(num_x + (num_w - group->xindent - group->padding - GUI_CURSOR_WIDTH), y + group->yindent, value, group->label_color);
   }
 
   min_button.create();

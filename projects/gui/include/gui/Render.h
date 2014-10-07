@@ -63,8 +63,13 @@ class Render {
   virtual void writeNumber(float x, float y, std::string number, float* color);                      /* write a number; we will right align numbers */
   virtual void writeIcon(float x, float y, unsigned int icon, float* color);
   virtual bool getIconSize(unsigned int id, int& w, int& h);
-  virtual void addRectangle(float x, float y, float w, float h, float* color, bool filled = true);   /* draw a rectangle at x/y with w/h and given color; must have 4 elements */
+  virtual void addRectangle(float x, float y, float w, float h, float* color, bool filled = true, float shadetop = -0.15, float shadebot = 0.15f);   /* draw a rectangle at x/y with w/h and given color; must have 4 elements */
   virtual void addRectangle(float x, float y, float w, float h, TextureInfo* texinfo);               /* draw a textured rectangle */
+
+  /* experimental. */
+  /* @todo - make non-experimental :) */
+  /* @todo - cleanup Render.h, comments */
+  virtual void addRoundedRectangle(float x, float y, float w, float h, float radius, float* color, bool filled = true, int corners = 0xFF); 
 
   /* helpers */
   template<class T> void writeNumber(float x, float y, T number, float* color);

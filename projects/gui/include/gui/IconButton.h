@@ -25,7 +25,7 @@ class Group;
 class IconButton : public Widget {
 
  public:
-  IconButton(int id, unsigned int icon, gui_button_callback cb = NULL, void* user = NULL);
+  IconButton(int id, unsigned int icon, gui_button_callback cb = NULL, void* user = NULL, int corners = GUI_CORNER_ALL);
   void setGroup(Group* g);
   void create();
   void call();            /* calls the callback function; can be used by a wrapper widget */
@@ -46,6 +46,7 @@ class IconButton : public Widget {
   int icon_h;             
   int icon_x;             /* used to offset the icon position. */
   int icon_y;             /* used to offset the icon position. */ 
+  int corners;            /* the corners we need to draw */
 };
 
 } // namespace rx

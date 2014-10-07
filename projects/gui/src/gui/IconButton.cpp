@@ -5,7 +5,7 @@
 
 namespace rx { 
 
-IconButton::IconButton(int callid, unsigned int icon, gui_button_callback cb, void* user)
+IconButton::IconButton(int callid, unsigned int icon, gui_button_callback cb, void* user, int corners)
   :Widget(GUI_TYPE_ICON_BUTTON, "")
   ,cb_id(callid)
   ,cb_click(cb)
@@ -15,6 +15,7 @@ IconButton::IconButton(int callid, unsigned int icon, gui_button_callback cb, vo
   ,icon_h(0)
   ,icon_x(0)
   ,icon_y(0)
+  ,corners(corners)
 {
   w = 22;
   h = 22;
@@ -43,7 +44,7 @@ void IconButton::create() {
   int cx = x + (w * 0.5 ) - (icon_w * 0.5) + icon_x;
   int cy = y + (h * 0.5 ) - (icon_h * 0.5) + icon_y;
 
-  render->addRectangle(x, y, w, h, group->getButtonStateColor(this), true);
+  render->addRoundedRectangle(x, y, w, h, 7.0, group->getButtonStateColor(this), true, corners);
   render->writeIcon(cx, cy + bt_click_offset, icon, group->label_color);
 
   needs_redraw = false;

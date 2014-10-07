@@ -19,8 +19,8 @@ void Text::create() {
   label_w = w - text_w;
   text_x = x + label_w;
 
-  render->addRectangle(x, y, label_w - group->padding, h, group->bg_color, true);
-  render->addRectangle(text_x, y, text_w,  h, group->bg_color, true);
+  render->addRectangle(x, y, label_w - group->padding, h, group->bg_color, true, 0.0, 0.1f);
+  render->addRectangle(text_x, y, text_w,  h, group->text_bg_color, true, -0.1f, 0.0f);
   render->writeText(x + group->xindent, y + group->yindent, label, group->label_color);
 
   if(state & GUI_STATE_EDITABLE) {

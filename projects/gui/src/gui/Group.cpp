@@ -29,10 +29,10 @@ Group::Group(std::string label, Render* r)
   :Widget(GUI_TYPE_GROUP, label)
   ,render(r)
   ,padding(1)
-  ,xindent(5)
-  ,yindent(4)
-  ,close_button(0, GUI_ICON_CARET_DOWN, group_close_click, this)
-  ,open_button(0, GUI_ICON_CARET_RIGHT, group_open_click, this)
+  ,xindent(7)
+  ,yindent(6)
+  ,close_button(0, GUI_ICON_CARET_DOWN, group_close_click, this, GUI_CORNER_RIGHT)
+  ,open_button(0, GUI_ICON_CARET_RIGHT, group_open_click, this, GUI_CORNER_RIGHT)
 {
   x = 10;
   y = 10;
@@ -41,9 +41,16 @@ Group::Group(std::string label, Render* r)
   
   setGroup(this);
 
-  float theme_fg_color[] = { 0.65, 0.62, 0.52, 1.0 };
-  float theme_bg_color[] = { 0.277, 0.253, 0.261, 0.7 };
-  float theme_hl_color[] = { 0.394, 0.0f, 0.917, 0.99 };
+  /* @todo cleanup */
+
+  //float theme_fg_color[] = { 0.65, 0.62, 0.52, 1.n0 };
+  //  float theme_fg_color[] = { 0.2667, 0.2667, 0.2667, 1.0 };
+  float theme_fg_color[] = { 0.6, 0.6, 0.6, 1.0};
+  float theme_bg_color[] = { 0.5351, 0.5351, 0.5351, 1.0 };
+  // float theme_bg_color[] = { 0.277, 0.253, 0.261, 0.7 }; /* orig */
+  //float theme_bg_color[] = { 0.277, 0.253, 0.261, 1.0 };
+  /*  float theme_hl_color[] = { 0.394, 0.0f, 0.917, 0.99 }; // orig */
+  float theme_hl_color[] = { 0.394, 0.0f, 0.917, 1.0 };
   setColors(theme_bg_color, theme_fg_color, theme_hl_color);
 
   close_button.setGroup(this);
@@ -56,13 +63,21 @@ Group::~Group() {
 }
 
 void Group::setColors(float* bg, float* fg, float* highlight) {
-  gui_fill_color(0.0f, 0.f, 0.0f, 0.9f, panel_color);
-  gui_fill_color(1.0f, 1.0f, 1.0f, 0.6f, label_color);
-  gui_fill_color(1.0f, 1.0f, 1.0f, 0.7f, number_color);
+  /* @todo cleanup */
+  //gui_fill_color(0.0f, 0.f, 0.0f, 0.9f, panel_color);
+  //gui_fill_color(0.275f, 0.275f, 0.275f, 1.0f, panel_color);
+  //gui_fill_color(1.0f, 1.0f, 1.0f, 1.0f, label_color);
+  gui_fill_color(0.0f, 0.0f, 0.0f, 1.0f, label_color);
+  gui_fill_color(1.0f, 1.0f, 1.0f, 1.0f, number_color);
   gui_fill_color(bg[0], bg[1], bg[2], bg[3], bg_color);
   gui_fill_color(fg[0], fg[1], fg[2], fg[3], fg_color);
-  gui_fill_color(fg[0], fg[1], fg[2], 0.5f, button_color);
+  /*  gui_fill_color(fg[0], fg[1], fg[2], 0.5f, button_color); */
+  gui_fill_color(fg[0], fg[1], fg[2], fg[3], button_color);
   gui_fill_color(highlight[0], highlight[1], highlight[2], highlight[3], highlight_color);
+  //gui_fill_color(highlight[0] - 0.3, highlight[1] - 0.3, highlight[2] - 0.3, highlight[3], header_color);
+  gui_fill_color(0.337, 0.502, 0.761, 1.0, selected_color);// blue
+  gui_fill_color(0.247, 0.257, 0.247, 1.0, header_color); // gray
+  gui_fill_color(0.706, 0.706, 0.706, 1.0, text_bg_color); // light gray
 }
 
 float* Group::getStateColor(Widget* w, int flag, float* off, float* on) {
@@ -87,6 +102,12 @@ float* Group::getBackgroundStateColor(Widget* w, int flag) {
   return getStateColor(w, flag, bg_color, highlight_color);
 }
 
+float* Group::getSelectedStateColor(Widget* w, int flag) {
+  return getStateColor(w, flag, selected_color, highlight_color);
+}
+
+
+
 void Group::add(Widget* w) {
   
   if(!group) {
@@ -100,8 +121,11 @@ void Group::add(Widget* w) {
 void Group::create() {
 
   render->addRectangle(x - padding, y - padding, w + padding * 2, bbox[3] + padding * 2, panel_color, true);
-  render->addRectangle(x, y, w, h, highlight_color, true);
-  render->writeText(x + xindent, y + yindent, label, label_color);
+  //  render->addRectangle(x, y, w, h, highlight_color, true);
+  //render->addRectangle(x, y, w, h, panel_color, true);
+  render->addRoundedRectangle(x, y, w - close_button.w, h, 6, header_color, true, GUI_CORNER_NONE);
+  /*  render->writeText(x + xindent, y + yindent, label, label_color); */
+  render->writeText(x + xindent, y + yindent, label, number_color);
 
   open_button.create();
   close_button.create();

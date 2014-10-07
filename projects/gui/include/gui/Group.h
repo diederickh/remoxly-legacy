@@ -57,6 +57,7 @@ class Group : public Widget {
   float* getButtonStateColor(Widget* w, int flag = GUI_STATE_DOWN_INSIDE);     /* returns the color for the button based on the current state. by default it will return the standard button color when the flag is not set. if it's set it will return the highlight color */
   float* getForegroundStateColor(Widget* w, int flag = GUI_STATE_DOWN_INSIDE); /* returns the color for "hightlight" elements. this is for example the part of a slider which indicates how much is "slided" */
   float* getBackgroundStateColor(Widget* w, int flag = GUI_STATE_DOWN_INSIDE); /* returns the background color. you could hightlight a background color too, which is e.g. used in the scroll bar */
+  float* getSelectedStateColor(Widget* w, int flag = GUI_STATE_DOWN_INSIDE);   /* returns the highlight color when the mouse is down inside the element, else it returns the default selected color. */ 
 
  private:
   void update();
@@ -73,10 +74,13 @@ class Group : public Widget {
   float fg_color[4];              /* foreground color; use this for e.g. lines */
   float bg_color[4];              /* background color; use this for e.g. backgrounds */
   float label_color[4];           /* a label color should be used for text labels */
-  float number_color[4];          /* used when drawiing numeric values */
+  float number_color[4];          /* used when drawing numeric values */
   float button_color[4];          /* color for buttons, based on the color sheme */
   float highlight_color[4];       /* e.g. for button highlight colors */
   float panel_color[4];           /* this background of the complete group */
+  float header_color[4];          /* color of the header above a group (with the open/close feature) */
+  float selected_color[4];        /* color of a selected item (e.g. fill of slider, or a popup item) */
+  float text_bg_color[4];         /* backround for text inputs (or number) */
 
   /* interaction */
   IconButton close_button;

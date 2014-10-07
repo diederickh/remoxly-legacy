@@ -27,7 +27,7 @@
 
 using namespace rx;
 
-#define USE_GROUP 0
+#define USE_GROUP 1
 #define USE_PANEL 1
 Group* group_ptr0 = NULL;
 Group* group_ptr1 = NULL;
@@ -107,10 +107,13 @@ int main() {
   bool render_spirals = false;
   bool render_marker = true;
   float color[3] = { 0 } ;
+  std::string rtmp_host;
 
 #if USE_GROUP
   Group group0("Particles", new RenderGL());
   group0.add(new Slider<int>("Particle Forces", forces, 0, 100, 1));
+  //  group_ptr0 = &group0;
+
   group0.add(new Slider<int>("Particle Velocity", velocity, 0, 100, 1));
   group0.add(new Slider<int>("Particle Amount", amount, 0, 10, 1));
   group0.add(new Slider<int>("Particle Lifetime", lifetime, 0, 10, 1));
@@ -136,6 +139,7 @@ int main() {
   g0->add(new Button("Save Settings", 3, GUI_ICON_FLOPPY_O, on_group_button_click, NULL, 1));
   g0->add(new Button("Load Settings", 4, GUI_ICON_REFRESH, on_group_button_click, NULL, 1));
   g0->add(new Slider<int>("Particle velocity", velocity, 0, 100, 1));
+  g0->add(new Text("RTMP host", rtmp_host));
 
   Group* g1 = panel.addGroup("Water Simulation");
   g1->add(new Slider<int>("Particle Lifetime", lifetime, 0, 10, 1));
@@ -161,21 +165,25 @@ int main() {
     g2->add(new Slider<float>("End Angle", end_angle, 0.0f, 200.0f, 0.1f));
   }
 
-  g2->add(new Button("Download", 0, GUI_ICON_DOWNLOAD, on_group_button_click, NULL, 1));
-  g2->add(new Button("Twitter", 1, GUI_ICON_TWITTER, on_group_button_click, NULL, 1));
-  g2->add(new Button("Cloud Burst", 2, GUI_ICON_CLOUD, on_group_button_click, NULL, 1));
+  g2->add(new Button("Download", 0, GUI_ICON_DOWNLOAD, on_group_button_click, NULL, 1, 1, GUI_CORNER_TOP));
+  g2->add(new Button("Twitter", 1, GUI_ICON_TWITTER, on_group_button_click, NULL, 1, 1, GUI_CORNER_NONE));
+  g2->add(new Button("Cloud Burst", 2, GUI_ICON_CLOUD, on_group_button_click, NULL, 1, 1, GUI_CORNER_NONE));
+  g2->add(new Button("Extrude Region", 2, GUI_ICON_CLOUD, on_group_button_click, NULL, 1, 1, GUI_CORNER_BOTTOM));
 
   panel_ptr = &panel;
 #endif
 
   remoxly_ptr = new Remoxly();
+  /*
   remoxly_ptr->addGroup("New group");
   remoxly_ptr->addColor("Color", color, 50);
   remoxly_ptr->curr_panel->x = 350;
+  */
   remoxly_ptr->load("remoxly_test.xml");
 
+
   while(!glfwWindowShouldClose(win)) {
-    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+    glClearColor(0.445f, 0.445f, 0.445f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 #if USE_GROUP

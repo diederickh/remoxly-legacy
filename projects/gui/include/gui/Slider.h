@@ -136,6 +136,12 @@ void Slider<T>::setGroup(Group* g) {
 
   min_button.setGroup(g);
   plus_button.setGroup(g);
+
+  /* @todo experimental */
+  //  add(&min_button, g);
+  //  add(&plus_button, g);
+  /* @todo end experimental */
+
 }
 
 template<class T>

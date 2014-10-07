@@ -3,410 +3,463 @@
 #include <gui/Widget.h>
 #include <gui/WidgetListener.h>
 #include <stdio.h>
+#include <algorithm>
 
 namespace rx { 
 
-uint32_t Widget::generated_ids = 0;
+  /* ------------------------------------------------------------------------ */
 
-Widget::Widget(int type, std::string label)
-  :type(type)
-  ,state(GUI_STATE_NONE)
-  ,mods(GUI_MOD_NONE)
-  ,label(label)
-  ,group(NULL)
-  ,render(NULL)
-  ,x(0)
-  ,y(0)
-  ,w(0)
-  ,h(0)
-  ,needs_redraw(true)
-  ,mouse_x(0)
-  ,mouse_y(0)
-  ,mouse_press_x(0)
-  ,mouse_press_y(0)
-  ,press_x(0)
-  ,press_y(0)
-{
-  bbox[0] = bbox[1] = bbox[2] = bbox[3] = 0;
-  id = generated_ids;
-  generated_ids++;
-}
+  static bool widget_depth_sort(Widget* a, Widget* b);
 
-Widget::~Widget() {
+  /* ------------------------------------------------------------------------ */
 
-  group = NULL;
-  render = NULL;
-  state = GUI_STATE_NONE;
-  mods = GUI_MOD_NONE;
-  x = y = w =  h = 0;
-  bbox[0] = bbox[1] = bbox[2] = bbox[3] = 0;
-  needs_redraw = false;
-  id = 0;
-  label.clear();
-  listeners.clear();
+  uint32_t Widget::generated_ids = 0;
 
-}
-
-void Widget::setGroup(Group* g) {
-  group = g; 
-  render = g->render;
-}
-
-void Widget::add(Widget* w, Group* g) {
-
-  w->setGroup(g);
-
-  children.push_back(w);
-}
-
-bool Widget::needsRedraw() {
-
-  if(needs_redraw) {
-    return true;
+  Widget::Widget(int type, std::string label)
+    :type(type)
+    ,state(GUI_STATE_NONE)
+    ,mods(GUI_MOD_NONE)
+    ,label(label)
+    ,group(NULL)
+    ,render(NULL)
+    ,x(0)
+    ,y(0)
+    ,w(0)
+    ,h(0)
+    ,depth(0)
+    ,needs_redraw(true)
+    ,mouse_x(0)
+    ,mouse_y(0)
+    ,mouse_press_x(0)
+    ,mouse_press_y(0)
+    ,press_x(0)
+    ,press_y(0)
+  {
+    bbox[0] = bbox[1] = bbox[2] = bbox[3] = 0;
+    id = generated_ids;
+    generated_ids++;
   }
 
-  return needsRedrawChildren();
-}
+  Widget::~Widget() {
 
-bool Widget::needsRedrawChildren() {
+    group = NULL;
+    render = NULL;
+    state = GUI_STATE_NONE;
+    mods = GUI_MOD_NONE;
+    x = y = w =  h = 0;
+    bbox[0] = bbox[1] = bbox[2] = bbox[3] = 0;
+    needs_redraw = false;
+    id = 0;
+    label.clear();
+    listeners.clear();
+  }
 
-  for(std::vector<Widget*>::iterator it = children.begin(); it != children.end(); ++it) {
-    if((*it)->needsRedraw()) {
+  void Widget::setGroup(Group* g) {
+    group = g; 
+    render = g->render;
+  }
+
+  void Widget::add(Widget* w, Group* g) {
+
+    w->setGroup(g);
+
+    children.push_back(w);
+  }
+
+  bool Widget::needsRedraw() {
+
+    if(needs_redraw) {
       return true;
     }
-  }
-  return false;
-}
 
-void Widget::create() {
-}
-
-void Widget::build() {
-
-  if(!isDrawn()) {
-    unsetNeedsRedraw();
-    return;
+    return needsRedrawChildren();
   }
 
-  create();
+  bool Widget::needsRedrawChildren() {
 
-  buildChildren();
+    for(std::vector<Widget*>::iterator it = children.begin(); it != children.end(); ++it) {
+      if((*it)->needsRedraw()) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  void Widget::create() {
+  }
+
+  void Widget::build() {
+
+    if(!isDrawn()) {
+      unsetNeedsRedraw();
+      return;
+    }
+
+    create();
+    /* @todo cleanup */
+    //printf("%d %s\n", depth, label.c_str());
+
+    buildChildren();
  
-  unsetNeedsRedraw();
-}
-
-void Widget::buildChildren() {
-
- for(std::vector<Widget*>::iterator it = children.begin(); it != children.end(); ++it) {
-   (*it)->build();
-  }
-}
-
-void Widget::onCharPress(unsigned int key) {
-  onCharPressChildren(key);
-}
-
-void Widget::onCharPressChildren(unsigned int key) {
-
-  for(std::vector<Widget*>::iterator it = children.begin(); it != children.end(); ++it) {
-    (*it)->onCharPress(key);
-  }
-}
-
-void Widget::onKeyPress(int key, int modkeys) {
-
-  mods |= modkeys;
-  onKeyPressChildren(key, modkeys);
-}
-
-void Widget::onKeyPressChildren(int key, int modkeys) {
-
-  for(std::vector<Widget*>::iterator it = children.begin(); it != children.end(); ++it) {
-    (*it)->onKeyPress(key, modkeys);
-  }
-}
-
-void Widget::onKeyRelease(int key, int modkeys) {
-
-  mods = modkeys;
-  onKeyReleaseChildren(key, modkeys);
-}
-
-void Widget::onKeyReleaseChildren(int key, int modkeys) {
-
-  for(std::vector<Widget*>::iterator it = children.begin(); it != children.end(); ++it) {
-    (*it)->onKeyRelease(key, modkeys);
-  }
-}
-
-
-void Widget::onMousePress(float mx, float my, int button, int modkeys) {
-
-  if(!isDrawn()) {
-    return;
+    unsetNeedsRedraw();
   }
 
-  mouse_x = mx;
-  mouse_y = my;
-  mouse_press_x = mx;
-  mouse_press_y = my;
-  press_x = x;
-  press_y = y;
+  void Widget::buildChildren() {
+    std::vector<Widget*> sorted;
+    sortChildren(sorted);
 
-  Widget::onMousePressChildren(mx, my, button, modkeys);
-}
+    /*
+    for (size_t i = 0; i < sorted.size(); ++i) {
+      Widget* wid = sorted[i];
+      printf("> %d : %s\n", wid->depth, wid->label.c_str());
+    }
+    */
+    /* @todo cleanup ... */
+#if 0
+    for(std::vector<Widget*>::iterator it = sorted.begin(); it != sorted.end(); ++it) {
+      Widget* wid = *it;
+      //      wid->create();
+      printf("%d\n", wid->depth);
+      wid->build();
+      //      wid->unsetNeedsRedraw();
+    }
+    printf("-\n");
+#else 
+    /* original */
+    for(std::vector<Widget*>::iterator it = children.begin(); it != children.end(); ++it) {
+      (*it)->build();
+    }
+#endif
+  }
 
-void Widget::onMousePressChildren(float mx, float my, int button, int modkeys) {
+  void Widget::sortChildren(std::vector<Widget*>& result) {
+    //getChildrenRecursive(result);
+    getChildren(result);
+    std::sort(result.begin(), result.end(), widget_depth_sort);
+  }
 
-  for(std::vector<Widget*>::iterator it = children.begin(); it != children.end(); ++it) {
-
-    Widget* w = *it;
-
-    if(w->isDrawn()) {
-      w->onMousePress(mx, my, button, modkeys);
+  void Widget::getChildren(std::vector<Widget*>& result) {
+    std::copy(children.begin(), children.end(), std::back_inserter(result));
+  }
+  void Widget::getChildrenRecursive(std::vector<Widget*>&result) {
+    for (size_t i = 0; i < children.size(); ++i) {
+      children[i]->getChildren(result);
     }
   }
-}
 
-void Widget::onMousePressOutside(float mx, float my, int button, int modkeys) {
+  void Widget::onCharPress(unsigned int key) {
+    onCharPressChildren(key);
+  }
 
-  mouse_x = mx;
-  mouse_y = my;
-  mouse_press_x = mx;
-  mouse_press_y = my;
-  press_x = x;
-  press_y = y;
-  state &= ~GUI_STATE_DOWN_INSIDE;
+  void Widget::onCharPressChildren(unsigned int key) {
+
+    for(std::vector<Widget*>::iterator it = children.begin(); it != children.end(); ++it) {
+      (*it)->onCharPress(key);
+    }
+  }
+
+  void Widget::onKeyPress(int key, int modkeys) {
+
+    mods |= modkeys;
+    onKeyPressChildren(key, modkeys);
+  }
+
+  void Widget::onKeyPressChildren(int key, int modkeys) {
+
+    for(std::vector<Widget*>::iterator it = children.begin(); it != children.end(); ++it) {
+      (*it)->onKeyPress(key, modkeys);
+    }
+  }
+
+  void Widget::onKeyRelease(int key, int modkeys) {
+
+    mods = modkeys;
+    onKeyReleaseChildren(key, modkeys);
+  }
+
+  void Widget::onKeyReleaseChildren(int key, int modkeys) {
+
+    for(std::vector<Widget*>::iterator it = children.begin(); it != children.end(); ++it) {
+      (*it)->onKeyRelease(key, modkeys);
+    }
+  }
+
+
+  void Widget::onMousePress(float mx, float my, int button, int modkeys) {
+
+    if(!isDrawn()) {
+      return;
+    }
+
+    mouse_x = mx;
+    mouse_y = my;
+    mouse_press_x = mx;
+    mouse_press_y = my;
+    press_x = x;
+    press_y = y;
+
+    Widget::onMousePressChildren(mx, my, button, modkeys);
+  }
+
+  void Widget::onMousePressChildren(float mx, float my, int button, int modkeys) {
+
+    for(std::vector<Widget*>::iterator it = children.begin(); it != children.end(); ++it) {
+
+      Widget* wi = *it;
+
+      if(wi->isDrawn()) {
+        wi->onMousePress(mx, my, button, modkeys);
+      }
+    }
+  }
+
+  void Widget::onMousePressOutside(float mx, float my, int button, int modkeys) {
+
+    mouse_x = mx;
+    mouse_y = my;
+    mouse_press_x = mx;
+    mouse_press_y = my;
+    press_x = x;
+    press_y = y;
+    state &= ~GUI_STATE_DOWN_INSIDE;
   
-  Widget::onMousePressOutsideChildren(mx, my, button, modkeys);
-}
+    Widget::onMousePressOutsideChildren(mx, my, button, modkeys);
+  }
 
-void Widget::onMousePressOutsideChildren(float mx, float my, int button, int modkeys) {
+  void Widget::onMousePressOutsideChildren(float mx, float my, int button, int modkeys) {
   
-  for(std::vector<Widget*>::iterator it = children.begin(); it != children.end(); ++it) {
+    for(std::vector<Widget*>::iterator it = children.begin(); it != children.end(); ++it) {
     
-    Widget* w = *it;
-    if(w->isDrawn()) {
-      w->onMousePressOutside(mx, my, button, modkeys);
+      Widget* wi = *it;
+      if(wi->isDrawn()) {
+        wi->onMousePressOutside(mx, my, button, modkeys);
+      }
     }
   }
-}
 
-void Widget::onMouseRelease(float mx, float my, int button, int modkeys) {
+  void Widget::onMouseRelease(float mx, float my, int button, int modkeys) {
 
-  if(!isDrawn()) {
-    return;
+    if(!isDrawn()) {
+      return;
+    }
+
+    mouse_x = mx;
+    mouse_y = my;
+    mouse_press_x = 0;
+    mouse_press_y = 0;
+
+    Widget::onMouseReleaseChildren(mx, my, button, modkeys);
   }
 
-  mouse_x = mx;
-  mouse_y = my;
-  mouse_press_x = 0;
-  mouse_press_y = 0;
+  void Widget::onMouseReleaseChildren(float mx, float my, int button, int modkeys) {
 
-  Widget::onMouseReleaseChildren(mx, my, button, modkeys);
-}
-
-void Widget::onMouseReleaseChildren(float mx, float my, int button, int modkeys) {
-
-  for(std::vector<Widget*>::iterator it = children.begin(); it != children.end(); ++it) {
+    for(std::vector<Widget*>::iterator it = children.begin(); it != children.end(); ++it) {
     
-    Widget* w = *it;
+      Widget* wi = *it;
 
-    if(w->isDrawn()) {
-      w->onMouseRelease(mx, my, button, modkeys);
+      if(wi->isDrawn()) {
+        wi->onMouseRelease(mx, my, button, modkeys);
+      }
     }
   }
-}
 
-void Widget::onMouseReleaseOutside(float mx, float my, int button, int modkeys) {
+  void Widget::onMouseReleaseOutside(float mx, float my, int button, int modkeys) {
 
-  mods = GUI_MOD_NONE;
-  mouse_x = mx;
-  mouse_y = my;
-  mouse_press_x = 0;
-  mouse_press_y = 0;
+    mods = GUI_MOD_NONE;
+    mouse_x = mx;
+    mouse_y = my;
+    mouse_press_x = 0;
+    mouse_press_y = 0;
 
-  Widget::onMouseReleaseOutsideChildren(mx, my, button, modkeys);
-}
+    Widget::onMouseReleaseOutsideChildren(mx, my, button, modkeys);
+  }
 
-void Widget::onMouseReleaseOutsideChildren(float mx, float my, int button, int modkeys) {
+  void Widget::onMouseReleaseOutsideChildren(float mx, float my, int button, int modkeys) {
 
-  for(std::vector<Widget*>::iterator it = children.begin(); it != children.end(); ++it) {
+    for(std::vector<Widget*>::iterator it = children.begin(); it != children.end(); ++it) {
 
-    Widget* w = *it;
+      Widget* wi = *it;
 
-    if(w->isDrawn()) {
-      (*it)->onMouseReleaseOutside(mx, my, button, modkeys);
+      if(wi->isDrawn()) {
+        wi->onMouseReleaseOutside(mx, my, button, modkeys);
+      }
     }
   }
-}
 
-void Widget::onMouseMove(float mx, float my) {
+  void Widget::onMouseMove(float mx, float my) {
 
-  Widget::onMouseMoveChildren(mx, my);
+    Widget::onMouseMoveChildren(mx, my);
 
-  mouse_x = mx;
-  mouse_y = my;
-}
-
-void Widget::onMouseMoveChildren(float mx, float my) {
-
-  for(std::vector<Widget*>::iterator it = children.begin(); it != children.end(); ++it) {
-    (*it)->onMouseMove(mx, my);
+    mouse_x = mx;
+    mouse_y = my;
   }
-}
 
-void Widget::position() {
-}
+  void Widget::onMouseMoveChildren(float mx, float my) {
 
-void Widget::setBoundingBox() {
+    for(std::vector<Widget*>::iterator it = children.begin(); it != children.end(); ++it) {
+      (*it)->onMouseMove(mx, my);
+    }
+  }
+
+  void Widget::position() {
+  }
+
+  void Widget::setBoundingBox() {
   
-  if(!isDrawn()) {
+    if(!isDrawn()) {
+      bbox[0] = 0;
+      bbox[1] = 0;
+      bbox[2] = 0;
+      bbox[3] = 0;
+      return;
+    }
+
+    setBoundingBoxChildren();
+
+    bbox[0] = x;
+    bbox[1] = y;
+    bbox[2] = w;
+    bbox[3] = h;
+  
+    for(std::vector<Widget*>::iterator it = children.begin(); it != children.end(); ++it) {
+
+      Widget* wid = *it;
+      bbox[3] += wid->bbox[3];
+
+      if(wid->isDrawn()) {
+        bbox[3] += group->padding;
+      }
+    }
+  }
+
+  void Widget::setBoundingBoxChildren() {
+
+    for(std::vector<Widget*>::iterator it = children.begin(); it != children.end(); ++it) {
+      (*it)->setBoundingBox();
+    }
+  }
+
+  void Widget::showChildren() {
+
+    for(std::vector<Widget*>::iterator it = children.begin(); it != children.end(); ++it) {
+      (*it)->show();
+    }
+  }
+
+  void Widget::hideChildren() {
+
+    for(std::vector<Widget*>::iterator it = children.begin(); it != children.end(); ++it) {
+      (*it)->hide();
+    }
+  }
+
+  void Widget::closeChildren() {
+
+    for(std::vector<Widget*>::iterator it = children.begin(); it != children.end(); ++it) {
+      (*it)->close();
+    }
+  }
+
+  void Widget::openChildren() {
+
+    for(std::vector<Widget*>::iterator it = children.begin(); it != children.end(); ++it) {
+      (*it)->open();
+    }
+  }
+
+  void Widget::removeChildren() {
+
+    for(std::vector<Widget*>::iterator it = children.begin(); it != children.end(); ++it) {
+      Widget* wid = *it;
+      delete wid;
+    }
+
+    children.clear();
+  }
+
+  void Widget::lockPosition() {
+    state |= GUI_STATE_POSITION_LOCKED;
+  }
+
+  void Widget::unlockPosition() {
+    state &= ~GUI_STATE_POSITION_LOCKED;
+  }
+
+  void Widget::show() {
+    state &= ~GUI_STATE_HIDDEN;
+  }
+
+  void Widget::open() {
+    state &= ~GUI_STATE_CLOSED;
+  }
+
+  void Widget::close() {
+    state |= GUI_STATE_CLOSED;
+  }
+
+  void Widget::disableNotifications() {
+    state |= GUI_STATE_NOTIFICATIONS_DISABLED;
+  }
+
+  void Widget::enableNotifications() {
+    state &= ~GUI_STATE_NOTIFICATIONS_DISABLED;
+  }
+
+  void Widget::hide() {
+
     bbox[0] = 0;
     bbox[1] = 0;
     bbox[2] = 0;
     bbox[3] = 0;
-    return;
+
+    state |= GUI_STATE_HIDDEN;
   }
 
-  setBoundingBoxChildren();
+  void Widget::print() {
+    printf("bbox.x: %d, bbox.y: %d, bbox.w: %d, bbox.h: %d\n", bbox[0], bbox[1], bbox[2], bbox[3]);
+  }
 
-  bbox[0] = x;
-  bbox[1] = y;
-  bbox[2] = w;
-  bbox[3] = h;
-  
-  for(std::vector<Widget*>::iterator it = children.begin(); it != children.end(); ++it) {
+  void Widget::unsetNeedsRedraw() {
+    needs_redraw = false;
+  }
 
-    Widget* wid = *it;
-    bbox[3] += wid->bbox[3];
+  void Widget::unsetNeedsRedrawChildren() {
 
-    if(wid->isDrawn()) {
-      bbox[3] += group->padding;
+    for(std::vector<Widget*>::iterator it = children.begin(); it != children.end(); ++it) {
+      (*it)->unsetNeedsRedraw();
     }
   }
-}
 
-void Widget::setBoundingBoxChildren() {
-
-  for(std::vector<Widget*>::iterator it = children.begin(); it != children.end(); ++it) {
-    (*it)->setBoundingBox();
-  }
-}
-
-void Widget::showChildren() {
-
-  for(std::vector<Widget*>::iterator it = children.begin(); it != children.end(); ++it) {
-    (*it)->show();
-  }
-}
-
-void Widget::hideChildren() {
-
-  for(std::vector<Widget*>::iterator it = children.begin(); it != children.end(); ++it) {
-    (*it)->hide();
-  }
-}
-
-void Widget::closeChildren() {
-
-  for(std::vector<Widget*>::iterator it = children.begin(); it != children.end(); ++it) {
-    (*it)->close();
-  }
-}
-
-void Widget::openChildren() {
-
-  for(std::vector<Widget*>::iterator it = children.begin(); it != children.end(); ++it) {
-    (*it)->open();
-  }
-}
-
-void Widget::removeChildren() {
-
-  for(std::vector<Widget*>::iterator it = children.begin(); it != children.end(); ++it) {
-    Widget* wid = *it;
-    delete wid;
-  }
-
-  children.clear();
-}
-
-void Widget::lockPosition() {
-  state |= GUI_STATE_POSITION_LOCKED;
-}
-
-void Widget::unlockPosition() {
-  state &= ~GUI_STATE_POSITION_LOCKED;
-}
-
-void Widget::show() {
-  state &= ~GUI_STATE_HIDDEN;
-}
-
-void Widget::open() {
-  state &= ~GUI_STATE_CLOSED;
-}
-
-void Widget::close() {
-  state |= GUI_STATE_CLOSED;
-}
-
-void Widget::disableNotifications() {
-  state |= GUI_STATE_NOTIFICATIONS_DISABLED;
-}
-
-void Widget::enableNotifications() {
-  state &= ~GUI_STATE_NOTIFICATIONS_DISABLED;
-}
-
-void Widget::hide() {
-
-  bbox[0] = 0;
-  bbox[1] = 0;
-  bbox[2] = 0;
-  bbox[3] = 0;
-
-  state |= GUI_STATE_HIDDEN;
-}
-
-void Widget::print() {
-  printf("bbox.x: %d, bbox.y: %d, bbox.w: %d, bbox.h: %d\n", bbox[0], bbox[1], bbox[2], bbox[3]);
-}
-
-void Widget::unsetNeedsRedraw() {
-  needs_redraw = false;
-}
-
-void Widget::unsetNeedsRedrawChildren() {
-
-  for(std::vector<Widget*>::iterator it = children.begin(); it != children.end(); ++it) {
-    (*it)->unsetNeedsRedraw();
-  }
-}
-
-void Widget::addListener(WidgetListener* l) {
+  void Widget::addListener(WidgetListener* l) {
   
-  listeners.push_back(l);
-  addListenerChildren(l);
-}
+    listeners.push_back(l);
+    addListenerChildren(l);
+  }
 
-void Widget::addListenerChildren(WidgetListener* l) {
+  void Widget::addListenerChildren(WidgetListener* l) {
   
-  for(std::vector<Widget*>::iterator it = children.begin(); it != children.end(); ++it) {
-    (*it)->addListener(l);
+    for(std::vector<Widget*>::iterator it = children.begin(); it != children.end(); ++it) {
+      (*it)->addListener(l);
+    }
   }
-}
 
-void Widget::notify(int event) {
+  void Widget::notify(int event) {
   
-  if(state & GUI_STATE_NOTIFICATIONS_DISABLED) {
-    return;
+    if(state & GUI_STATE_NOTIFICATIONS_DISABLED) {
+      return;
+    }
+
+    for(std::vector<WidgetListener*>::iterator it = listeners.begin(); it != listeners.end(); ++it) {
+      (*it)->onEvent(event, this);
+    }
   }
 
-  for(std::vector<WidgetListener*>::iterator it = listeners.begin(); it != listeners.end(); ++it) {
-    (*it)->onEvent(event, this);
+  /* ------------------------------------------------------------------------ */
+
+  static bool widget_depth_sort(Widget* a, Widget* b) {
+    return a->depth < b->depth;
   }
-}
+
+  /* ------------------------------------------------------------------------ */
 
 } // namespace rx 

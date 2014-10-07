@@ -70,6 +70,8 @@ class Render {
   /* @todo - make non-experimental :) */
   /* @todo - cleanup Render.h, comments */
   virtual void addRoundedRectangle(float x, float y, float w, float h, float radius, float* color, bool filled = true, int corners = 0xFF); 
+  virtual void setLayer(int layer);
+  /* end experimental, @todo cleanup. */
 
   /* helpers */
   template<class T> void writeNumber(float x, float y, T number, float* color);

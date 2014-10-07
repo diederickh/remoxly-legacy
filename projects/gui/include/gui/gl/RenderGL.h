@@ -42,6 +42,7 @@
 #include <gui/Render.h>
 #include <assert.h>
 #include <algorithm>
+#include <map> /* @todo cleanup, experimental for layers */
 
 /* Experimental for rounded rectangles. */
 /* @todo - begin - when we don't need rounded rectangles remove this. */
@@ -175,206 +176,247 @@ static const char* GUI_RENDER_PT_RECT_FS = ""
 
 namespace rx { 
 
-// position + colors
-struct GuiVertexPC {
+  // position + colors
+  struct GuiVertexPC {
 
-public:
-GuiVertexPC();
-GuiVertexPC(float x, float y, float r, float g, float b, float a);
-GuiVertexPC(float x, float y, float* col);
-void setPos(float x, float y);
-void setColor(float r, float g, float b, float a);
-const float* ptr() { return &pos[0]; } 
-void print();
+  public:
+    GuiVertexPC();
+    GuiVertexPC(float x, float y, float r, float g, float b, float a);
+    GuiVertexPC(float x, float y, float* col);
+    void setPos(float x, float y);
+    void setColor(float r, float g, float b, float a);
+    const float* ptr() { return &pos[0]; } 
+    void print();
 
-public:
-float pos[2];
-float color[4];
-};
+  public:
+    float pos[2];
+    float color[4];
+  };
 
-// -------------------------------------------
+  // -------------------------------------------
 
-// position + texcoords
-struct GuiVertexPT {
+  // position + texcoords
+  struct GuiVertexPT {
 
-public:
-GuiVertexPT();
-GuiVertexPT(float x, float y, float u, float v);
-void setPos(float x, float y);
-void setTexCoord(float u, float v);
-const float* ptr() { return &pos[0]; } 
+  public:
+    GuiVertexPT();
+    GuiVertexPT(float x, float y, float u, float v);
+    void setPos(float x, float y);
+    void setTexCoord(float u, float v);
+    const float* ptr() { return &pos[0]; } 
 
-public:
-float pos[2];
-float tex[2];
-};
+  public:
+    float pos[2];
+    float tex[2];
+  };
 
-// -------------------------------------------
+  // -------------------------------------------
 
-class TextureInfoGL : public TextureInfo {
-public:
-TextureInfoGL(GLenum type, int id);
-int getWidth();
-int getHeight();
+  class TextureInfoGL : public TextureInfo {
+  public:
+    TextureInfoGL(GLenum type, int id);
+    int getWidth();
+    int getHeight();
 
-public:
-GLuint id;
-GLenum type;
-int tex_w;
-int tex_h;
-};
+  public:
+    GLuint id;
+    GLenum type;
+    int tex_w;
+    int tex_h;
+  };
 
-// -------------------------------------------
+  // -------------------------------------------
 
-struct TextureDrawInfo {
+  struct TextureDrawInfo {
 
-TextureDrawInfo();
+    TextureDrawInfo();
 
-  int offset;
-  int count;
-  TextureInfoGL* info;
-};
+    int offset;
+    int count;
+    TextureInfoGL* info;
+  };
 
- struct TextureDrawInfoSorter {
-   bool operator()(const TextureDrawInfo& a, const TextureDrawInfo& b) { return a.info->type > b.info->type; } 
- };
+  struct TextureDrawInfoSorter {
+    bool operator()(const TextureDrawInfo& a, const TextureDrawInfo& b) { return a.info->type > b.info->type; } 
+  };
 
- // -------------------------------------------
+  // -------------------------------------------
 
- GLuint gui_create_shader(GLenum type, const char* src);
- GLuint gui_create_program(GLuint vert, GLuint frag, int natts = 0, const char** atts = NULL);
- void gui_print_program_link_info(GLuint prog);
- void gui_print_shader_compile_info(GLuint shader);
- void gui_ortho(float l, float r, float b, float t, float n, float f, float* dest);
+  GLuint gui_create_shader(GLenum type, const char* src);
+  GLuint gui_create_program(GLuint vert, GLuint frag, int natts = 0, const char** atts = NULL);
+  void gui_print_program_link_info(GLuint prog);
+  void gui_print_shader_compile_info(GLuint shader);
+  void gui_ortho(float l, float r, float b, float t, float n, float f, float* dest);
 
- // -------------------------------------------
+  // -------------------------------------------
 
- class RenderGL : public Render {
+  class RenderLayer {
+  public:
+    RenderLayer();
 
- public:
-   RenderGL(int gl = RENDER_GL3);
+  public:
+    std::vector<GLint> bg_offsets;
+    std::vector<GLsizei> bg_counts;
+    std::vector<GLint> fg_offsets;
+    std::vector<GLsizei> fg_counts;
+    DejaVu text_font;
+    DejaVu number_font;
+    FontAwesome icon_font;
+    DejaVu text_input_font;
+    DejaVu number_input_font;
+    TextInput text_input;
+    TextInput number_input;
+  };
 
-   void update();
-   void draw();
-   void resize(int w, int h);
+  class RenderGL : public Render {
 
-   void getWindowSize(int& ww, int& wh);
-   void beginScissor();
-   void scissor(int sx, int sy, int sw, int sh);
-   void endScissor();
+  public:
+    RenderGL(int gl = RENDER_GL3);
 
-   void clear();                                                                             /* removes all vertices, and offset data */
-   void writeText(float x, float y, std::string text, float* color);                         /* write some text */
-   void writeNumber(float x, float y, std::string number, float* color);                     /* write a number value; we right align it */
-   void writeIcon(float x, float y, unsigned int icon, float* color);                        /* write an icon. see Types.h for the available icons */
-   void addRectangle(float x, float y, float w, float h, float* color, bool filled = true, float shadetop = -0.15, float shadebot = 0.15f);  /* draw a rectangle at x/y with w/h and given color; must have 4 elements */
-   void addRectangle(float x, float y, float w, float h, TextureInfo* texinfo);              /* draw a rectangle at x/y with w/h for the given texture */
+    void update();
+    void draw();
+    void resize(int w, int h);
 
-   /* experimental */
-   void addRoundedRectangle(float x, float y, float w, float h, float radius, float* color, bool filled = true, int corners = GUI_CORNER_ALL); 
+    void getWindowSize(int& ww, int& wh);
+    void beginScissor();
+    void scissor(int sx, int sy, int sw, int sh);
+    void endScissor();
 
-   void enableTextInput(float x, float y, float maxw, std::string value, float* color); 
-   void enableNumberInput(float x, float y, float maxw, std::string value, float* color);
-   void disableNumberInput();
-   void disableTextInput();
-   void getNumberInputValue(std::string& result);
-   void getTextInputValue(std::string& result);
-   bool getIconSize(unsigned int id, int& w, int& h);
+    void clear();                                                                             /* removes all vertices, and offset data */
+    void writeText(float x, float y, std::string text, float* color);                         /* write some text */
+    void writeNumber(float x, float y, std::string number, float* color);                     /* write a number value; we right align it */
+    void writeIcon(float x, float y, unsigned int icon, float* color);                        /* write an icon. see Types.h for the available icons */
+    void addRectangle(float x, float y, float w, float h, float* color, bool filled = true, float shadetop = -0.15, float shadebot = 0.15f);  /* draw a rectangle at x/y with w/h and given color; must have 4 elements */
+    void addRectangle(float x, float y, float w, float h, TextureInfo* texinfo);              /* draw a rectangle at x/y with w/h for the given texture */
 
-   void onCharPress(unsigned int key); /* gets called when a key is pressed (called by an editable widget) */
-   void onKeyPress(int key, int mods); /* gets called for special keys (called by an editable widget) */
+    /* experimental */
+    void addRoundedRectangle(float x, float y, float w, float h, float radius, float* color, bool filled = true, int corners = GUI_CORNER_ALL); 
+    void setLayer(int layer); 
+    /* end experimental */
 
- private: 
-   void updatePositionColorBuffers();
-   void updatePositionTexCoordBuffers();
+    void enableTextInput(float x, float y, float maxw, std::string value, float* color); 
+    void enableNumberInput(float x, float y, float maxw, std::string value, float* color);
+    void disableNumberInput();
+    void disableTextInput();
+    void getNumberInputValue(std::string& result);
+    void getTextInputValue(std::string& result);
+    bool getIconSize(unsigned int id, int& w, int& h);
 
- public:
+    void onCharPress(unsigned int key); /* gets called when a key is pressed (called by an editable widget) */
+    void onKeyPress(int key, int mods); /* gets called for special keys (called by an editable widget) */
 
-   /* opengl */
-   int gl_version;                                              /* passed into the constructor; either RENDER_GL2 or RENDER_GL3 */
-   GLint viewport[4];                                           /* contains the viewport size; is e.g. used in getWindowSize() */
-   static bool is_initialized;                                  /* static member, is set to true when the shaders/prog has been created */
+  private: 
+    void updatePositionColorBuffers();
+    void updatePositionTexCoordBuffers();
 
-   /* GuiVertexPC: lines + background */
-   GLuint vbo_pc;                                               /* the vbo that keeps the vertices for the position + colors */
-   GLuint vao_pc;                                               /* vao to keep state of the vbo for position + colors */
-   static GLuint prog_pc;                                       /* the shader program that we use to render everything */
-   static GLuint vert_pc;                                       /* the vertex shader for the gui */
-   static GLuint frag_pc;                                       /* the fragment shader for the gui */
+  public:
 
-   /* GuiVertexPT: textures */
-   GLuint vbo_pt;                                               /* vbo for the position + texcoord buffers */
-   GLuint vao_pt;                                               /* vao for the position + textcoord buffers */
-   static GLuint prog_pt;                                       /* shader program that renders GuiVertexPT */
-   static GLuint prog_pt_rect;
-   static GLuint vert_pt;                                       /* vertex shader that renders GuiVertexPT */
-   static GLuint frag_pt;                                       /* fragment shader that renders GuiVertexPT */
-   static GLuint frag_pt_rect;
+    /* opengl */
+    int gl_version;                                              /* passed into the constructor; either RENDER_GL2 or RENDER_GL3 */
+    GLint viewport[4];                                           /* contains the viewport size; is e.g. used in getWindowSize() */
+    static bool is_initialized;                                  /* static member, is set to true when the shaders/prog has been created */
 
-   /* GuiVertexPC buffer info */
-   bool needs_update_pc;                                        /* set to true whenever we need to update the vbo for the position + color type*/
-   size_t bytes_allocated_pc;                                   /* how many bytes we've allocated in the vbo for the position + color type */
-   std::vector<GuiVertexPC> vertices_pc;                        /* vertices for that make up the gui (for color + position) */
-   std::vector<GLint> bg_offsets;                               /* offsets of the different background elements */
-   std::vector<GLsizei> bg_counts;                              /* vertex counts for the background elements */
-   std::vector<GLint> fg_offsets;                               /* offsets of the foreground elements */
-   std::vector<GLsizei> fg_counts;                              /* vetex counts for the foreground elements */
+    /* GuiVertexPC: lines + background */
+    GLuint vbo_pc;                                               /* the vbo that keeps the vertices for the position + colors */
+    GLuint vao_pc;                                               /* vao to keep state of the vbo for position + colors */
+    static GLuint prog_pc;                                       /* the shader program that we use to render everything */
+    static GLuint vert_pc;                                       /* the vertex shader for the gui */
+    static GLuint frag_pc;                                       /* the fragment shader for the gui */
 
-   /* GuiVertexPT buffer info */
-   bool needs_update_pt;                                        /* is set to true whenever we need t update the pos/tex vertices */
-   size_t bytes_allocated_pt;                                   /* the number of bytes allocated in the GuiVertexPT buffer */
-   std::vector<GuiVertexPT> vertices_pt;                        /* the vertices that we use to draw a texture */
-   std::vector<TextureDrawInfo> texture_draws;                  /* keeps information about the textures we need to draw */
+    /* GuiVertexPT: textures */
+    GLuint vbo_pt;                                               /* vbo for the position + texcoord buffers */
+    GLuint vao_pt;                                               /* vao for the position + textcoord buffers */
+    static GLuint prog_pt;                                       /* shader program that renders GuiVertexPT */
+    static GLuint prog_pt_rect;
+    static GLuint vert_pt;                                       /* vertex shader that renders GuiVertexPT */
+    static GLuint frag_pt;                                       /* fragment shader that renders GuiVertexPT */
+    static GLuint frag_pt_rect;
 
-   /* @todo cleanup */
+    /* GuiVertexPC buffer info */
+    bool needs_update_pc;                                        /* set to true whenever we need to update the vbo for the position + color type*/
+    size_t bytes_allocated_pc;                                   /* how many bytes we've allocated in the vbo for the position + color type */
+    std::vector<GuiVertexPC> vertices_pc;                        /* vertices for that make up the gui (for color + position) */
+    std::vector<GLint> bg_offsets;                               /* offsets of the different background elements */
+    std::vector<GLsizei> bg_counts;                              /* vertex counts for the background elements */
+    std::vector<GLint> fg_offsets;                               /* offsets of the foreground elements */
+    std::vector<GLsizei> fg_counts;                              /* vetex counts for the foreground elements */
 
-   /* fonts */
-   DejaVu text_font;
-   //SourceCode number_font;
-   DejaVu number_font;
-   FontAwesome icon_font;
-   //Arial text_input_font;                                       /* we need to use another font object for the text input because the text input clears all vertices, so it cannot share the text_font. */
-   //SourceCode number_input_font;                                /* we need to use another font object for the number font because the number font clears all vertices, so it cannot share the number_font. */
-   DejaVu text_input_font;
-   DejaVu number_input_font;
-   TextInput text_input;
-   TextInput number_input;
- };
+    /* GuiVertexPT buffer info */
+    bool needs_update_pt;                                        /* is set to true whenever we need t update the pos/tex vertices */
+    size_t bytes_allocated_pt;                                   /* the number of bytes allocated in the GuiVertexPT buffer */
+    std::vector<GuiVertexPT> vertices_pt;                        /* the vertices that we use to draw a texture */
+    std::vector<TextureDrawInfo> texture_draws;                  /* keeps information about the textures we need to draw */
+
+    /* @todo cleanup */
+    //    int layer_num; /* @todo cleanup, current layer that is being drawn to. */
+    std::map<int, RenderLayer*> layers; /* @todo cleanup, this is experimental, trying to add a depth sorting. */
+    RenderLayer* layer;
+    /* ------------ */
+
+    /* fonts */
+    DejaVu text_font;
+    //SourceCode number_font;
+    DejaVu number_font;
+    FontAwesome icon_font;
+    //Arial text_input_font;                                       /* we need to use another font object for the text input because the text input clears all vertices, so it cannot share the text_font. */
+    //SourceCode number_input_font;                                /* we need to use another font object for the number font because the number font clears all vertices, so it cannot share the number_font. */
+    DejaVu text_input_font;
+    DejaVu number_input_font;
+    TextInput text_input;
+    TextInput number_input;
+  };
 
  
- /* interpolates the given colors `a` and `b` using the percentage set by `fac` */
- inline void gl_interpolate_colors(const float a[4], const float b[4], const float fac, float out[4]) {
-   float inv = 1.0 - fac;
-   out[0] = fac * a[0] + inv * b[0];
-   out[1] = fac * a[1] + inv * b[1];
-   out[2] = fac * a[2] + inv * b[2];
-   out[3] = fac * a[3] + inv * b[3];
- }
+  /* interpolates the given colors `a` and `b` using the percentage set by `fac` */
+  inline void gl_interpolate_colors(const float a[4], const float b[4], const float fac, float out[4]) {
+    float inv = 1.0 - fac;
+    out[0] = fac * a[0] + inv * b[0];
+    out[1] = fac * a[1] + inv * b[1];
+    out[2] = fac * a[2] + inv * b[2];
+    out[3] = fac * a[3] + inv * b[3];
+  }
 
- inline void gl_interpolate_colors_with_range(const float a[4], const float b[4], float minval, float maxval, float val, float out[4]) {
-   float p = (maxval - val) / (maxval - minval);
-   gl_interpolate_colors(a, b, p, out);
- }
+  inline void gl_interpolate_colors_with_range(const float a[4], const float b[4], float minval, float maxval, float val, float out[4]) {
+    float p = (maxval - val) / (maxval - minval);
+    gl_interpolate_colors(a, b, p, out);
+  }
 
- inline void gl_shade_colors(float colin[4], float shadea, float shadeb, float outa[4], float outb[4]) {
-   outa[0] = std::min<float>(1.0f, colin[0] + shadea);
-   outa[1] = std::min<float>(1.0f, colin[1] + shadea);
-   outa[2] = std::min<float>(1.0f, colin[2] + shadea);
-   outa[3] = colin[3];
-   outb[0] = std::max<float>(0.0f, colin[0] + shadeb);
-   outb[1] = std::max<float>(0.0f, colin[1] + shadeb);
-   outb[2] = std::max<float>(0.0f, colin[2] + shadeb);
-   outb[3] = colin[3];
- }
+  inline void gl_shade_colors(float colin[4], float shadea, float shadeb, float outa[4], float outb[4]) {
+    outa[0] = std::min<float>(1.0f, colin[0] + shadea);
+    outa[1] = std::min<float>(1.0f, colin[1] + shadea);
+    outa[2] = std::min<float>(1.0f, colin[2] + shadea);
+    outa[3] = colin[3];
+    outb[0] = std::max<float>(0.0f, colin[0] + shadeb);
+    outb[1] = std::max<float>(0.0f, colin[1] + shadeb);
+    outb[2] = std::max<float>(0.0f, colin[2] + shadeb);
+    outb[3] = colin[3];
+  }
 
- inline void gl_add_shaded_vertex_pc(float x, float y, float miny, float maxy, 
-                                     const float coltop[4], const float colbot[4], float intcol[4],
-                                     std::vector<GuiVertexPC>& result)
- {
-   gl_interpolate_colors_with_range(coltop, colbot, miny, maxy, y, intcol);
-   result.push_back(GuiVertexPC(x, y, intcol));
- } 
+  inline void gl_add_shaded_vertex_pc(float x, float y, float miny, float maxy, 
+                                      const float coltop[4], const float colbot[4], float intcol[4],
+                                      std::vector<GuiVertexPC>& result)
+  {
+    gl_interpolate_colors_with_range(coltop, colbot, miny, maxy, y, intcol);
+    result.push_back(GuiVertexPC(x, y, intcol));
+  }
 
+  /* @todo - this is experimental */
+  inline void RenderGL::setLayer(int l) {
+
+    std::map<int, RenderLayer*>::iterator it = layers.find(l);
+    if (it == layers.end()) {
+      layer = new RenderLayer();
+      if (NULL == layer) {
+        printf("Cannot allocate new RenderLayer.\n");
+        return;
+      }
+      layers[l] = layer;
+    }
+    else {
+      layer = it->second;
+    }
+    assert(layer);
+  }
 
 } // namespace rx
 
@@ -387,6 +429,40 @@ TextureDrawInfo();
 #if defined(REMOXLY_IMPLEMENTATION)
 
 namespace rx { 
+
+
+  // -------------------------------------------
+
+  RenderLayer::RenderLayer()
+    :text_input(0.0f, 0.0f, 0.0f, text_input_font)
+    ,number_input(0.0f, 0.0f, 0.0f, number_input_font)
+  {
+    /* @todo we probably can remove the text_input font as we're using the same font for text and numbers now. */
+    /* @todo cleanup this init... */
+    if(!text_font.setup()) {
+      printf("Error: cannot setup text font.\n");
+    }
+
+    if(!icon_font.setup()) {
+      printf("Error: cannot setup icon font.\n");
+    }
+
+    if(!number_font.setup()) {
+      printf("Error: cannot setup number font.\n");
+    }
+
+    if(!text_input_font.setup()) {
+      printf("Error: cannot setup the text input font.\n");
+    }
+
+    if(!number_input_font.setup()) {
+      printf("Error: cannot setup the number input font.\n");
+    }
+
+    number_input.align = BITMAP_FONT_ALIGN_RIGHT;
+    text_input.align = BITMAP_FONT_ALIGN_LEFT;
+    
+  }
 
   // -------------------------------------------
 
@@ -410,6 +486,7 @@ namespace rx {
     ,bytes_allocated_pt(0)
     ,needs_update_pc(false)
     ,needs_update_pt(false)
+    ,layer(NULL) 
     ,text_input(0.0f, 0.0f, 0.0f, text_input_font)
     ,number_input(0.0f, 0.0f, 0.0f, number_input_font)
   {
@@ -506,6 +583,10 @@ namespace rx {
 
     number_input.align = BITMAP_FONT_ALIGN_RIGHT;
     text_input.align = BITMAP_FONT_ALIGN_LEFT;
+
+    /* @todo cleanup - here we create the bottom layer */
+    setLayer(0);
+    /* @todo end cleanup */
   }
 
   void RenderGL::getWindowSize(int& ww, int& wh) {
@@ -571,6 +652,47 @@ namespace rx {
 
   void RenderGL::draw() {
 
+    /* RENDER LAYER IMPLEMENTATION */
+    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    if (vertices_pc.size()) {
+
+      RenderLayer* lyr = NULL;
+      std::map<int, RenderLayer*>::iterator it = layers.begin();
+
+      while (it != layers.end()) {
+
+        glUseProgram(prog_pc);
+        glBindVertexArray(vao_pc);
+
+        lyr = it->second;
+
+        if(lyr->bg_counts.size()) {
+          glMultiDrawArrays(GL_TRIANGLES, &lyr->bg_offsets[0], &lyr->bg_counts[0], lyr->bg_counts.size());
+        }
+
+        if(lyr->fg_counts.size()) {
+          glMultiDrawArrays(GL_LINE_STRIP, &lyr->fg_offsets[0], &lyr->fg_counts[0], lyr->fg_counts.size());
+        } 
+
+        lyr->icon_font.draw();
+        lyr->text_font.draw();
+        lyr->number_font.draw();
+        lyr->text_input.draw();
+        lyr->number_input.draw();
+
+        ++it;
+      }
+    }
+
+    glDisable(GL_BLEND);
+
+
+    /* ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
+#if 0
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -630,6 +752,7 @@ namespace rx {
     number_input.draw();
 
     glDisable(GL_BLEND);
+#endif
   }
 
   void RenderGL::resize(int w, int h) {
@@ -684,6 +807,25 @@ namespace rx {
     number_font.clear();
     text_input_font.clear();
     number_input_font.clear();
+
+    /* @todo - begin clean up, experimental implementing layers. */
+    std::map<int, RenderLayer*>::iterator it = layers.begin();
+    while (it != layers.end()) {
+
+      RenderLayer* l = it->second;
+      l->bg_offsets.clear();
+      l->bg_counts.clear();
+      l->fg_offsets.clear();
+      l->fg_counts.clear();
+      l->text_font.clear();
+      l->number_font.clear();
+      l->icon_font.clear();
+      l->text_input_font.clear();
+      l->number_input_font.clear();
+      ++it;
+    }
+
+    /* @todo - end experimental */
   }
 
   void RenderGL::onCharPress(unsigned int key) {
@@ -712,18 +854,30 @@ namespace rx {
 
     text_font.setColor(color[0], color[1], color[2], color[3]);
     text_font.write(x, y, text, BITMAP_FONT_ALIGN_LEFT);
+
+    /* @todo cleanup -> implementing layers. */
+    layer->text_font.setColor(color[0], color[1], color[2], color[3]);
+    layer->text_font.write(x, y, text, BITMAP_FONT_ALIGN_LEFT);
   }
 
   void RenderGL::writeNumber(float x, float y, std::string number, float* color) {
 
     number_font.setColor(color[0], color[1], color[2], color[3]);
     number_font.write(x, y, number, BITMAP_FONT_ALIGN_RIGHT);
+
+    /* @todo cleanup -> implementing layers. */
+    layer->number_font.setColor(color[0], color[1], color[2], color[3]);
+    layer->number_font.write(x, y, number, BITMAP_FONT_ALIGN_RIGHT);
   }
 
   void RenderGL::writeIcon(float x, float y, unsigned int icon, float* color) {
   
     icon_font.setColor(color[0], color[1], color[2], color[3]);
     icon_font.write(x, y, icon);
+
+    /* @todo cleanup -> implementing layers. */
+    layer->icon_font.setColor(color[0], color[1], color[2], color[3]);
+    layer->icon_font.write(x, y, icon);
   }
 
   void RenderGL::enableTextInput(float x, float y, float maxw, std::string value, float* color) {
@@ -783,7 +937,7 @@ namespace rx {
     return true;
   }
 
-void RenderGL::addRectangle(float x, float y, float w, float h, float* color, bool filled, float shadetop, float shadebot) {
+  void RenderGL::addRectangle(float x, float y, float w, float h, float* color, bool filled, float shadetop, float shadebot) {
 
     float coltop[4]; /* color for the top */
     float colbot[4]; /* color for the bottom */
@@ -803,6 +957,7 @@ void RenderGL::addRectangle(float x, float y, float w, float h, float* color, bo
   
     if(filled) { 
       bg_offsets.push_back(vertices_pc.size());
+      layer->bg_offsets.push_back(vertices_pc.size()); /* @todo cleanup */
 
       vertices_pc.push_back(a);
       vertices_pc.push_back(b);
@@ -813,15 +968,18 @@ void RenderGL::addRectangle(float x, float y, float w, float h, float* color, bo
       vertices_pc.push_back(d);
 
       bg_counts.push_back(vertices_pc.size() - bg_offsets.back());
+      layer->bg_counts.push_back(vertices_pc.size() - bg_offsets.back()); /* @todo cleanup */
     }
     else {
       fg_offsets.push_back(vertices_pc.size());
+      layer->fg_offsets.push_back(vertices_pc.size()); /* @todo cleanup */
       vertices_pc.push_back(a);
       vertices_pc.push_back(b);
       vertices_pc.push_back(c);
       vertices_pc.push_back(d);
       vertices_pc.push_back(a);
       fg_counts.push_back(vertices_pc.size() - fg_offsets.back());
+      layer->fg_counts.push_back(vertices_pc.size() - fg_offsets.back()); /* @todo cleanup */
     }
 
     needs_update_pc = true;
@@ -900,6 +1058,7 @@ void RenderGL::addRectangle(float x, float y, float w, float h, float* color, bo
     }
 
     bg_offsets.push_back(vertices_pc.size());
+    layer->bg_offsets.push_back(vertices_pc.size()); /* @todo layer */
 
     /* bottom right corner. */
     rx = x + w - radius;
@@ -984,8 +1143,8 @@ void RenderGL::addRectangle(float x, float y, float w, float h, float* color, bo
     if (corners & GUI_CORNER_BOTTOM_LEFT) {
       for (size_t i = 0; i < (points.size()/2)-1; ++i) {
         gl_add_shaded_vertex_pc(rx, ry, min_y, max_y, coltop, colbot, intcol, vertices_pc);
-        gl_add_shaded_vertex_pc(rx + -points[i * 2 + 0], ry + points[i * 2 + 1], min_y, max_y, coltop, colbot, intcol, vertices_pc);
-        gl_add_shaded_vertex_pc(rx + -points[(i+1) * 2 + 0], ry + points[(i+1) * 2 + 1], min_y, max_y, coltop, colbot, intcol, vertices_pc);
+        gl_add_shaded_vertex_pc(rx - points[i * 2 + 0], ry + points[i * 2 + 1], min_y, max_y, coltop, colbot, intcol, vertices_pc);
+        gl_add_shaded_vertex_pc(rx - points[(i+1) * 2 + 0], ry + points[(i+1) * 2 + 1], min_y, max_y, coltop, colbot, intcol, vertices_pc);
       }
     }
     else {
@@ -1009,6 +1168,7 @@ void RenderGL::addRectangle(float x, float y, float w, float h, float* color, bo
 
 #endif
     bg_counts.push_back(vertices_pc.size() - bg_offsets.back());
+    layer->bg_counts.push_back(vertices_pc.size() - layer->bg_offsets.back());
     needs_update_pc = true;
 
 #if 0
@@ -1196,7 +1356,7 @@ void RenderGL::addRectangle(float x, float y, float w, float h, float* color, bo
     
       //setColor(col[0], col[1], col[2], col[3]);
       //    printf("p: %f, %f, %f, %f\n", p, col[0], col[1], col[2]);
-    }
+      }
       setPos(x, y);
       //  setColor(col[0], col[1], col[2], col[3]);
       //setColor(col[0], col[1], col[2], col[3]);

@@ -52,4 +52,6 @@ void Render::onCharPress(unsigned int key) { }
 
 void Render::onKeyPress(int key, int mods) { }
 
+void Render::setLayer(int layer) { } /* @todo - this is experimental */
+
 }  // namespace rx 

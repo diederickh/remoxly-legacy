@@ -59,6 +59,10 @@ class Group : public Widget {
   float* getBackgroundStateColor(Widget* w, int flag = GUI_STATE_DOWN_INSIDE); /* returns the background color. you could hightlight a background color too, which is e.g. used in the scroll bar */
   float* getSelectedStateColor(Widget* w, int flag = GUI_STATE_DOWN_INSIDE);   /* returns the highlight color when the mouse is down inside the element, else it returns the default selected color. */ 
 
+  /* experimental @todo cleanup */
+  //  void sortChildren();                                     /* sort children on their depth value. */
+  //  void build();
+
  private:
   void update();
 

@@ -49,6 +49,7 @@
 #include <gui/Toggle.h>
 #include <gui/Types.h>
 #include <gui/Utils.h>
+#include <gui/Select.h>
 #include <gui/Widget.h>
 #include <gui/storage/StorageXML.h>
 

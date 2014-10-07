@@ -109,23 +109,28 @@ int main() {
   float color[3] = { 0 } ;
   std::string rtmp_host;
 
+  std::vector<std::string> options;
+  options.push_back("Logitech C920");
+  options.push_back("Decklink Capture");
+  options.push_back("CamCorder");
+
 #if USE_GROUP
   Group group0("Particles", new RenderGL());
   group0.add(new Slider<int>("Particle Forces", forces, 0, 100, 1));
   //  group_ptr0 = &group0;
-
+  group0.add(new Select("Webcam", options, 1));
   group0.add(new Slider<int>("Particle Velocity", velocity, 0, 100, 1));
+  group_ptr0 = &group0;  
+  
+
   group0.add(new Slider<int>("Particle Amount", amount, 0, 10, 1));
   group0.add(new Slider<int>("Particle Lifetime", lifetime, 0, 10, 1));
   group0.add(new Slider<float>("Particle Mass", mass, 0.0f, 100.0f, 0.001f));
-
-  group_ptr0 = &group0;
 
   Group group1("Drawings", new RenderGL());
   group1.add(new Slider<float>("Line size", line_size, 0.0f, 200.0f, 0.1f));
   group1.x = 300;
   group_ptr1 = &group1;
-
 
 #endif
 
@@ -144,10 +149,12 @@ int main() {
   Group* g1 = panel.addGroup("Water Simulation");
   g1->add(new Slider<int>("Particle Lifetime", lifetime, 0, 10, 1));
   g1->add(new Slider<int>("Particle Amount", amount, 0, 10, 1));
+  g1->add(new Select("Webcam", options, 1));
   g1->add(new Toggle("Render Particles", render_particles));
   g1->add(new Toggle("Render Water", render_water));
   g1->add(new Toggle("Render Spirals", render_spirals));
   g1->add(new Toggle("Render Marker", render_marker));
+
 
   Group* g2 = panel.addGroup("Special FX");
 
@@ -170,6 +177,7 @@ int main() {
   g2->add(new Button("Cloud Burst", 2, GUI_ICON_CLOUD, on_group_button_click, NULL, 1, 1, GUI_CORNER_NONE));
   g2->add(new Button("Extrude Region", 2, GUI_ICON_CLOUD, on_group_button_click, NULL, 1, 1, GUI_CORNER_BOTTOM));
 
+  panel.x = 600;
   panel_ptr = &panel;
 #endif
 
@@ -188,7 +196,7 @@ int main() {
 
 #if USE_GROUP
     group0.draw();
-    group1.draw();
+    //group1.draw();
 #endif
 
 #if USE_PANEL

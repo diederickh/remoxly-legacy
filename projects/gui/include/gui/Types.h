@@ -16,6 +16,8 @@
 #define GUI_TYPE_PANEL                       9          /* A Panel element can hold many Group element and stacks them on top of each other. It creates a scroll bar */
 #define GUI_TYPE_TEXT                        10         /* Text input */
 #define GUI_TYPE_TEXTURE                     11         /* Texture input */
+#define GUI_TYPE_SELECT                      12         /* Select (aka listbox) */ 
+#define GUI_TYPE_MENU                        13         /* Menu */ 
 
 #define GUI_CORNER_NONE                      (0)
 #define GUI_CORNER_TOP_LEFT                  (1 << 1) 
@@ -419,6 +421,7 @@
 #define GUI_ICON_VIMEO_SQUARE                0xf194
 #define GUI_ICON_TRY                         0xf195
 #define GUI_ICON_PLUS_SQUARE_O               0xf196
+#define GUI_ICON_UNSORTED                    0xf0dc
                                     
 #define GUI_KEY_SPACE                        32
 #define GUI_KEY_ENTER                        257

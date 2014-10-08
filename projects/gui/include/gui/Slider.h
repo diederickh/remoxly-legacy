@@ -165,7 +165,7 @@ void Slider<T>::create() {
 
   render->addRectangle(x, y, text_w, h, group->bg_color, true, 0.0f, 0.1f);
   render->addRectangle(num_x, y, num_w, h, group->text_bg_color, true, -0.1f, 0.0f);
-  render->addRectangle(text_x, y, text_w * perc_value, h, group->getSelectedStateColor(this), true, 0.04, -0.1f);
+  render->addRectangle(text_x, y, text_w * perc_value, h, group->getSelectedStateColor(this), true, group->shade_top, group->shade_bottom); 
   render->writeText(x + group->xindent, y + group->yindent, label, group->label_color);
 
   if(state & GUI_STATE_EDITABLE) {

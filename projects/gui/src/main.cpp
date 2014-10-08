@@ -29,9 +29,11 @@ using namespace rx;
 
 #define USE_GROUP 1
 #define USE_PANEL 1
+#define USE_CONTAINER 1
 Group* group_ptr0 = NULL;
 Group* group_ptr1 = NULL;
 Panel* panel_ptr = NULL;
+Container* container_ptr = NULL;
 Remoxly* remoxly_ptr = NULL;
 
 #define ROXLU_USE_ALL
@@ -46,6 +48,7 @@ void error_callback(int err, const char* desc);
 void resize_callback(GLFWwindow* window, int width, int height);
 
 void on_group_button_click(int id, void* user);
+void on_select_click(int selectid, int optionid, void* user);
  
 int main() {
 
@@ -118,7 +121,7 @@ int main() {
   Group group0("Particles", new RenderGL());
   group0.add(new Slider<int>("Particle Forces", forces, 0, 100, 1));
   //  group_ptr0 = &group0;
-  group0.add(new Select("Webcam", options, 1));
+  group0.add(new Select("Webcam", 1, options, on_select_click, NULL, GUI_CORNER_ALL));
   group0.add(new Slider<int>("Particle Velocity", velocity, 0, 100, 1));
   group_ptr0 = &group0;  
   
@@ -141,15 +144,15 @@ int main() {
   g0->add(new ColorRGB("Pastel Colors", color, 50, 0.5f));
   g0->add(new ColorRGB("Bright Colors", color, 150, 0.9f, 1.0f));
   g0->add(new ColorRGB("Limited Range", color, 15, 0.7f, 0.9f));
-  g0->add(new Button("Save Settings", 3, GUI_ICON_FLOPPY_O, on_group_button_click, NULL, 1));
-  g0->add(new Button("Load Settings", 4, GUI_ICON_REFRESH, on_group_button_click, NULL, 1));
+  g0->add(new Button("Save Settings", 3, GUI_ICON_FLOPPY_O, on_group_button_click, NULL, GUI_CORNER_TOP));
+  g0->add(new Button("Load Settings", 4, GUI_ICON_REFRESH, on_group_button_click, NULL, GUI_CORNER_BOTTOM));
   g0->add(new Slider<int>("Particle velocity", velocity, 0, 100, 1));
   g0->add(new Text("RTMP host", rtmp_host));
 
   Group* g1 = panel.addGroup("Water Simulation");
   g1->add(new Slider<int>("Particle Lifetime", lifetime, 0, 10, 1));
   g1->add(new Slider<int>("Particle Amount", amount, 0, 10, 1));
-  g1->add(new Select("Webcam", options, 1));
+  g1->add(new Select("Webcam", 2, options, on_select_click, NULL, GUI_CORNER_NONE));
   g1->add(new Toggle("Render Particles", render_particles));
   g1->add(new Toggle("Render Water", render_water));
   g1->add(new Toggle("Render Spirals", render_spirals));
@@ -172,14 +175,23 @@ int main() {
     g2->add(new Slider<float>("End Angle", end_angle, 0.0f, 200.0f, 0.1f));
   }
 
-  g2->add(new Button("Download", 0, GUI_ICON_DOWNLOAD, on_group_button_click, NULL, 1, 1, GUI_CORNER_TOP));
-  g2->add(new Button("Twitter", 1, GUI_ICON_TWITTER, on_group_button_click, NULL, 1, 1, GUI_CORNER_NONE));
-  g2->add(new Button("Cloud Burst", 2, GUI_ICON_CLOUD, on_group_button_click, NULL, 1, 1, GUI_CORNER_NONE));
-  g2->add(new Button("Extrude Region", 2, GUI_ICON_CLOUD, on_group_button_click, NULL, 1, 1, GUI_CORNER_BOTTOM));
+  g2->add(new Button("Download", 0, GUI_ICON_DOWNLOAD, on_group_button_click, NULL, GUI_CORNER_TOP));
+  g2->add(new Button("Twitter", 1, GUI_ICON_TWITTER, on_group_button_click, NULL, GUI_CORNER_NONE));
+  g2->add(new Button("Cloud Burst", 2, GUI_ICON_CLOUD, on_group_button_click, NULL, GUI_CORNER_NONE));
+  g2->add(new Button("Extrude Region", 2, GUI_ICON_CLOUD, on_group_button_click, NULL, GUI_CORNER_BOTTOM));
 
   panel.x = 600;
   panel_ptr = &panel;
 #endif
+
+#if USE_CONTAINER
+  /* Freely position elements in a container. */
+  Container* container = new Container(new RenderGL());
+  container->add(new Button("Download", 0, GUI_ICON_DOWNLOAD, on_group_button_click, NULL, GUI_CORNER_ALL)).setPosition(10, 620).setWidth(100);
+  container->add(new Select("Webcam", 2, options, on_select_click, NULL, GUI_CORNER_ALL)).setPosition(200, 620).setWidth(200);
+  container_ptr = container;
+#endif
+
 
   remoxly_ptr = new Remoxly();
   /*
@@ -201,6 +213,10 @@ int main() {
 
 #if USE_PANEL
     panel.draw();
+#endif
+
+#if USE_CONTAINER
+    container->draw();
 #endif
 
     remoxly_ptr->draw();
@@ -227,6 +243,10 @@ void char_callback(GLFWwindow* win, unsigned int key) {
   if(panel_ptr) {
     panel_ptr->onCharPress(key);
   }
+
+  if (container_ptr) {
+    container_ptr->onCharPress(key);
+  }
 }
  
 void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods) {
@@ -243,6 +263,9 @@ void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods) 
     }
     if(remoxly_ptr) {
       remoxly_ptr->onKeyRelease(key, mods);
+    }
+    if (container_ptr) {
+      container_ptr->onKeyRelease(key, mods);
     }
     return;
   }
@@ -268,6 +291,10 @@ void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods) 
     if(key == GLFW_KEY_F1) {
       panel_ptr->needs_redraw = true;
     }
+  }
+
+  if (container_ptr) {
+    container_ptr->onKeyPress(key, mods);
   }
 
   switch(key) {
@@ -298,6 +325,10 @@ void cursor_callback(GLFWwindow* win, double x, double y) {
   if(remoxly_ptr) {
     remoxly_ptr->onMouseMove(x, y);
   }
+
+  if (container_ptr) {
+    container_ptr->onMouseMove(x, y);
+  }
 }
 
 void button_callback(GLFWwindow* win, int bt, int action, int mods) {
@@ -320,6 +351,9 @@ void button_callback(GLFWwindow* win, int bt, int action, int mods) {
     if(remoxly_ptr) {
       remoxly_ptr->onMousePress(mx, my, bt, mods);
     }
+    if (container_ptr) {
+      container_ptr->onMousePress(mx, my, bt, mods);
+    }
   }
   else if(action == GLFW_RELEASE) {
     if(group_ptr0) {
@@ -333,6 +367,9 @@ void button_callback(GLFWwindow* win, int bt, int action, int mods) {
     }
     if(remoxly_ptr) {
       remoxly_ptr->onMouseRelease(mx, my, bt, mods);
+    }
+    if (container_ptr) {
+      container_ptr->onMouseRelease(mx, my, bt, mods);
     }
   }
 }
@@ -361,4 +398,8 @@ void on_group_button_click(int id, void* user) {
       remoxly_ptr->load("remoxly_test.xml");
     }
   }
+}
+
+void on_select_click(int selectid, int optionid, void* user) {
+  printf("Selected an option: %d for select: %d\n", optionid, selectid);
 }

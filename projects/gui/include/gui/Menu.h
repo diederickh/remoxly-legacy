@@ -24,18 +24,32 @@
 #include <gui/IconButton.h>
 
 namespace rx {
+
+  /* -------------------------------------------------------------------------------------------------------------- */
+  
+  typedef void(*gui_menu_callback)(int selectid, int optionid, void* user);
+
+  /* -------------------------------------------------------------------------------------------------------------- */
+
   
   class Menu : public Widget {
   public:
-    Menu(std::string title, std::vector<std::string> options);
+    Menu(std::string title, int menuid, std::vector<std::string> options, 
+         gui_menu_callback cb, void* user);
     void create();
     void onMouseMove(float mx, float my);
     void onMouseRelease(float mx, float my, int button, int modkeys);
+
   public:
     std::vector<std::string> options;
     int popup_height; 
-    int32_t selected_dx; /* we can assume that a user will not add more then size_t elements. */
-    int32_t draw_dx;
+    int32_t selected_dx;                  /* We can assume that a user will not add more then size_t elements. */
+    int32_t draw_dx;                      /* The currently activated element (doesn't need to be the selected one, e.g. in case of release outside.) */
+
+    /* Callback */
+    int menu_id;                          /* Callback id, used in callback. */
+    gui_menu_callback cb;               /* The callback function that is called when the user selects an option. */
+    void* user;                           /* Gets passed to the callback. */
   };
 
 } /* namespace rx */

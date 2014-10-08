@@ -45,8 +45,13 @@ namespace rx {
     virtual void position();                                         /* calculate the x/y/w/h etc.. values for the widget itself and for its children. note that x/y will be set by the container which is probably Gui. position() may only be called by the parent container after the x/y are set. */
     virtual void setGroup(Group* g);                                 /* setup the widget. sets the gui + render members by default, a user shouldn't call this */
     virtual void setBoundingBox();                                   /* calculate the bounding box of this element */
-    virtual void setDepth(int d);
     virtual void print();                                            /* prints some debug info */
+
+    /* layout. */
+    virtual Widget& setPosition(float px, float py);                 /* sets the position of the widget, e.g. can be used with the `Container` to freely position widgets. */
+    virtual Widget& setSize(float pw, float ph);                     /* set the size of the widget. */ 
+    virtual Widget& setWidth(float pw);                              /* set the width of the widget. */
+    virtual Widget& setHeight(float ph);                             /* set the height of the widget. */
 
     /* state management */
     virtual void lockPosition();                                     /* lock the position. when the position is locked the widget is not allowed to change the x/y itself */
@@ -91,12 +96,6 @@ namespace rx {
     virtual void buildChildren();                                    /* call create() on this element and scalls all create() functions of the child elements of the widget */
     void setBoundingBoxChildren();                                   /* calculate bounding boxes for all children */
 
-    /* experimental - depth sorting. @todo cleanup */
-    virtual void sortChildren(std::vector<Widget*>& result); /* sort children on their depth value. */
-    virtual void getChildren(std::vector<Widget*>& result);
-    virtual void getChildrenRecursive(std::vector<Widget*>& result);
-    /* end experimental */
-
     /* events and listeners */
     virtual void addListener(WidgetListener* l);                     /* add a listener for this widget - will call addListenerChildren() too */
     virtual void addListenerChildren(WidgetListener* l);             /* adds the listeners to the children of this elements - called from addListener() */
@@ -117,7 +116,6 @@ namespace rx {
     int w;                                                           /* the width of the visual elements of this widget */
     int h;                                                           /* the height of the visual elements of this widget */
     int bbox[4];                                                     /* bounding box of the visual elements that this widget contains. must be set in setBoundingBox(), 0 = top left x, 1 = top left y, 2 = width, 3 = height */
-    int depth;                                                       /* the depth layer, all widgets are sorted on depth so we can overlay elements on top of each other. */ 
     bool needs_redraw;                                               /* this flag is used in needsRedraw() by default (if you didn't override this function). when you set needs_redraw to true your create() function will be called during the next render */
     std::string label;                                               /* the label for this element */
     std::vector<Widget*> children;
@@ -132,13 +130,34 @@ namespace rx {
     int press_y;                                                     /* the y position of the widget when the press began */
   };
 
+  /* -------------------------------------------------------------------------------------------------------------- */
+
   inline bool Widget::isDrawn() {
     return !(state & GUI_STATE_UNUSED);
   }
 
-  inline void Widget::setDepth(int d) {
-    depth = d;
+  inline Widget& Widget::setPosition(float px, float py) {
+    x = px;
+    y = py;
+    return *this;
   }
+
+  inline Widget& Widget::setSize(float pw, float ph) {
+    setWidth(pw);
+    setHeight(ph);
+    return *this;
+  }
+
+  inline Widget& Widget::setWidth(float pw) {
+    w = pw;
+    return *this;
+  }
+
+  inline Widget& Widget::setHeight(float ph) {
+    h = ph;
+    return *this;
+  }
+
 
 } // namespace rx
 

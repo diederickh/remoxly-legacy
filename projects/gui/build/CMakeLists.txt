@@ -21,6 +21,7 @@ include_directories(
 )
 
 set(remoxly_lib_sources
+  ${bd}/src/gui/Container.cpp
   ${bd}/src/gui/Group.cpp
   ${bd}/src/gui/Utils.cpp
   ${bd}/src/gui/Widget.cpp

@@ -37,6 +37,7 @@
 #include <gui/Button.h>
 #include <gui/ColorRGB.h>
 #include <gui/Group.h>
+#include <gui/Container.h>
 #include <gui/IconButton.h>
 #include <gui/WidgetListener.h>
 #include <gui/Panel.h>

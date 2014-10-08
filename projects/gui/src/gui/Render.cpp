@@ -46,12 +46,12 @@ void Render::addRectangle(float x, float y, float w, float h, float* color, bool
 
 void Render::addRectangle(float x, float y, float w, float h, TextureInfo* texinfo) { } 
 
-void Render::addRoundedRectangle(float x, float y, float w, float h, float radius, float* color, bool filled, int corners) { }
+void Render::addRoundedRectangle(float x, float y, float w, float h, float radius, float* color, bool filled, float shadetop, float shadebot, int corners) { }
 
 void Render::onCharPress(unsigned int key) { }
 
 void Render::onKeyPress(int key, int mods) { }
 
-void Render::setLayer(int layer) { } /* @todo - this is experimental */
+void Render::setLayer(int layer) { } 
 
-}  // namespace rx 
+}  /* namespace rx */

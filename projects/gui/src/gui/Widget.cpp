@@ -26,7 +26,6 @@ namespace rx {
     ,y(0)
     ,w(0)
     ,h(0)
-    ,depth(0)
     ,needs_redraw(true)
     ,mouse_x(0)
     ,mouse_y(0)
@@ -96,8 +95,6 @@ namespace rx {
     }
 
     create();
-    /* @todo cleanup */
-    //printf("%d %s\n", depth, label.c_str());
 
     buildChildren();
  
@@ -105,45 +102,8 @@ namespace rx {
   }
 
   void Widget::buildChildren() {
-    std::vector<Widget*> sorted;
-    sortChildren(sorted);
-
-    /*
-    for (size_t i = 0; i < sorted.size(); ++i) {
-      Widget* wid = sorted[i];
-      printf("> %d : %s\n", wid->depth, wid->label.c_str());
-    }
-    */
-    /* @todo cleanup ... */
-#if 0
-    for(std::vector<Widget*>::iterator it = sorted.begin(); it != sorted.end(); ++it) {
-      Widget* wid = *it;
-      //      wid->create();
-      printf("%d\n", wid->depth);
-      wid->build();
-      //      wid->unsetNeedsRedraw();
-    }
-    printf("-\n");
-#else 
-    /* original */
     for(std::vector<Widget*>::iterator it = children.begin(); it != children.end(); ++it) {
       (*it)->build();
-    }
-#endif
-  }
-
-  void Widget::sortChildren(std::vector<Widget*>& result) {
-    //getChildrenRecursive(result);
-    getChildren(result);
-    std::sort(result.begin(), result.end(), widget_depth_sort);
-  }
-
-  void Widget::getChildren(std::vector<Widget*>& result) {
-    std::copy(children.begin(), children.end(), std::back_inserter(result));
-  }
-  void Widget::getChildrenRecursive(std::vector<Widget*>&result) {
-    for (size_t i = 0; i < children.size(); ++i) {
-      children[i]->getChildren(result);
     }
   }
 
@@ -452,12 +412,6 @@ namespace rx {
     for(std::vector<WidgetListener*>::iterator it = listeners.begin(); it != listeners.end(); ++it) {
       (*it)->onEvent(event, this);
     }
-  }
-
-  /* ------------------------------------------------------------------------ */
-
-  static bool widget_depth_sort(Widget* a, Widget* b) {
-    return a->depth < b->depth;
   }
 
   /* ------------------------------------------------------------------------ */

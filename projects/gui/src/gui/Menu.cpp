@@ -4,11 +4,14 @@
 
 namespace rx {
 
-  Menu::Menu(std::string title, std::vector<std::string> options)
+  Menu::Menu(std::string title, int menuid, std::vector<std::string> options, gui_menu_callback cb, void* user)
     :Widget(GUI_TYPE_MENU, title)
     ,options(options)
     ,selected_dx(-1)
     ,draw_dx(-1)
+    ,menu_id(menuid)
+    ,cb(cb)
+    ,user(user)
   {
     h = 22;
     popup_height = options.size() * h;
@@ -21,26 +24,22 @@ namespace rx {
     
     render->setLayer(1);
 
-    //    render->addRoundedRectangle(x, yy, w, popup_height, 6.0, group->getSelectedStateColor(this), true, GUI_CORNER_BOTTOM);
-    render->addRoundedRectangle(x, yy, w, popup_height, 6.0, group->header_color, true, GUI_CORNER_BOTTOM);
+    render->addRoundedRectangle(x, yy, w, popup_height, 6.0, group->header_color, true, group->shade_top, group->shade_bottom, GUI_CORNER_BOTTOM);
 
     for (size_t i = 0; i < options.size(); ++i) {
       if (GUI_IS_INSIDE(mouse_x, mouse_y, (x + group->xindent), (yy + group->yindent), w, h)) {
-        render->addRoundedRectangle(x, yy, w, h, 6.0, group->selected_color, true, (i == last) ? GUI_CORNER_BOTTOM : GUI_CORNER_NONE);
+        render->addRoundedRectangle(x, yy, w, h, 6.0, group->selected_color, true, group->shade_top, group->shade_bottom, (i == last) ? GUI_CORNER_BOTTOM : GUI_CORNER_NONE);
         render->writeText(x + group->xindent, yy + group->yindent, options[i], group->label_color);
         draw_dx = (int32_t)i;
       }
       else {
         render->writeText(x + group->xindent, yy + group->yindent, options[i], group->number_color);
       }
-
       yy += h;
     }
 
     render->setLayer(0);
-    setDepth(100.0f);
   }
-
 
   void Menu::onMouseMove(float mx, float my) {
 
@@ -59,10 +58,12 @@ namespace rx {
 
     if (GUI_IS_INSIDE(mx, my, x, y+h, w, (popup_height))) {
       selected_dx = draw_dx;
+      if (NULL != cb) {
+        cb(menu_id, selected_dx, user);
+      }
     }
 
     Widget::onMouseRelease(mx, my, button, modkeys);
   }
-
 
 } /* namespace rx */

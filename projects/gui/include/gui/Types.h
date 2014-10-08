@@ -18,17 +18,18 @@
 #define GUI_TYPE_TEXTURE                     11         /* Texture input */
 #define GUI_TYPE_SELECT                      12         /* Select (aka listbox) */ 
 #define GUI_TYPE_MENU                        13         /* Menu */ 
+#define GUI_TYPE_CONTAINER                   14         /* Like `Group` but doesn't draw anything itself. */ 
 
 #define GUI_CORNER_NONE                      (0)
-#define GUI_CORNER_TOP_LEFT                  (1 << 1) 
-#define GUI_CORNER_TOP_RIGHT                 (1 << 2)
-#define GUI_CORNER_BOTTOM_RIGHT              (1 << 3)
-#define GUI_CORNER_BOTTOM_LEFT               (1 << 4) 
+#define GUI_CORNER_TOP_LEFT                  (1 << 0) 
+#define GUI_CORNER_TOP_RIGHT                 (1 << 1)
+#define GUI_CORNER_BOTTOM_RIGHT              (1 << 2)
+#define GUI_CORNER_BOTTOM_LEFT               (1 << 3) 
 #define GUI_CORNER_LEFT                      (GUI_CORNER_TOP_LEFT | GUI_CORNER_BOTTOM_LEFT)
 #define GUI_CORNER_RIGHT                     (GUI_CORNER_TOP_RIGHT | GUI_CORNER_BOTTOM_RIGHT)
 #define GUI_CORNER_TOP                       (GUI_CORNER_TOP_LEFT | GUI_CORNER_TOP_RIGHT)
 #define GUI_CORNER_BOTTOM                    (GUI_CORNER_BOTTOM_LEFT | GUI_CORNER_BOTTOM_RIGHT)
-#define GUI_CORNER_ALL                       (0xFF) 
+#define GUI_CORNER_ALL                       (GUI_CORNER_TOP | GUI_CORNER_BOTTOM) 
 
 #define GUI_CURSOR_WIDTH                     9          /* Default cursor width for text/number inputs.*/                                             
 

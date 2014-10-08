@@ -4,19 +4,19 @@
 
 namespace rx {
 
-  static void on_icon_clicked(int id, void* user);
+  Select::Select(std::string title, int selectid, std::vector<std::string> options, 
+                 gui_menu_callback cb, void* user, 
+                 int corners)
 
-  Select::Select(std::string title, std::vector<std::string> options, int cbid)
     :Widget(GUI_TYPE_SELECT, title)
-    ,menu(title, options)
-    ,icon_button(0, GUI_ICON_UNSORTED, on_icon_clicked, this, GUI_CORNER_RIGHT)
-    ,cb_id(cbid)
+    ,menu(title, selectid, options, cb, user)
+    ,icon_button(0, GUI_ICON_UNSORTED, NULL, NULL, (corners & ~GUI_CORNER_LEFT))
+    ,corners(corners)
     ,options(options)
   {
     h = 22;
     icon_button.icon_x = 1;
     icon_button.icon_y = 0;
-    depth = 100;
     menu.hide();
   }
 
@@ -27,24 +27,37 @@ namespace rx {
   }
 
   void Select::create() {
+
     int bt_click_offset = 0;
+    int corn_sel = corners;
+    int corn_off = 0;
+    int corn_icon = icon_button.corners;
+    float* label_color = group->label_color;
+
+    corn_sel = (corners & ~GUI_CORNER_RIGHT);
+
     if(state & GUI_STATE_DOWN_INSIDE) {
       bt_click_offset = 1;
+      corn_off = GUI_CORNER_BOTTOM;
+      corn_sel &= ~GUI_CORNER_BOTTOM;
+      label_color = group->number_color;
+      
     }
 
-    //    render->setLayer(10);
-    render->addRoundedRectangle(x, y, w - icon_button.w, h, 6.0, group->getButtonStateColor(this), true, GUI_CORNER_NONE);
+    icon_button.corners = (corners & ~GUI_CORNER_LEFT) & ~corn_off;
+    
+    render->addRoundedRectangle(x, y, w - icon_button.w, h, 6.0, group->getButtonStateColor(this), true, group->shade_top, group->shade_bottom, corn_sel);
 
     if (menu.selected_dx == -1) {
-      render->writeText(x + group->xindent, y + group->yindent + bt_click_offset, label, group->label_color);
+      render->writeText(x + group->xindent, y + group->yindent + bt_click_offset, label, label_color);
     }
     else {
-      render->writeText(x + group->xindent, y + group->yindent + bt_click_offset, menu.options[(uint32_t)menu.selected_dx], group->label_color);
+      render->writeText(x + group->xindent, y + group->yindent + bt_click_offset, menu.options[(uint32_t)menu.selected_dx], label_color);
     }
-    //    render->setLayer(0);
   }
 
   void Select::position() {
+
     icon_button.x = x + (w - icon_button.w);
     icon_button.y = y;
     menu.x = x;
@@ -53,6 +66,15 @@ namespace rx {
   }
 
   void Select::setBoundingBox() {
+
+    if (!isDrawn()) {
+      bbox[0] = 0;
+      bbox[1] = 0;
+      bbox[2] = 0;
+      bbox[3] = 0;
+      return;
+    }
+
     bbox[0] = x;
     bbox[1] = y;
     bbox[2] = w;
@@ -83,10 +105,6 @@ namespace rx {
     menu.hide();
     state &= ~GUI_STATE_DOWN_INSIDE;
     icon_button.state &= ~GUI_STATE_DOWN_INSIDE;
-  }
-
-  static void on_icon_clicked(int id, void* user) {
-    printf("ID: %d", id);
   }
      
 } /* namespace rx */

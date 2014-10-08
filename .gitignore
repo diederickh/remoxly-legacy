@@ -37,6 +37,6 @@ shared
 install
 projects/gui/include/gui/fonts
 design
-src
-*.cpp
-*.h
+# src
+# *.cpp
+# *.h

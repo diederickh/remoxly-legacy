@@ -831,22 +831,26 @@ namespace rx {
   void RenderGL::onCharPress(unsigned int key) {
 
     if(text_input.mode != TI_MODE_DISABLED) {
-      text_input.onCharPress(key);
+      text_input.onCharPress(key); /* @todo cleanup, old imp. */
+      layer->text_input.onCharPress(key); 
     }
 
     if(number_input.mode != TI_MODE_DISABLED) {
-      number_input.onCharPress(key);
+      number_input.onCharPress(key); /* @todo cleanup, old implementation. */
+      layer->number_input.onCharPress(key);
     }
   }
 
   void RenderGL::onKeyPress(int key, int mods) {
 
     if(text_input.mode != TI_MODE_DISABLED) {
-      text_input.onKeyPress(key, mods);
+      text_input.onKeyPress(key, mods); /* @todo cleanup, old implemntation. */
+      layer->text_input.onKeyPress(key, mods);
     }
 
     if(number_input.mode != TI_MODE_DISABLED) {
-      number_input.onKeyPress(key, mods);
+      number_input.onKeyPress(key, mods); /* @todo cleanup, old implementation. */
+      layer->number_input.onKeyPress(key, mods);
     }
   }
 
@@ -882,6 +886,7 @@ namespace rx {
 
   void RenderGL::enableTextInput(float x, float y, float maxw, std::string value, float* color) {
 
+    /* @todo - old, cleanup. */
     text_input.x = x;
     text_input.y = y;
     text_input.w = maxw;
@@ -890,24 +895,48 @@ namespace rx {
     text_input.enable();
     text_input.setValue(value);
     text_input.select();
+
+    /* @todo - begin - cleanup, this is the new imp. */
+    layer->text_input.x = x;
+    layer->text_input.y = y;
+    layer->text_input.w = maxw;
+
+    layer->text_input.clear(); // @todo this might be a duplicate call, when a widget makes its state editable RenderGL::clear() will be called too.
+    layer->text_input.enable();
+    layer->text_input.setValue(value);
+    layer->text_input.select();
   }
 
   void RenderGL::disableTextInput() {
+    /* @todo cleanup , this is old. */
     text_input.clear();
     text_input.disable();
+
+    layer->text_input.clear();
+    layer->text_input.disable();
   }
 
   void RenderGL::getTextInputValue(std::string& result) {
-    result = text_input.getValue();
+    // result = text_input.getValue(); /* @todo cleanup */
+    result = layer->text_input.getValue(); 
   }
 
   void RenderGL::disableNumberInput() {
     number_input.clear();
     number_input.disable();
+
+    /* @todo - begin - this is the new implementation using layers. */
+    layer->number_input.clear();
+    layer->number_input.disable();
+    /* @todo - end - */
   }
 
   void RenderGL::getNumberInputValue(std::string& result) {
-    result = number_input.getValue();
+    /* @todo - begin - this is the new implementation using layers. */
+    result = layer->number_input.getValue();
+    /* @todo - end - */
+  
+    //result = number_input.getValue(); // @todo commented because of layer implementation. 
   }
 
   void RenderGL::enableNumberInput(float x, float y, float maxw, std::string value, float* color) {
@@ -919,6 +948,17 @@ namespace rx {
     number_input.enable();
     number_input.setValue(value);
     number_input.select();
+
+    /* @todo - begin - this is the new implementation using layers. */
+    layer->number_input.x = x;
+    layer->number_input.y = y;
+    layer->number_input.w = maxw;
+
+    layer->number_input.clear();
+    layer->number_input.enable();
+    layer->number_input.setValue(value);
+    layer->number_input.select();
+    /* @todo - end - */
   }
 
   bool RenderGL::getIconSize(unsigned int id, int& ww, int& hh) {

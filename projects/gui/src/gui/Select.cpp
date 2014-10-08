@@ -27,7 +27,7 @@ namespace rx {
   }
 
   void Select::create() {
-
+    /* @todo use state color func for label. */
     int bt_click_offset = 0;
     int corn_sel = corners;
     int corn_off = 0;
@@ -38,10 +38,16 @@ namespace rx {
 
     if(state & GUI_STATE_DOWN_INSIDE) {
       bt_click_offset = 1;
-      corn_off = GUI_CORNER_BOTTOM;
-      corn_sel &= ~GUI_CORNER_BOTTOM;
       label_color = group->number_color;
-      
+
+      if (GUI_DIRECTION_DOWN == menu.direction) {
+        corn_off = GUI_CORNER_BOTTOM;
+        corn_sel &= ~GUI_CORNER_BOTTOM;
+      }
+      else {
+        corn_off = GUI_CORNER_TOP;
+        corn_sel &= ~GUI_CORNER_TOP;
+      }
     }
 
     icon_button.corners = (corners & ~GUI_CORNER_LEFT) & ~corn_off;

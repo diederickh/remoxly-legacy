@@ -20,6 +20,11 @@
 #define GUI_TYPE_MENU                        13         /* Menu */ 
 #define GUI_TYPE_CONTAINER                   14         /* Like `Group` but doesn't draw anything itself. */ 
 
+#define GUI_DIRECTION_UP                     1          /* Can be used by e.g. menus, selects, etc.. can be used to tell that a popup needs to popup to the up, down, right, left. */ 
+#define GUI_DIRECTION_DOWN                   2          /* "" */     
+#define GUI_DIRECTION_LEFT                   3          /* "" */
+#define GUI_DIRECTION_RIGHT                  4          /* "" */
+
 #define GUI_CORNER_NONE                      (0)
 #define GUI_CORNER_TOP_LEFT                  (1 << 0) 
 #define GUI_CORNER_TOP_RIGHT                 (1 << 1)

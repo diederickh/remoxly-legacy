@@ -11,13 +11,12 @@ namespace rx {
 
   class Select : public Widget { 
   public:
-    Select(std::string title, int selectid, std::vector<std::string> options, 
-           gui_menu_callback cb, void* user,
-           int corners = GUI_CORNER_NONE);
+    Select(std::string title, int selectid, std::vector<std::string> options, gui_menu_callback cb, void* user,int corners = GUI_CORNER_NONE);
     void setGroup(Group* g);
     void create();
     void position();
     void setBoundingBox();
+    void setDirection(int dir);
 
     /* Interaction */
     void onMousePress(float mx, float my, int button, int modkeys);
@@ -29,6 +28,12 @@ namespace rx {
     std::vector<std::string> options;     /* The options that are darwn. */
     int corners;
   };
+
+  /* -------------------------------------------------------------------------------------------------------------- */
+
+  inline void Select::setDirection(int dir) {
+    menu.setDirection(dir);
+  }
 
 } /* namespace rx */
 

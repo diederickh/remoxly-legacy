@@ -102,7 +102,6 @@ if(NOT TARGET ${app})
 
   set(remoxly_lib_gl_headers
     ${bd}/include/gui/gl/RenderGL.h
-    ${bd}/include/gui/gl/ImplementationGL.h
     )
 
   set(remoxly_lib_gui_sources

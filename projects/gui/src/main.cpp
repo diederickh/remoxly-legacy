@@ -123,8 +123,13 @@ int main() {
 #if USE_GROUP
   Group group0("Particles", new RenderGL());
   group0.add(new Slider<int>("Particle Forces", forces, 0, 100, 1));
+  group0.y = 200;
   //  group_ptr0 = &group0;
-  group0.add(new Select("Webcam", 1, options, on_select_click, NULL, GUI_CORNER_ALL));
+
+  Select* sel = new Select("Webcam 1", 1, options, on_select_click, NULL, GUI_CORNER_ALL);
+  sel->setDirection(GUI_DIRECTION_UP);
+  group0.add(sel);
+
   group0.add(new Slider<int>("Particle Velocity", velocity, 0, 100, 1));
   group_ptr0 = &group0;  
   

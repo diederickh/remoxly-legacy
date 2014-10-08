@@ -34,23 +34,30 @@ namespace rx {
   
   class Menu : public Widget {
   public:
-    Menu(std::string title, int menuid, std::vector<std::string> options, 
-         gui_menu_callback cb, void* user);
+    Menu(std::string title, int menuid, std::vector<std::string> options, gui_menu_callback cb, void* user);
     void create();
     void onMouseMove(float mx, float my);
     void onMouseRelease(float mx, float my, int button, int modkeys);
+    void setDirection(int dir);
 
   public:
     std::vector<std::string> options;
     int popup_height; 
     int32_t selected_dx;                  /* We can assume that a user will not add more then size_t elements. */
     int32_t draw_dx;                      /* The currently activated element (doesn't need to be the selected one, e.g. in case of release outside.) */
+    int direction;                        /* Set the direction into which the popup is drown; defaults to bottom. */
 
     /* Callback */
     int menu_id;                          /* Callback id, used in callback. */
-    gui_menu_callback cb;               /* The callback function that is called when the user selects an option. */
+    gui_menu_callback cb;                 /* The callback function that is called when the user selects an option. */
     void* user;                           /* Gets passed to the callback. */
   };
+
+  /* -------------------------------------------------------------------------------------------------------------- */
+
+  inline void Menu::setDirection(int dir) {
+    direction = dir;
+  }
 
 } /* namespace rx */
 

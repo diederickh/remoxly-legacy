@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # You can pass 32 to the command line if you want to build a 32bit version: ./release 32
-
+d=${PWD}
 is_32bit=0
 cmake_extra_vars=""
 triplet=""
@@ -48,9 +48,11 @@ if [ "$(uname)" == "Darwin" ] ; then
     if [ ${is_32bit} -eq 1 ] ; then 
         cd ./../../../../install/mac-clang-i386/bin/
     else
-        cd ${install_path}
+        cd ${install_path}/bin
     fi
-    ./gui
+    echo ${install_path}
+    #./gui
+    ./test_app
 
 else
     cd ${install_path}

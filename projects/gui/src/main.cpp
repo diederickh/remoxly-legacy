@@ -18,10 +18,13 @@
 #if defined(__linux) || defined(_WIN32)
 #  include <GLXW/glxw.h>
 #endif
+
+#include "App.h"
  
 #define GLFW_INCLUDE_GLCOREARB
 #include <GLFW/glfw3.h>
 
+#define REMOXLY_USE_OPENGL
 #define REMOXLY_IMPLEMENTATION
 #include <gui/Remoxly.h>
 

@@ -4,12 +4,11 @@
   --------
 
   A basic wrapper around the widgets, panels, groups, renderer and storage. 
-  This class is created give uses a quick way of creating GUIs. Make sure
-  to only create an instance of the Remoxly class -after- you have created
-  an openGL context. 
+  This class  uses a quick way of creating GUIs. Make sure to only create an 
+  instance of the Remoxly class -after- you have created  an openGL context. 
 
   Also, you need to use "#define REMOXLY_IMPLEMENTATION" in at least one 
-  CPP file after you've included the OpenGL headers. 
+  CPP file (probably main.cpp)  after you've included the OpenGL headers. 
 
   <example>
 
@@ -21,6 +20,13 @@
     gui->addToggle("Enable drawing", enable_drawing);
 
   </example>
+
+   In the files that want to use Remoxly types, use: 
+   -------------------------------------------------
+
+        1. First make sure that you include your opengl headers
+        2. `#define REMOXLY_USE_OPENGL`
+        3. `#include <gui/Remoxly.h>
 
  */
 
@@ -53,10 +59,6 @@
 #include <gui/Select.h>
 #include <gui/Widget.h>
 #include <gui/storage/StorageXML.h>
-
-#if defined(REMOXLY_IMPLEMENTATION)
-#  include <gui/gl/ImplementationGL.h>
-#endif
 
 #define REMOXLY_CHECK_GROUP(err) { if (!curr_group) { printf("%s", err); return NULL; } } 
 
@@ -104,6 +106,11 @@ namespace rx {
 } // namespace rx  
 
 #endif // REMOXLY_INCLUDES_H
+
+#if defined(REMOXLY_USE_OPENGL)
+#  include <gui/gl/RenderGL.h>
+#endif
+
 
 // ------------------------------------------------------------------------------
 // I M P L E M E N T A T I O N
@@ -290,6 +297,6 @@ namespace rx {
     }
   }
 
-} // namespace rx
+} /* namespace rx */
 
-#endif // IMPLEMENTATION
+#endif /* #if defined(REMOXLY_IMPLEMENTATION) */

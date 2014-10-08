@@ -60,6 +60,10 @@ if(NOT TARGET ${app})
 
   install(TARGETS remoxly DESTINATION lib)
 
+  add_executable(test_app ${bd}/src/test_app.cpp ${bd}/src/App.cpp)
+  target_link_libraries(test_app ${remoxly_app_libs} ${remoxly_extern_libs} remoxly)
+  install(TARGETS test_app DESTINATION bin)
+
   set(remoxly_lib_gui_headers
     ${bd}/include/gui/Button.h
     ${bd}/include/gui/ColorRGB.h

@@ -28,8 +28,6 @@
 
 /* -------------------------------------------------------------------------------------------------------------- */
 
-#define TEXT_INPUT_IMPLEMENTATION
-#define BITMAP_FONT_IMPLEMENTATION
 #include <gui/bitmapfont/BitmapFont.h>
 #include <gui/textinput/TextInput.h>
 #include <gui/fonts/FontAwesome.h>
@@ -40,9 +38,15 @@
 #include <map> 
 
 /* For rounded rectangles. */
-#define PI 3.14159265359
-#define TWO_PI 6.28318530718
-#define HALF_PI 1.57079632679
+#ifndef PI
+#  define PI 3.14159265359
+#endif
+#ifndef TWO_PI
+#  define TWO_PI 6.28318530718
+#endif
+#ifndef HALF_PI
+#  define HALF_PI 1.57079632679
+#endif
 
 /* -------------------------------------------------------------------------------------------------------------- */
 
@@ -401,13 +405,18 @@ namespace rx {
 
 } // namespace rx
 
-#endif
+#endif /* #define REMOXLY_RENDER_GL_H */
 
 /* -------------------------------------------------------------------------------------------------------------- */
 /*  I M P L E M E N T A T I O N                                                                                   */               
 /* -------------------------------------------------------------------------------------------------------------- */
 
 #if defined(REMOXLY_IMPLEMENTATION)
+
+#define TEXT_INPUT_IMPLEMENTATION
+#define BITMAP_FONT_IMPLEMENTATION
+#include <gui/bitmapfont/BitmapFont.h>
+#include <gui/textinput/TextInput.h>
 
 namespace rx { 
 

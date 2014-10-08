@@ -61,6 +61,9 @@ if(NOT TARGET ${app})
   install(TARGETS remoxly DESTINATION lib)
 
   set(remoxly_lib_gui_headers
+    ${bd}/include/gui/Menu.h
+    ${bd}/include/gui/Select.h
+    ${bd}/include/gui/Container.h
     ${bd}/include/gui/Button.h
     ${bd}/include/gui/ColorRGB.h
     ${bd}/include/gui/Group.h
@@ -81,10 +84,8 @@ if(NOT TARGET ${app})
     )
 
   set(remoxly_lib_font_headers
-    ${bd}/include/gui/fonts/FreePixel.h
     ${bd}/include/gui/fonts/FontAwesome.h
-    ${bd}/include/gui/fonts/SourceCode.h
-    ${bd}/include/gui/fonts/Arial.h
+    ${bd}/include/gui/fonts/DejaVu.h
     )
 
   set(remoxly_lib_storage_headers
@@ -101,6 +102,7 @@ if(NOT TARGET ${app})
     )
 
   set(remoxly_lib_gui_sources
+    ${bd}/src/gui/Container.cpp
     ${bd}/src/gui/Group.cpp
     ${bd}/src/gui/Utils.cpp
     ${bd}/src/gui/Widget.cpp
@@ -112,6 +114,8 @@ if(NOT TARGET ${app})
     ${bd}/src/gui/Toggle.cpp
     ${bd}/src/gui/Text.cpp
     ${bd}/src/gui/Texture.cpp
+    ${bd}/src/gui/Select.cpp
+    ${bd}/src/gui/Menu.cpp
     ${bd}/src/gui/ColorRGB.cpp
     ${bd}/src/gui/Storage.cpp
     ${bd}/src/gui/Render.cpp

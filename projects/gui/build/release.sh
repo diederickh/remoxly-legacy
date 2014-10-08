@@ -51,8 +51,8 @@ if [ "$(uname)" == "Darwin" ] ; then
         cd ${install_path}/bin
     fi
     echo ${install_path}
-    #./gui
-    ./test_app
+    ./gui
+    #./test_app
 
 else
     cd ${install_path}

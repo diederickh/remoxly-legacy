@@ -52,7 +52,7 @@ if(APPLE)
 
   set(remoxly_extern_libs
     ${extern_lib_dir}/libglfw3.a
-#     ${extern_lib_dir}/libpng.a
+    ${extern_lib_dir}/libpng.a
 #      ${extern_lib_dir}/libjansson.a
 #      ${extern_lib_dir}/libwebsockets.a
 #      ${extern_lib_dir}/libssl.a

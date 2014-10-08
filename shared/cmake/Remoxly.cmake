@@ -14,20 +14,23 @@ set(gui_bd ${remoxly_base_dir}/projects/gui/)
 set(remote_bd ${remoxly_base_dir}/projects/remote/)
 set(examples_bd ${remoxly_base_dir}/projects/examples/)
 
-macro(remoxly_download_data_file file )
-  if(NOT EXISTS ${install_dir}/bin/data/${file}) 
-    message(STATUS "Downloading binary file ${file}")
-    file(DOWNLOAD ${remoxly_download_http}${file} ${install_dir}/bin/data/${file} SHOW_PROGRESS TIMEOUT 5)
+# Update 2014.10.08 - we're using the build_unix_dependencies.sh
+if (FALSE)
+  macro(remoxly_download_data_file file )
+    if(NOT EXISTS ${install_dir}/bin/data/${file}) 
+      message(STATUS "Downloading binary file ${file}")
+      file(DOWNLOAD ${remoxly_download_http}${file} ${install_dir}/bin/data/${file} SHOW_PROGRESS TIMEOUT 5)
+    endif()
+  endmacro()
+
+  if(NOT EXISTS ${remoxly_base_dir}/extern)
+
+    execute_process(COMMAND 
+      ${CMAKE_COMMAND} -E tar xzf ${remoxly_base_dir}/extern.tar.gz
+      WORKING_DIRECTORY ${remoxly_base_dir}
+      )
+
   endif()
-endmacro()
-
-if(NOT EXISTS ${remoxly_base_dir}/extern)
-
-  execute_process(COMMAND 
-    ${CMAKE_COMMAND} -E tar xzf ${remoxly_base_dir}/extern.tar.gz
-    WORKING_DIRECTORY ${remoxly_base_dir}
-    )
-
 endif()
 
 if(APPLE)

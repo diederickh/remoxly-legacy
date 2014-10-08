@@ -52,7 +52,9 @@ set(install_dir ${CMAKE_CURRENT_LIST_DIR}/../../install/${tri_triplet})
 set(extern_source_dir ${CMAKE_CURRENT_LIST_DIR}/../../extern/${tri_triplet}/src/)
 set(extern_lib_dir ${CMAKE_CURRENT_LIST_DIR}/../../extern/${tri_triplet}/lib/)
 set(extern_include_dir ${CMAKE_CURRENT_LIST_DIR}/../../extern/${tri_triplet}/include)
-set(CMAKE_INSTALL_PREFIX ${install_dir})
+
+# 2014.10.08, removed, the user should pass -DCMAKE_INSTALL_PREFIX to the cmake build command!
+# set(CMAKE_INSTALL_PREFIX ${install_dir})
 
 message(STATUS "Building for ${tri_triplet}")
 message(STATUS "Extern include dir: ${extern_include_dir}")

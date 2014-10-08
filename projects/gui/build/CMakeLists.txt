@@ -8,6 +8,9 @@ set(app "gui")
 
 set(bd ${CMAKE_CURRENT_LIST_DIR}/../)
 
+list(APPEND CMAKE_C_FLAGS $ENV{CFLAGS})
+list(APPEND CMAKE_CXX_FLAGS $ENV{CFLAGS})
+
 if(CMAKE_BUILD_TYPE STREQUAL Debug)
   set(app "${app}_debug")
 endif()

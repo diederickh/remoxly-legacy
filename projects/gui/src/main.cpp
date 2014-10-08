@@ -39,7 +39,7 @@ Panel* panel_ptr = NULL;
 Container* container_ptr = NULL;
 Remoxly* remoxly_ptr = NULL;
 
-#define ROXLU_USE_ALL
+#define ROXLU_USE_OPENGL
 #define ROXLU_IMPLEMENTATION
 #include <tinylib.h>
  

@@ -38,7 +38,7 @@ namespace rx {
     }
 
     render->addRoundedRectangle(x, y, w, h, 6.0, group->getButtonStateColor(this), true, group->shade_top, group->shade_bottom, corners);
-    render->writeText(x + group->xindent, y + group->yindent + bt_click_offset, label, group->label_color);
+    render->writeText(x + group->xindent, y + group->yindent + bt_click_offset, label, group->getButtonLabelStateColor(this));
   }
 
   void Button::position() {

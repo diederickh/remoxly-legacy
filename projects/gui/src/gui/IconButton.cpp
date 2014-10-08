@@ -45,7 +45,7 @@ void IconButton::create() {
   int cy = y + (h * 0.5 ) - (icon_h * 0.5) + icon_y;
 
   render->addRoundedRectangle(x, y, w, h, 7.0, group->getButtonStateColor(this), true, group->shade_top, group->shade_bottom, corners);
-  render->writeIcon(cx, cy + bt_click_offset, icon, group->label_color);
+  render->writeIcon(cx, cy + bt_click_offset, icon, group->getButtonLabelStateColor(this));
 
   needs_redraw = false;
 }

@@ -53,12 +53,14 @@ namespace rx {
     void unsetNeedsRedraw();
 
     /* colors */
-    void setColors(float* bg, float* fg, float* highlight);                      /* sets the colors for the current theme */
-    float* getStateColor(Widget* w, int flag, float* off, float* on);            /* this will return either the on or off color depending if the given flag is set in the state member of the widget. you can use this to switch between highlight color and default color */
-    float* getButtonStateColor(Widget* w, int flag = GUI_STATE_DOWN_INSIDE);     /* returns the color for the button based on the current state. by default it will return the standard button color when the flag is not set. if it's set it will return the highlight color */
-    float* getForegroundStateColor(Widget* w, int flag = GUI_STATE_DOWN_INSIDE); /* returns the color for "hightlight" elements. this is for example the part of a slider which indicates how much is "slided" */
-    float* getBackgroundStateColor(Widget* w, int flag = GUI_STATE_DOWN_INSIDE); /* returns the background color. you could hightlight a background color too, which is e.g. used in the scroll bar */
-    float* getSelectedStateColor(Widget* w, int flag = GUI_STATE_DOWN_INSIDE);   /* returns the highlight color when the mouse is down inside the element, else it returns the default selected color. */ 
+    void setColors(float* bg, float* fg, float* highlight);                         /* sets the colors for the current theme */
+    float* getStateColor(Widget* w, int flag, float* off, float* on);               /* this will return either the on or off color depending if the given flag is set in the state member of the widget. you can use this to switch between highlight color and default color */
+    float* getButtonStateColor(Widget* w, int flag = GUI_STATE_DOWN_INSIDE);        /* returns the color for the button based on the current state. by default it will return the standard button color when the flag is not set. if it's set it will return the highlight color */
+    float* getButtonLabelStateColor(Widget* w, int flag = GUI_STATE_DOWN_INSIDE);   /* returns the color for the label of a button. */
+    float* getForegroundStateColor(Widget* w, int flag = GUI_STATE_DOWN_INSIDE);    /* returns the color for "hightlight" elements. this is for example the part of a slider which indicates how much is "slided" */
+    float* getBackgroundStateColor(Widget* w, int flag = GUI_STATE_DOWN_INSIDE);    /* returns the background color. you could hightlight a background color too, which is e.g. used in the scroll bar */
+    float* getSelectedStateColor(Widget* w, int flag = GUI_STATE_DOWN_INSIDE);      /* returns the highlight color when the mouse is down inside the element, else it returns the default selected color. */ 
+
 
   public:
     void update();                                                               /* should not be called by the user! */

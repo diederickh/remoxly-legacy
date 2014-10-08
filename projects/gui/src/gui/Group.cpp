@@ -97,6 +97,10 @@ namespace rx {
     return getStateColor(w, flag, selected_color, highlight_color);
   }
 
+  float* Group::getButtonLabelStateColor(Widget* w, int flag) {
+    return getStateColor(w, flag, label_color, number_color);
+  }
+
   void Group::add(Widget* wid) {
   
     if(!group) {

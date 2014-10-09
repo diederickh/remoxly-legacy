@@ -19,6 +19,7 @@
 #define GUI_TYPE_SELECT                      12         /* Select (aka listbox) */ 
 #define GUI_TYPE_MENU                        13         /* Menu */ 
 #define GUI_TYPE_CONTAINER                   14         /* Like `Group` but doesn't draw anything itself. */ 
+#define GUI_TYPE_SEPARATOR					 15			/* A Separator */
 
 #define GUI_DIRECTION_UP                     1          /* Can be used by e.g. menus, selects, etc.. can be used to tell that a popup needs to popup to the up, down, right, left. */ 
 #define GUI_DIRECTION_DOWN                   2          /* "" */     

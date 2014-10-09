@@ -52,6 +52,7 @@
 #include <gui/Slider.h>
 #include <gui/Storage.h>
 #include <gui/Text.h>
+#include <gui/Separator.h>
 #include <gui/Texture.h>
 #include <gui/Toggle.h>
 #include <gui/Types.h>
@@ -85,6 +86,7 @@ namespace rx {
     Button* addButton(std::string label, int id, unsigned int icon, gui_button_callback cb, void* user, int iconx = 0, int icony = 0);
     Text* addText(std::string label, std::string& value, int textWidth = 220);
     Texture* addTexture(std::string label, TextureInfo* texinfo);
+    Separator* addSeparator( int height = 22 );
 
     /* interaction */
     void onCharPress(unsigned int key);         
@@ -247,6 +249,14 @@ namespace rx {
     curr_group->add(t);
 
     return t;
+  }
+
+  Separator* Remoxly::addSeparator(int height)
+  {
+	REMOXLY_CHECK_GROUP("Error: no group added, cannot add a texture.\n");
+	Separator* s = new Separator( height );
+	curr_group->add( s );
+	return s;
   }
 
   void Remoxly::onCharPress(unsigned int key) { 

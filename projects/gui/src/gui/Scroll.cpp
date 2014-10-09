@@ -21,8 +21,8 @@ void scroll_down_click(int id, void* user) {
 
 Scroll::Scroll()
   :Widget(GUI_TYPE_SCROLL, "")
-  ,up_button(0, GUI_ICON_CHEVRON_UP, scroll_up_click, this, GUI_CORNER_TOP)
-  ,down_button(1, GUI_ICON_CHEVRON_DOWN, scroll_down_click, this, GUI_CORNER_BOTTOM)
+  ,up_button(0, GUI_ICON_CHEVRON_UP, scroll_up_click, this, GUI_STYLE_NONE ) // GUI_CORNER_TOP)
+  ,down_button(1, GUI_ICON_CHEVRON_DOWN, scroll_down_click, this, GUI_STYLE_NONE ) //GUI_CORNER_BOTTOM)
   ,perc(0.0f)
   ,visible_x(0)
   ,visible_y(0)

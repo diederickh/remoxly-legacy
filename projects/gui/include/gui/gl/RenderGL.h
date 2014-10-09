@@ -294,6 +294,7 @@ namespace rx {
     void addRoundedRectangle(float x, float y, float w, float h, float radius, float* color, bool filled = true, float shadetop = 0.10f, float shadebot = -0.10f, int corners = GUI_CORNER_ALL); /* Draw a shaded rounded rectangle. shadetop and shadebot works the same as `addRectangle`. */
     void addRoundedShadowLine(float x, float y, float w, float h, float radius, float* color, int corners);
     void setLayer(int layer);                                                                                                                                                   /* Set the active layer to draw on. Layer 0 is the bottom layer, on which most elements are drawn. This allowed you to create overlays. Though, make sure that you don't create too many different layers because each font needs some GL resources. */ 
+	void addLineStrip( int size, float* points, float* color );
 
     /* Font */
     void enableTextInput(float x, float y, float maxw, std::string value, float* color); 
@@ -1218,6 +1219,22 @@ namespace rx {
 
     needs_update_pc = true;
   }
+
+	void RenderGL::addLineStrip(int size, float* points, float* color )
+	{
+		layer->fg_offsets.push_back( vertices_pc.size() );
+
+		for( int i=0; i<size; i++ )
+		{
+			float x = points[ i * 2 + 0 ];
+			float y = points[ i * 2 + 1 ];
+			GuiVertexPC p( x, y, color );
+			vertices_pc.push_back( p );
+		}
+
+		layer->fg_counts.push_back(vertices_pc.size() - layer->fg_offsets.back());
+		needs_update_pc = true;
+	}
 
   /* -------------------------------------------------------------------------------------------------------------- */
 

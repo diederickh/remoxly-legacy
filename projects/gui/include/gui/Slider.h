@@ -115,8 +115,8 @@ Slider<T>::Slider(std::string label, T& value, T minv, T maxv, T step)
   ,num_w(0)
   ,text_x(0)
   ,text_w(0)
-  ,min_button(0, GUI_ICON_CHEVRON_LEFT, slider_min_click, this, GUI_CORNER_LEFT)
-  ,plus_button(1, GUI_ICON_CHEVRON_RIGHT, slider_plus_click, this, GUI_CORNER_RIGHT)
+  ,min_button(0, GUI_ICON_CHEVRON_LEFT, slider_min_click, this, GUI_STYLE_NONE ) //GUI_CORNER_LEFT)
+  ,plus_button(1, GUI_ICON_CHEVRON_RIGHT, slider_plus_click, this, GUI_STYLE_NONE ) //GUI_CORNER_RIGHT)
 {
   setType(T(0));
   //setAbsoluteValue(value);

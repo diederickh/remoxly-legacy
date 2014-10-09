@@ -56,4 +56,9 @@ void Render::onKeyPress(int key, int mods) { }
 
 void Render::setLayer(int layer) { } 
 
+void Render::addLineStrip(int size, float* points, float* color )
+{
+
+}
+
 }  /* namespace rx */

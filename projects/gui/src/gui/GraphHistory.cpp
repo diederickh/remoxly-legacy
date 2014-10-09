@@ -49,7 +49,7 @@ void GraphHistory::create() {
   render->writeText( x + group->xindent, y + group->yindent, fpsStr, group->label_color );
   //render->writeText( x + (w-fpsStr.size()*8.5f) + group->xindent, y + group->yindent, fpsStr, group->label_color );
 
-  render->addLineStrip( values.size(), &verts[0] );
+  render->addLineStrip( values.size(), &verts[0], group->line_color );
 }
 
 /*

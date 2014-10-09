@@ -75,8 +75,9 @@ namespace rx {
     int yindent;
 
     /* theme: colors, shades */
-    float fg_color[4];              /* foreground color; use this for e.g. lines */
+    float fg_color[4];              /* foreground color; use this for e.g. fills */
     float bg_color[4];              /* background color; use this for e.g. backgrounds */
+    float line_color[4];            /* outline colors. */
     float label_color[4];           /* a label color should be used for text labels */
     float number_color[4];          /* used when drawing numeric values */
     float button_color[4];          /* color for buttons, based on the color sheme */

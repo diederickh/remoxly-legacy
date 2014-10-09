@@ -48,6 +48,8 @@ void Render::addRectangle(float x, float y, float w, float h, TextureInfo* texin
 
 void Render::addRoundedRectangle(float x, float y, float w, float h, float radius, float* color, bool filled, float shadetop, float shadebot, int corners) { }
 
+void Render::addRoundedShadowLine(float x, float y, float w, float h, float radius, float* color, int corners) { }
+
 void Render::onCharPress(unsigned int key) { }
 
 void Render::onKeyPress(int key, int mods) { }

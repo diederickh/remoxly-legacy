@@ -29,7 +29,7 @@ namespace rx {
     :Widget(GUI_TYPE_GROUP, label)
     ,render(r)
     ,show_header(true)
-    ,padding(1)
+    ,padding(0)
     ,xindent(7)
     ,yindent(6)
     ,close_button(0, GUI_ICON_CARET_DOWN, group_close_click, this, GUI_CORNER_RIGHT)
@@ -69,6 +69,7 @@ namespace rx {
     gui_fill_color(0.337, 0.502, 0.761, 1.0, selected_color); /* blue */
     gui_fill_color(0.247, 0.257, 0.247, 1.0, header_color);   /* gray */
     gui_fill_color(0.706, 0.706, 0.706, 1.0, text_bg_color);  /* light gray */
+    gui_fill_color(0.098, 0.098, 0.098, 0.80, line_color);    /* blackish */
   }
 
   float* Group::getStateColor(Widget* w, int flag, float* off, float* on) {
@@ -118,7 +119,7 @@ namespace rx {
     }
 
     render->addRectangle(x - padding, y - padding, w + padding * 2, bbox[3] + padding * 2, panel_color, true);
-    render->addRoundedRectangle(x, y, w - close_button.w, h, 6, header_color, true, shade_top, shade_bottom, GUI_CORNER_NONE);
+    render->addRoundedRectangle(x, y, w - close_button.w, h, 6, header_color, true, shade_top, shade_bottom, GUI_STYLE_NONE);
     render->writeText(x + xindent, y + yindent, label, number_color);
 
     open_button.create();

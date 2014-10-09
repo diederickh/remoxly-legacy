@@ -111,6 +111,7 @@ namespace rx {
     int type;                                                        /* the widget type, see Types.h */
     int state;                                                       /* the current state of the widget, see Types.h for available states */
     int mods;                                                        /* the mods that were pressed on mouse down, will be unsed in onRelease(). This can be used to have a different kind of interaction when someone e.g. drags with SHIFT down. */
+    int style;                                                       /* bitset that is used to toggle certain styles, like which rounded corner to draw, draw outline, draw drop shadow etc.. */
     int x;                                                           /* (absolute) x position of this widget */
     int y;                                                           /* (absolute) y position of this widget */
     int w;                                                           /* the width of the visual elements of this widget */

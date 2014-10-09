@@ -123,7 +123,7 @@ int main() {
 #if USE_GROUP
   Group group0("Particles", new RenderGL());
   group0.add(new Slider<int>("Particle Forces", forces, 0, 100, 1));
-  group0.y = 200;
+  group0.y = 330;
   //  group_ptr0 = &group0;
 
   Select* sel = new Select("Webcam 1", 1, options, on_select_click, NULL, GUI_CORNER_ALL);
@@ -140,7 +140,8 @@ int main() {
 
   Group group1("Drawings", new RenderGL());
   group1.add(new Slider<float>("Line size", line_size, 0.0f, 200.0f, 0.1f));
-  group1.x = 300;
+  group1.x = 10;
+  group1.y = 600;
   group_ptr1 = &group1;
 
 #endif
@@ -160,7 +161,7 @@ int main() {
   Group* g1 = panel.addGroup("Water Simulation");
   g1->add(new Slider<int>("Particle Lifetime", lifetime, 0, 10, 1));
   g1->add(new Slider<int>("Particle Amount", amount, 0, 10, 1));
-  g1->add(new Select("Webcam", 2, options, on_select_click, NULL, GUI_CORNER_NONE));
+  g1->add(new Select("Webcam", 2, options, on_select_click, NULL, GUI_STYLE_NONE));
   g1->add(new Toggle("Render Particles", render_particles));
   g1->add(new Toggle("Render Water", render_water));
   g1->add(new Toggle("Render Spirals", render_spirals));
@@ -168,6 +169,10 @@ int main() {
 
 
   Group* g2 = panel.addGroup("Special FX");
+
+  g0->padding = 1;
+  g1->padding = 1;
+  g2->padding = 1;
 
   Slider<float>* aging_slider = new Slider<float>("Aging", aging, 0.0f, 50.0f, 0.1f);
   //aging_slider->hide();
@@ -184,19 +189,19 @@ int main() {
   }
 
   g2->add(new Button("Download", 0, GUI_ICON_DOWNLOAD, on_group_button_click, NULL, GUI_CORNER_TOP));
-  g2->add(new Button("Twitter", 1, GUI_ICON_TWITTER, on_group_button_click, NULL, GUI_CORNER_NONE));
-  g2->add(new Button("Cloud Burst", 2, GUI_ICON_CLOUD, on_group_button_click, NULL, GUI_CORNER_NONE));
+  g2->add(new Button("Twitter", 1, GUI_ICON_TWITTER, on_group_button_click, NULL, GUI_STYLE_NONE));
+  g2->add(new Button("Cloud Burst", 2, GUI_ICON_CLOUD, on_group_button_click, NULL, GUI_STYLE_NONE));
   g2->add(new Button("Extrude Region", 2, GUI_ICON_CLOUD, on_group_button_click, NULL, GUI_CORNER_BOTTOM));
 
-  panel.x = 600;
+  panel.x = 10;
   panel_ptr = &panel;
 #endif
 
 #if USE_CONTAINER
   /* Freely position elements in a container. */
   Container* container = new Container(new RenderGL());
-  container->add(new Button("Download", 0, GUI_ICON_DOWNLOAD, on_group_button_click, NULL, GUI_CORNER_ALL)).setPosition(10, 620).setWidth(100);
-  container->add(new Select("Webcam", 2, options, on_select_click, NULL, GUI_CORNER_ALL)).setPosition(200, 620).setWidth(200);
+  container->add(new Button("Download", 0, GUI_ICON_DOWNLOAD, on_group_button_click, NULL, GUI_CORNER_ALL | GUI_OUTLINE | GUI_EMBOSS)).setPosition(10, 500).setWidth(100);
+  container->add(new Select("Webcam", 2, options, on_select_click, NULL, GUI_CORNER_ALL | GUI_OUTLINE | GUI_EMBOSS )).setPosition(10, 540).setWidth(200);
   container_ptr = container;
 #endif
 

@@ -31,9 +31,13 @@ namespace rx {
       yy = y + h;
       render->addRoundedRectangle(x, yy, w, popup_height, 6.0, group->header_color, true, group->shade_top, group->shade_bottom, GUI_CORNER_BOTTOM);
 
+      if (style & GUI_OUTLINE) {
+        render->addRoundedRectangle(x + 0.5, yy, w - 1.0, popup_height, 6.0, group->line_color, false, group->shade_top, group->shade_bottom, GUI_CORNER_BOTTOM);
+      }
+
       for (size_t i = 0; i < options.size(); ++i) {
         if (GUI_IS_INSIDE(mouse_x, mouse_y, (x + group->xindent), (yy + group->yindent), w, h)) {
-          render->addRoundedRectangle(x, yy, w, h, 6.0, group->selected_color, true, group->shade_top, group->shade_bottom, (i == last) ? GUI_CORNER_BOTTOM : GUI_CORNER_NONE);
+          render->addRoundedRectangle(x, yy, w, h, 6.0, group->selected_color, true, group->shade_top, group->shade_bottom, (i == last) ? GUI_CORNER_BOTTOM : GUI_STYLE_NONE);
           render->writeText(x + group->xindent, yy + group->yindent, options[i], group->label_color);
           draw_dx = (int32_t)i;
         }
@@ -49,11 +53,16 @@ namespace rx {
       /* Upwards. */
       yy = y;
       render->addRoundedRectangle(x, yy - popup_height, w, popup_height, 6.0, group->header_color, true, group->shade_top, group->shade_bottom, GUI_CORNER_TOP);
+
+      if (style & GUI_OUTLINE) {
+        render->addRoundedRectangle(x + 0.5, yy - popup_height, w - 1.0, popup_height, 6.0, group->line_color, false, group->shade_top, group->shade_bottom, GUI_CORNER_TOP);
+      }
+
       yy = y - popup_height;
 
       for (size_t i = 0; i < options.size(); ++i) {
         if (GUI_IS_INSIDE(mouse_x, mouse_y, x, yy, w, h)) {
-          render->addRoundedRectangle(x, yy, w, h, 6.0, group->selected_color, true, group->shade_top, group->shade_bottom, (i == 0) ? GUI_CORNER_TOP : GUI_CORNER_NONE);
+          render->addRoundedRectangle(x, yy, w, h, 6.0, group->selected_color, true, group->shade_top, group->shade_bottom, (i == 0) ? GUI_CORNER_TOP : GUI_STYLE_NONE);
           render->writeText(x + group->xindent, yy + group->yindent, options[i], group->label_color);
           draw_dx = (int32_t)i;
         }

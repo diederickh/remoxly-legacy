@@ -6,14 +6,17 @@ namespace rx {
 
   Select::Select(std::string title, int selectid, std::vector<std::string> options, 
                  gui_menu_callback cb, void* user, 
-                 int corners)
+                 int style)
 
     :Widget(GUI_TYPE_SELECT, title)
     ,menu(title, selectid, options, cb, user)
-    ,icon_button(0, GUI_ICON_UNSORTED, NULL, NULL, (corners & ~GUI_CORNER_LEFT))
-    ,corners(corners)
+    ,icon_button(0, GUI_ICON_UNSORTED, NULL, NULL, (style & ~GUI_CORNER_LEFT))
     ,options(options)
   {
+
+    this->style = style;
+    menu.style = style;
+
     h = 22;
     icon_button.icon_x = 1;
     icon_button.icon_y = 0;
@@ -29,12 +32,12 @@ namespace rx {
   void Select::create() {
     /* @todo use state color func for label. */
     int bt_click_offset = 0;
-    int corn_sel = corners;
+    int corn_sel = style;
     int corn_off = 0;
-    int corn_icon = icon_button.corners;
+    int corn_icon = icon_button.style;
     float* label_color = group->label_color;
 
-    corn_sel = (corners & ~GUI_CORNER_RIGHT);
+    corn_sel = (style & ~GUI_CORNER_RIGHT);
 
     if(state & GUI_STATE_DOWN_INSIDE) {
       bt_click_offset = 1;
@@ -50,9 +53,17 @@ namespace rx {
       }
     }
 
-    icon_button.corners = (corners & ~GUI_CORNER_LEFT) & ~corn_off;
+    icon_button.style = (style & ~GUI_CORNER_LEFT) & ~corn_off;
     
     render->addRoundedRectangle(x, y, w - icon_button.w, h, 6.0, group->getButtonStateColor(this), true, group->shade_top, group->shade_bottom, corn_sel);
+
+    if (style & GUI_OUTLINE) {
+      render->addRoundedRectangle(x + 0.5, y, w - 1.0, h - 0.5, 6.0, group->line_color, false, group->shade_top, group->shade_bottom, corn_sel | (icon_button.style & ~GUI_CORNER_LEFT));
+    }
+
+    if (style & GUI_EMBOSS) {
+      render->addRoundedShadowLine(x, y + 1.0, w, h, 6.0, group->fg_color, GUI_CORNER_BOTTOM);
+    }
 
     if (menu.selected_dx == -1) {
       render->writeText(x + group->xindent, y + group->yindent + bt_click_offset, label, label_color);

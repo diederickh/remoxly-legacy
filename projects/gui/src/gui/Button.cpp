@@ -6,13 +6,15 @@ namespace rx {
 
   Button::Button(std::string title, int id, unsigned int icon, 
                  gui_button_callback cb, void* user, 
-                  int corners,
+                  int style,
                   int iconx, int icony
                  )
     :Widget(GUI_TYPE_BUTTON, title)
     ,icon_button(id, icon, cb, user)
-    ,corners(corners)
   {
+
+    this->style = style;
+
     h = 22;
 
     if(iconx) {
@@ -37,7 +39,17 @@ namespace rx {
       bt_click_offset = 1;
     }
 
-    render->addRoundedRectangle(x, y, w, h, 6.0, group->getButtonStateColor(this), true, group->shade_top, group->shade_bottom, corners);
+    render->addRoundedRectangle(x, y, w, h, 6.0, group->getButtonStateColor(this), true, group->shade_top, group->shade_bottom, style);
+
+    if (style & GUI_OUTLINE) {
+      render->addRoundedRectangle(x + 0.5, y, w, h, 6.0, group->line_color, false, group->shade_top, group->shade_bottom, style);
+    }
+
+    if (style & GUI_EMBOSS) {
+      render->addRoundedShadowLine(x + 0.5, y + 1.0, w, h, 6.0, group->fg_color, GUI_CORNER_BOTTOM);
+    }
+
+
     render->writeText(x + group->xindent, y + group->yindent + bt_click_offset, label, group->getButtonLabelStateColor(this));
   }
 

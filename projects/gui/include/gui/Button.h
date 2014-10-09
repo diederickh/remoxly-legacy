@@ -11,7 +11,7 @@ namespace rx {
 class Button : public Widget {
 
  public:
-  Button(std::string title, int id, unsigned int icon, gui_button_callback cb, void* user = NULL, int corners = GUI_CORNER_ALL, int iconx = 1, int icony = 1);
+  Button(std::string title, int id, unsigned int icon, gui_button_callback cb, void* user = NULL, int style = GUI_CORNER_ALL, int iconx = 1, int icony = 1);
   void setGroup(Group* g);
   void create();
   void position();
@@ -24,7 +24,6 @@ class Button : public Widget {
 
  public:
   IconButton icon_button;
-  int corners;
 };
 
 } // namespace rx 

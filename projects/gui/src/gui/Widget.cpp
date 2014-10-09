@@ -26,6 +26,7 @@ namespace rx {
     ,y(0)
     ,w(0)
     ,h(0)
+    ,style(0)
     ,needs_redraw(true)
     ,mouse_x(0)
     ,mouse_y(0)

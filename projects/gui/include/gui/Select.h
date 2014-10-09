@@ -11,7 +11,7 @@ namespace rx {
 
   class Select : public Widget { 
   public:
-    Select(std::string title, int selectid, std::vector<std::string> options, gui_menu_callback cb, void* user,int corners = GUI_CORNER_NONE);
+    Select(std::string title, int selectid, std::vector<std::string> options, gui_menu_callback cb, void* user,int style = GUI_STYLE_NONE);
     void setGroup(Group* g);
     void create();
     void position();
@@ -26,7 +26,6 @@ namespace rx {
     Menu menu;
     IconButton icon_button;
     std::vector<std::string> options;     /* The options that are darwn. */
-    int corners;
   };
 
   /* -------------------------------------------------------------------------------------------------------------- */

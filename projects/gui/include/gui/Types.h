@@ -25,11 +25,14 @@
 #define GUI_DIRECTION_LEFT                   3          /* "" */
 #define GUI_DIRECTION_RIGHT                  4          /* "" */
 
-#define GUI_CORNER_NONE                      (0)
+/* STYLES */
+#define GUI_STYLE_NONE                       (0)
 #define GUI_CORNER_TOP_LEFT                  (1 << 0) 
 #define GUI_CORNER_TOP_RIGHT                 (1 << 1)
 #define GUI_CORNER_BOTTOM_RIGHT              (1 << 2)
 #define GUI_CORNER_BOTTOM_LEFT               (1 << 3) 
+#define GUI_OUTLINE                          (1 << 4)  /* adds an outline around e.g. buttons. */
+#define GUI_EMBOSS                           (1 << 5)  /* adds a lighter line underneath e.g. buttons to give it some depth. */ 
 #define GUI_CORNER_LEFT                      (GUI_CORNER_TOP_LEFT | GUI_CORNER_BOTTOM_LEFT)
 #define GUI_CORNER_RIGHT                     (GUI_CORNER_TOP_RIGHT | GUI_CORNER_BOTTOM_RIGHT)
 #define GUI_CORNER_TOP                       (GUI_CORNER_TOP_LEFT | GUI_CORNER_TOP_RIGHT)

@@ -119,7 +119,7 @@ Slider<T>::Slider(std::string label, T& value, T minv, T maxv, T step)
   ,plus_button(1, GUI_ICON_CHEVRON_RIGHT, slider_plus_click, this, GUI_CORNER_RIGHT)
 {
   setType(T(0));
-  setAbsoluteValue(value);
+  //setAbsoluteValue(value);
 }
 
 template<class T>
@@ -285,6 +285,7 @@ void Slider<T>::setMousePositionValue(float mx) {
   slide_x = gui_clamp<int>((int)mx, text_x, (text_x + text_w));
   slide_v = float(slide_x - text_x) / text_w;
 
+  //setAbsoluteValue( minv + slide_v * (maxv - minv) );
   setPercentageValue(slide_v);
   needs_redraw = true ;
 }

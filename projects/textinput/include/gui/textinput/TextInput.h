@@ -23,6 +23,12 @@
 #define TI_KEY_RIGHT     262
 #define TI_KEY_LEFT      263
 
+#define TI_NATIVE_KEY_ENTER				 13
+#define TI_NATIVE_KEY_BACKSPACE			 8
+#define TI_NATIVE_KEY_DELETE			 46
+#define TI_NATIVE_KEY_LEFT				 37
+#define TI_NATIVE_KEY_RIGHT				 39
+
 #define TI_CURSOR_WIDTH  9                                        /* the default cursor width; only used when cursor is not behind a character */
 
 #if defined(__APPLE__) && BITMAP_FONT_GL == BITMAP_FONT_GL2
@@ -282,18 +288,22 @@ void TextInput::onKeyPress(int key, int mods) {
   if(mode == TI_MODE_INPUT) {
 
     switch(key) {
+	  case TI_NATIVE_KEY_BACKSPACE:
       case TI_KEY_BACKSPACE: {
         removeCharacterAtPrevPosition();
         break;
       }
+      case TI_NATIVE_KEY_DELETE:
       case TI_KEY_DELETE: {
         removeCharacterAtCurrentPosition();
         break;
       }
+	  case TI_NATIVE_KEY_LEFT:
       case TI_KEY_LEFT: {
         moveCursorToLeft();
         break;
       }
+	  case TI_NATIVE_KEY_RIGHT:
       case TI_KEY_RIGHT: {
         moveCursorToRight();
       }
@@ -302,17 +312,20 @@ void TextInput::onKeyPress(int key, int mods) {
   }
   else if(mode == TI_MODE_SELECT) {
     switch(key) {
+	  case TI_NATIVE_KEY_BACKSPACE:
       case TI_KEY_DELETE:
       case TI_KEY_BACKSPACE: {
         clear();
         mode = TI_MODE_INPUT;
         break;
       }
+	  case TI_NATIVE_KEY_LEFT:
       case TI_KEY_LEFT: {
         moveCursorToMostLeft();
         deselect();
         break;
       }
+	  case TI_NATIVE_KEY_RIGHT:
       case TI_KEY_RIGHT: {
         moveCursorToMostRight();
         deselect();
@@ -363,11 +376,11 @@ void TextInput::updateCursor() {
     }
 
     Character ch;
-    if(font.getChar(contents[char_dx-1], ch)) {
+    if(font.getChar(contents[ char_dx ], ch)) {
       cursor_w = ch.xadvance; 
     }
     else {
-      printf("Error: Cannot find curr char.\n");
+      printf("Error: Cannot find current char.\n");
     }
   }
 }

@@ -193,11 +193,15 @@ void Slider<T>::onKeyPress(int key, int modkeys) {
   Widget::onKeyPress(key, modkeys);
 
   if(state & GUI_STATE_EDITABLE) {
-    if(key == GUI_KEY_ENTER) {
-      disableInputAndCopyValue();
-    }
-    else {
-      render->onKeyPress(key, modkeys);
+    switch(key) 
+	{
+	case GUI_NATIVE_KEY_ENTER:
+	case GUI_KEY_ENTER:
+		disableInputAndCopyValue();
+		break;
+	default: 
+		render->onKeyPress(key, modkeys);
+		break;
     }
   }
 }
@@ -336,7 +340,8 @@ template<class T>
 void Slider<T>::setAbsoluteValue(T v) {
 
   value = v;
-  setPercentageValue(float(value)/maxv);
+  setPercentageValue( float(v-minv)/(maxv-minv) );
+  //setPercentageValue(float(value)/maxv);
 }
 
 // whenever a value changes, this function will be called

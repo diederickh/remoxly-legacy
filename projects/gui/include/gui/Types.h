@@ -440,6 +440,12 @@
 #define GUI_KEY_RIGHT                        262
 #define GUI_KEY_LEFT                         263
 
+#define GUI_NATIVE_KEY_ENTER				 13
+#define GUI_NATIVE_KEY_BACKSPACE			 8
+#define GUI_NATIVE_KEY_DELETE				 46
+#define GUI_NATIVE_KEY_LEFT					 37
+#define GUI_NATIVE_KEY_RIGHT				 39
+
 typedef void(*gui_button_callback)(int id, void* user); /* Generic click callback. */
 
 #endif

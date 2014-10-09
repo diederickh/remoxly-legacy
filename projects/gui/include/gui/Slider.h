@@ -350,6 +350,9 @@ void Slider<T>::setPercentageValue(float p) {
 	float tmp = float(value);
 	value = (T)(floorf((tmp/step)) * step);
 
+	// Make sure we stay between min and max
+	value = gui_clamp( value, minv, maxv );
+
 	notify(GUI_EVENT_VALUE_CHANGED);
 }
 

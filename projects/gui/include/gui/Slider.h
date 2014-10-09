@@ -342,13 +342,14 @@ void Slider<T>::setAbsoluteValue(T v) {
 template<class T>
 void Slider<T>::setPercentageValue(float p) {
 
-  perc_value = gui_clamp<float>(p, 0.0f, 1.0f);
-  value = minv + (maxv - minv) * perc_value ;
+	T range = (maxv - minv);
+	perc_value = gui_clamp<float>(p, 0.0f, 1.0f);
+	value = minv + range * perc_value ;
 
-  float tmp = float(value);
-  value = floorf((tmp/step)+0.5f) * step;
+	float tmp = float(value);
+	value = (T)(floorf((tmp/step)) * step);
 
-  notify(GUI_EVENT_VALUE_CHANGED);
+	notify(GUI_EVENT_VALUE_CHANGED);
 }
 
 template<class T>

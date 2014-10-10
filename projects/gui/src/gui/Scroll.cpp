@@ -54,7 +54,8 @@ void Scroll::create() {
  
   render->addRectangle(visible_x, y, visible_w - group->padding, visible_h - group->padding, group->panel_color, false, 0.0f, 0.0f);  // backround on visible area; e.g. adds the border at the bottom 
   render->addRectangle(scroll_bar_x, scroll_bar_y, w + group->padding, visible_h + group->padding, group->panel_color, 0.0f, 0.0f);  // background scrollbar
-  render->addRectangle(scroll_bar_x, track_y, w, track_h, group->getBackgroundStateColor(this, GUI_STATE_DOWN_CUSTOM0), true, 0.0f, 0.0f); // the track 
+  render->addRectangle(scroll_bar_x, track_y, w, track_h, group->getBackgroundStateColor(this, 0), true, 0.0f, 0.0f); // the track 
+  //render->addRectangle(scroll_bar_x, track_y, w, track_h, group->getBackgroundStateColor(this, GUI_STATE_DOWN_CUSTOM0), true, 0.0f, 0.0f); // the track 
   render->addRectangle(scroll_bar_x, grip_y, w, grip_h, group->getSelectedStateColor(this, GUI_STATE_DOWN_INSIDE), true, 0.0f, 0.0f); // the grip
 
   up_button.create();
@@ -175,7 +176,8 @@ void Scroll::position() {
   track_h = visible_h - (down_button.h + up_button.h + group->padding * 4);
  
   float content_ratio = float(visible_h) / content_h;
-  grip_h = gui_clamp<int>(content_ratio * track_h, 10, track_h * 0.9);
+  //grip_h = gui_clamp<int>(content_ratio * track_h, 10, track_h);
+  grip_h = gui_clamp<int>(content_ratio * track_h, 10, track_h*0.9f);
   grip_space = track_h - grip_h; 
  
   // how much does the content needs to be offset

@@ -1,5 +1,6 @@
 #include <gui/Utils.h>
 #include <gui/Group.h>
+#include <gui/Panel.h>
 
 namespace rx { 
 
@@ -47,7 +48,8 @@ namespace rx {
     /* Initialize with some default colors @todo, we could simply put this colors directly in setColors. */
     float theme_fg_color[] = { 0.6, 0.6, 0.6, 1.0};
     float theme_bg_color[] = { 0.5351, 0.5351, 0.5351, 1.0 };
-    float theme_hl_color[] = { 0.94f, 0.94f, 0.94f, 1.0f }; 
+    float theme_hl_color[] = { 0.1394f, 0.1394f, 0.1394f, 1.0f }; 
+    //float theme_hl_color[] = { 0.94f, 0.94f, 0.94f, 1.0f }; 
 // 	float theme_hl_color[] = { 0.394, 0.0f, 0.917, 1.0 };
     setColors(theme_bg_color, theme_fg_color, theme_hl_color);
 

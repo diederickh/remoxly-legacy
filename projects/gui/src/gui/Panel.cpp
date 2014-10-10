@@ -13,6 +13,7 @@ Panel::Panel(Render* r, int height)
   y = 10;
   w = 275;
   h = height;
+  originalHeight = h;
   render = r;
   scroll.render = r;
 }
@@ -31,7 +32,6 @@ Panel::~Panel() {
 Group* Panel::addGroup(std::string title) {
 
   Group* g = new Group(title, render);
-  
   g->lockPosition();
  
   if(!groups.size()) {
@@ -91,6 +91,34 @@ void Panel::create() {
 void Panel::update() {
 
   if(needsRedraw()) {
+
+	  // If widgets occupy less space than the Panel, resize panel.
+	  //
+	  float totalHeight = 0.0f;
+	  for(std::vector<Group*>::iterator it = groups.begin(); it != groups.end(); ++it) 
+	  {
+		Group* g = *it;
+		totalHeight += g->h;
+		for( int i=0; i<g->children.size(); ++i )
+		{
+			if( ! (g->children[i]->state & GUI_STATE_CLOSED) )
+			{
+				totalHeight += g->children[i]->h;
+			}
+		}
+	  }
+	  if( totalHeight > originalHeight )
+	  {
+		  h = originalHeight;
+	  }
+	  else if( totalHeight <= originalHeight )
+	  {
+		h = totalHeight;
+	  }
+	  // Make enough space for the scroll arrows
+	  if( groups.size() == 1 )
+		  h = groups[0]->h*2;
+
     render->clear();
     position();
     build();
@@ -98,7 +126,9 @@ void Panel::update() {
     render->update();
     needs_redraw = false;
   }
+
 }
+
 
 void Panel::draw() {
 

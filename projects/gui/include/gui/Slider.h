@@ -158,7 +158,7 @@ void Slider<T>::position() {
 template<class T>
 void Slider<T>::create() {
   
-  num_w = 75;
+  num_w = 66;
   num_x = min_button.x - num_w - group->padding;
   text_w = w - (min_button.w + plus_button.w + num_w + 3 * group->padding);
   text_x = x;

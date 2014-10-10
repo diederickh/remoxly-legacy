@@ -48,6 +48,7 @@ class Panel : public Widget {
  public:
   Scroll scroll;
   std::vector<Group*> groups;
+  float originalHeight;
 };
 
 } // namespace rx

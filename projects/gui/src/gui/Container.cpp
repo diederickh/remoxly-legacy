@@ -1,3 +1,7 @@
+#if defined(__linux)
+#  include <stdio.h>
+#  include <stdlib.h>
+#endif
 #include <gui/Container.h>
 
 namespace rx {

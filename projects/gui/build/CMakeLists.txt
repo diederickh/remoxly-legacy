@@ -1,3 +1,10 @@
+# You can define the following variables on the command line:
+#
+#  - EXTERN_LIB_DIR      Path to the directory where we can find e.g. libpng, libz, etc..
+#  - EXTERN_INC_DIR      Path to the directory where we can find general headers e.g. png.h 
+#  - EXTERN_SRC_DIR      Path to the directory where we can find sources for dependencies (e.g. glad.c) 
+#  - TINYLIB_DIR         Path to tinylib base dir. 
+
 cmake_minimum_required(VERSION 2.8)
 
 project(gui)
@@ -17,8 +24,8 @@ endif()
 
 include_directories(
   ${bd}/include/
-  ${extern_include_dir}
-  ${bd}/../../shared/tinylib/src/
+  ${EXTERN_INC_DIR}
+  ${TINYLIB_DIR}/src/
   ${bd}/../bitmapfont/include/
   ${bd}/../textinput/include/
 )
@@ -50,7 +57,7 @@ set(app_sources
 )
 
 if(NOT TARGET ${app})
-  add_executable(${app} ${app_sources} ${remoxly_app_sources})
+  add_executable(${app} ${app_sources} ${EXTERN_SRC_DIR}/glad.c)
 
   add_library(remoxly STATIC ${remoxly_lib_sources})
 
@@ -60,7 +67,7 @@ if(NOT TARGET ${app})
 
   install(TARGETS remoxly DESTINATION lib)
 
-  add_executable(test_app ${bd}/src/test_app.cpp ${bd}/src/App.cpp)
+  add_executable(test_app ${bd}/src/test_app.cpp ${bd}/src/App.cpp ${EXTERN_SRC_DIR}/glad.c)
   target_link_libraries(test_app ${remoxly_app_libs} ${remoxly_extern_libs} remoxly)
   install(TARGETS test_app DESTINATION bin)
 

@@ -1,3 +1,7 @@
+#if defined(__linux)
+#  include <stdlib.h>
+#  include <stdio.h>
+#endif
 #include <gui/Utils.h>
 #include <gui/Group.h>
 

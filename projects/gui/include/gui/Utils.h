@@ -9,7 +9,7 @@ namespace rx {
 void gui_fill_color(float r, float g, float b, float a, float* rgba);       
 
 /* returns a cleaned up string that can be used for e.g. xml elements */
-std::string gui_cleanup_string(std::string str);
+std::string gui_cleanup_string(const std::string& str);
 
 /* converts the given string to an int/float */
 int gui_string_to_int(std::string str);

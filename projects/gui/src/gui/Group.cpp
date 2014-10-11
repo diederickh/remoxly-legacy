@@ -156,8 +156,6 @@ namespace rx {
 
     int curr_x = x;
     int curr_y = y + h + padding;
-    int el_w = 0;
-    int el_h = 0;
     int count = 0;
 
     for(std::vector<Widget*>::iterator it = children.begin(); it != children.end(); ++it) {

@@ -13,7 +13,7 @@ void gui_fill_color(float r, float g, float b, float a, float* rgba) {
   rgba[3] = a;
 }
 
-std::string gui_cleanup_string(std::string str) {
+std::string gui_cleanup_string(const std::string& str) {
 
   std::string result;
   bool was_underscore = false;

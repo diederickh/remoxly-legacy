@@ -176,8 +176,7 @@ void Scroll::position() {
   track_h = visible_h - (down_button.h + up_button.h + group->padding * 4);
  
   float content_ratio = float(visible_h) / content_h;
-  //grip_h = gui_clamp<int>(content_ratio * track_h, 10, track_h);
-  grip_h = gui_clamp<int>(content_ratio * track_h, 10, track_h*0.9f);
+  grip_h = gui_clamp<int>(content_ratio * track_h, track_h*0.1f, track_h*0.9f);
   grip_space = track_h - grip_h; 
  
   // how much does the content needs to be offset

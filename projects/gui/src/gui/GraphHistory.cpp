@@ -49,7 +49,7 @@ void GraphHistory::create() {
   render->writeText( x + group->xindent, y + group->yindent, fpsStr, group->label_color );
   //render->writeText( x + (w-fpsStr.size()*8.5f) + group->xindent, y + group->yindent, fpsStr, group->label_color );
 
-  render->addLineStrip( values.size(), &verts[0], group->line_color );
+  render->addLineStrip( (int)values.size(), &verts[0], group->line_color );
 }
 
 /*
@@ -128,11 +128,11 @@ void GraphHistory::addValue(float t)
 	{
 		values[ headIndex ] = headValue;
 		// Find min and max value so far
-		if( values[headIndex] < currMinValue )
-			currMinValue = values[headIndex];
-		if( values[headIndex] > currMaxValue )
-			currMaxValue = values[headIndex];
-		currMaxValue *= gui_clamp<float>( 1.0f - 0.005f, 0.0f, 1.0f );
+		if( headValue < currMinValue )
+			currMinValue = headValue;
+		if( headValue > currMaxValue )
+			currMaxValue = headValue;
+		currMaxValue *= 1.0f - 0.005f; // Damping
 		currMaxValue = gui_clamp<float>( currMaxValue, currMinValue, currMaxValue );
 
 		// Ring-buffer style
@@ -148,7 +148,6 @@ void GraphHistory::addValue(float t)
         int idx = headIndex + count;
         idx = idx % values.size();
                     
-		//x, y, w - group->padding, h
         float per = count * oneOverValuesSize;
         float xx = x + w * per; // move right to left
         float normValue = (values[ idx ]-minv) * oneOverMax;

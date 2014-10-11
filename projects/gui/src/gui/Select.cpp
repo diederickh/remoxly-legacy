@@ -34,7 +34,6 @@ namespace rx {
     int bt_click_offset = 0;
     int corn_sel = style;
     int corn_off = 0;
-    int corn_icon = icon_button.style;
     float* label_color = group->label_color;
 
     corn_sel = (style & ~GUI_CORNER_RIGHT);

@@ -189,7 +189,7 @@ namespace rx {
     void print();
 
   public:
-    float pos[2];
+    float pos[4];
     float color[4];
   };
 
@@ -206,8 +206,8 @@ namespace rx {
     const float* ptr() { return &pos[0]; } 
 
   public:
-    float pos[2];
-    float tex[2];
+    float pos[4];
+    float tex[4];
   };
 
   /* -------------------------------------------------------------------------------------------------------------- */
@@ -514,6 +514,10 @@ namespace rx {
       glUniformMatrix4fv(glGetUniformLocation(prog_pt_rect, "u_pm"), 1, GL_FALSE, pm);
       glUniform1i(glGetUniformLocation(prog_pt_rect, "u_tex"), 0);
 
+	  vertices_pc.reserve( 1<<16 );
+	  vertices_pt.reserve( 1<<16 );
+	  texture_draws.reserve( 1<<4 );
+
       is_initialized = true;
     }
 
@@ -527,8 +531,8 @@ namespace rx {
     glEnableVertexAttribArray(0); /* pos */
     glEnableVertexAttribArray(1); /* color */
 
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(GuiVertexPC), (GLvoid*)0); /* pos */
-    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(GuiVertexPC), (GLvoid*)8); /* col */
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(GuiVertexPC), (GLvoid*)0); /* pos */
+    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(GuiVertexPC), (GLvoid*)16); /* col */
 
     /* pos + texcoord vao,vbo */
     glGenVertexArrays(1, &vao_pt);
@@ -540,8 +544,8 @@ namespace rx {
     glEnableVertexAttribArray(0); /* pos */
     glEnableVertexAttribArray(1); /* texcoord */
 
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(GuiVertexPT), (GLvoid*)0); /* pos */
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(GuiVertexPT), (GLvoid*)8); /* texcoord */
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(GuiVertexPT), (GLvoid*)0); /* pos */
+    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(GuiVertexPT), (GLvoid*)16); /* texcoord */
 
     /* Create the bottom layer. */
     setLayer(0);
@@ -965,12 +969,12 @@ namespace rx {
 
     /* Calculate the sin/cos values. */
     /* @todo we could cache the output of sin/cos to optimize a bit. */
-    std::vector<float> points;
+    std::vector<float> points( (resolution+1) * 2 );
     for (int i = 0; i <= resolution; ++i) {
       ca = radius * cos(angle);
       sa = radius * sin(angle);
-      points.push_back(ca);
-      points.push_back(sa);
+      points[ i*2 ] = ca;
+      points[ i*2+1 ] = sa;
       angle += (HALF_PI / resolution);
     }
 
@@ -1173,12 +1177,12 @@ namespace rx {
 
     /* Calculate the sin/cos values. */
     /* @todo we could cache the output of sin/cos to optimize a bit. */
-    std::vector<float> points;
+    std::vector<float> points( (resolution+1) * 2 );
     for (int i = 0; i <= resolution; ++i) {
       ca = radius * cos(angle);
       sa = radius * sin(angle);
-      points.push_back(ca);
-      points.push_back(sa);
+      points[ i*2 ] = ca;
+      points[ i*2+1 ] = sa;
       angle += (HALF_PI / resolution);
     }
 
@@ -1256,6 +1260,8 @@ namespace rx {
   void GuiVertexPC::setPos(float x, float y) {
     pos[0] = x;
     pos[1] = y;
+	pos[2] = 0.0f;
+	pos[3] = 1.0f;
   }
 
   void GuiVertexPC::setColor(float r, float g, float b, float a) {
@@ -1284,11 +1290,15 @@ namespace rx {
   void GuiVertexPT::setPos(float x, float y) {
     pos[0] = x;
     pos[1] = y;
+	pos[2] = 0.0f;
+	pos[3] = 1.0f;
   }
 
   void GuiVertexPT::setTexCoord(float u, float v) {
     tex[0] = u;
     tex[1] = v;
+	tex[2] = 0.0f;
+	tex[3] = 0.0f;
   }
 
   /* -------------------------------------------------------------------------------------------------------------- */

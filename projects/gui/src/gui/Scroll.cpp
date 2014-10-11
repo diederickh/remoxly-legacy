@@ -1,4 +1,5 @@
 #include <cmath>
+#include <algorithm>
 #include <gui/Scroll.h>
 #include <gui/Render.h>
 #include <gui/Group.h>

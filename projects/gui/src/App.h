@@ -24,7 +24,7 @@
 #define APPLICATION_H
 
 #define REMOXLY_USE_OPENGL
-#define GLFW_INCLUDE_GLCOREARB
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <gui/Remoxly.h>
 

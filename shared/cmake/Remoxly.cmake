@@ -72,15 +72,21 @@ elseif(UNIX)
   
   set(remoxly_app_libs
     ${EXTERN_LIB_DIR}/libglfw3.a
-    ${EXTERN_LIB_DIR}/libpng16.a
+    ${EXTERN_LIB_DIR}/libpng.a
     ${EXTERN_LIB_DIR}/libz.a
+    pthread
+    dl
+    rt
     GL
     X11
     Xxf86vm
     Xrandr
-    pthread
     dl
     Xi
+    Xcursor
+    Xinerama
+    udev                                   # libvideocapture
+    asound                                 # audio capture
     )
 
 elseif(WIN32)

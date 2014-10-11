@@ -73,10 +73,10 @@ static const char* TEXT_INPUT_VS = ""
   "uniform mat4 u_pm;"
   "uniform vec4 u_pos;"
   "const vec2[4] pos = vec2[]("
-  "      vec2(0.0, 0.0), "
-  "      vec2(0.0, 1.0), "
   "      vec2(1.0, 0.0), "
-  "      vec2(1.0, 1.0)  "
+  "      vec2(0.0, 0.0), "
+  "      vec2(1.0, 1.0), "
+  "      vec2(0.0, 1.0)  "
   ");"
   "void main() {"
   "  vec2 p = pos[gl_VertexID];"
@@ -195,7 +195,9 @@ TextInput::TextInput(float x, float y, float w, BitmapFont& font)
     glGenVertexArrays(1, &vao);
 
 #if BITMAP_FONT_GL == BITMAP_FONT_GL2
-    float caret_pos[] = { 0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0, 1.0 } ;
+    printf("@todo I change the winding order of these vertices, check if the ones used (new, second) work with culling.\n");
+    // float caret_pos[] = { 0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0, 1.0 } ;
+    float caret_pos[] = { 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0 } ;
 
     glBindVertexArray(vao);
     glGenBuffers(1, &vbo);
@@ -363,11 +365,19 @@ void TextInput::updateCursor() {
     }
 
     Character ch;
-    if(font.getChar(contents[char_dx-1], ch)) {
+
+    /*
+      @todo we need to remove this, but leaving it here as I guess this -1 was 
+      important. It was like this before 2014.10.09, curious why they -1, just a bug? 
+      When using -1, the wrong width is selected. W/o -1 it works good.
+    */
+    /* if(font.getChar(contents[char_dx - 1], ch)) { */
+
+    if(font.getChar(contents[char_dx], ch)) {
       cursor_w = ch.xadvance; 
     }
     else {
-      printf("Error: Cannot find curr char.\n");
+      printf("Error: Cannot find current char.\n");
     }
   }
 }
@@ -439,7 +449,7 @@ void TextInput::removeCharacterAtCurrentPosition() {
 void TextInput::removeCharacterAtPrevPosition() {
 
   if(canMoveCursorToLeft()) {
-    contents.erase(contents.begin() + (char_dx-1));
+    contents.erase(contents.begin() + (char_dx - 1));
     updateContents();
     moveCursorToLeft();
   }
@@ -493,8 +503,8 @@ void TextInput::draw() {
     glUniform4f(u_pos, x + cursor_x, y, cursor_w, font.line_height);
   }
   else if(mode == TI_MODE_SELECT) {
-    int m = (align == BITMAP_FONT_ALIGN_RIGHT) ? -1 : 1;
-    glUniform4f(u_pos, x, y, content_w * m, font.line_height);
+    int m = (align == BITMAP_FONT_ALIGN_RIGHT) ? -content_w : 0;
+    glUniform4f(u_pos, x + m, y, content_w, font.line_height);
   }
 
   glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);

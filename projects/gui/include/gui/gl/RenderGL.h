@@ -985,8 +985,8 @@ namespace rx {
       if (corners & GUI_CORNER_BOTTOM_RIGHT) {
         for (size_t i = 0; i < (points.size()/2)-1; ++i) {
           gl_add_shaded_vertex_pc(rx, ry, min_y, max_y, coltop, colbot, intcol, vertices_pc);
+          gl_add_shaded_vertex_pc(rx + points[(i+1) * 2 + 0], ry + points[(i+1) * 2 + 1],  min_y, max_y, coltop, colbot, intcol, vertices_pc); 
           gl_add_shaded_vertex_pc(rx + points[i * 2 + 0], ry + points[i * 2 + 1], min_y, max_y, coltop, colbot, intcol, vertices_pc);
-          gl_add_shaded_vertex_pc(rx + points[(i+1) * 2 + 0], ry + points[(i+1) * 2 + 1],  min_y, max_y, coltop, colbot, intcol, vertices_pc);
         }
       }
       else {
@@ -1033,8 +1033,8 @@ namespace rx {
       if (corners & GUI_CORNER_TOP_LEFT) {
         for (size_t i = 0; i < (points.size()/2)-1; ++i) {
           gl_add_shaded_vertex_pc(rx, ry, min_y, max_y, coltop, colbot, intcol, vertices_pc);
-          gl_add_shaded_vertex_pc(rx - points[i * 2 + 0],  (ry - points[i * 2 + 1]), min_y, max_y, coltop, colbot, intcol, vertices_pc);
           gl_add_shaded_vertex_pc(rx - points[(i+1) * 2 + 0], (ry - points[(i+1) * 2 + 1]), min_y, max_y, coltop, colbot, intcol, vertices_pc);
+          gl_add_shaded_vertex_pc(rx - points[i * 2 + 0],  (ry - points[i * 2 + 1]), min_y, max_y, coltop, colbot, intcol, vertices_pc);
         }
       }
       else {

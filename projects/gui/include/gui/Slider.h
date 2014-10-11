@@ -136,12 +136,6 @@ void Slider<T>::setGroup(Group* g) {
 
   min_button.setGroup(g);
   plus_button.setGroup(g);
-
-  /* @todo experimental */
-  //  add(&min_button, g);
-  //  add(&plus_button, g);
-  /* @todo end experimental */
-
 }
 
 template<class T>
@@ -281,11 +275,12 @@ void Slider<T>::setMousePositionValue(float mx) {
   // @todo - in Slider, we need to softly change the values when shift or right mouse button is pressed.
   float slide_v = 0.0f;
   int slide_x = 0;
-  
+
   slide_x = gui_clamp<int>((int)mx, text_x, (text_x + text_w));
   slide_v = float(slide_x - text_x) / text_w;
 
-  setPercentageValue(slide_v);
+  //  setPercentageValue(slide_v );
+  setAbsoluteValue(minv + slide_v * (maxv - minv));
   needs_redraw = true ;
 }
 
@@ -309,16 +304,12 @@ bool Slider<T>::needsRedraw() {
 
 template<class T>
 void Slider<T>::stepMin() {
-
-  value -= step;
-  setAbsoluteValue(value);
+  setAbsoluteValue(value - step);
 }
 
 template<class T>
 void Slider<T>::stepPlus() {
-
-  value += step;
-  setAbsoluteValue(value);
+  setAbsoluteValue(value + step);
 }
 
 template<class T> 
@@ -333,21 +324,20 @@ void Slider<T>::setType(float dummy) {
 
 template<class T>
 void Slider<T>::setAbsoluteValue(T v) {
-
-  value = v;
-  setPercentageValue(float(value)/maxv);
+  setPercentageValue(float(v-minv)/(maxv-minv));
 }
 
 // whenever a value changes, this function will be called
 template<class T>
 void Slider<T>::setPercentageValue(float p) {
 
+  float tmp;
+
   perc_value = gui_clamp<float>(p, 0.0f, 1.0f);
-  value = minv + (maxv - minv) * perc_value ;
+  value = minv + (maxv-minv) * perc_value ;
 
-  float tmp = float(value);
-  value = floorf((tmp/step)+0.5f) * step;
-
+  tmp = float(value);
+  value = (T)floorf((tmp/step)+0.5f) * step;
   notify(GUI_EVENT_VALUE_CHANGED);
 }
 

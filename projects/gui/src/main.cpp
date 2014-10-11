@@ -33,6 +33,7 @@ using namespace rx;
 #define USE_GROUP 1
 #define USE_PANEL 1
 #define USE_CONTAINER 1
+
 Group* group_ptr0 = NULL;
 Group* group_ptr1 = NULL;
 Panel* panel_ptr = NULL;
@@ -96,7 +97,9 @@ int main() {
   // ----------------------------------------------------------------
   // THIS IS WHERE YOU START CALLING OPENGL FUNCTIONS, NOT EARLIER!!
   // ----------------------------------------------------------------
-  int forces = 36;
+  glEnable(GL_CULL_FACE);
+
+  float forces = 1.0;
   int velocity = 4;
   int amount = 9;
   int lifetime = 50;
@@ -122,9 +125,9 @@ int main() {
 
 #if USE_GROUP
   Group group0("Particles", new RenderGL());
-  group0.add(new Slider<int>("Particle Forces", forces, 0, 100, 1));
+  group0.add(new Slider<float>("Particle Forces", forces, 0.01f, 10.0f, 0.01f));
   group0.y = 330;
-  //  group_ptr0 = &group0;
+  group_ptr0 = &group0;
 
   Select* sel = new Select("Webcam 1", 1, options, on_select_click, NULL, GUI_CORNER_ALL);
   sel->setDirection(GUI_DIRECTION_UP);
@@ -133,8 +136,7 @@ int main() {
   group0.add(new Slider<int>("Particle Velocity", velocity, 0, 100, 1));
   group_ptr0 = &group0;  
   
-
-  group0.add(new Slider<int>("Particle Amount", amount, 0, 10, 1));
+  group0.add(new Slider<int>("Particle Amount", amount, 4, 10, 1));
   group0.add(new Slider<int>("Particle Lifetime", lifetime, 0, 10, 1));
   group0.add(new Slider<float>("Particle Mass", mass, 0.0f, 100.0f, 0.001f));
 
@@ -182,7 +184,7 @@ int main() {
   
   int num = 1;
   for(int i = 0; i < num; ++i) {
-    g2->add(new Slider<float>("Start Size", start_size, 0.0f, 50.0f, 0.1f));
+    g2->add(new Slider<float>("Start Size", start_size, 0.1f, 50.0f, 0.01f));
     g2->add(new Slider<float>("End Size", end_size, 0.0f, 50.0f, 0.1f));
     g2->add(new Slider<float>("Begin Angle", start_angle, 0.0f, 150.0f, 0.1f));
     g2->add(new Slider<float>("End Angle", end_angle, 0.0f, 200.0f, 0.1f));
@@ -245,6 +247,8 @@ int main() {
  
 void char_callback(GLFWwindow* win, unsigned int key) {
 
+  printf("CHAR: %d\n", key);
+
   if(group_ptr0) {
     group_ptr0->onCharPress(key);
   }
@@ -263,7 +267,7 @@ void char_callback(GLFWwindow* win, unsigned int key) {
 }
  
 void key_callback(GLFWwindow* win, int key, int scancode, int action, int mods) {
-  
+
   if(action == GLFW_RELEASE) {
     if(group_ptr0) {
       group_ptr0->onKeyRelease(key, mods);

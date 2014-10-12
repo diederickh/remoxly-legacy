@@ -12,7 +12,7 @@ Separator::Separator(int height)
 
 void Separator::create() {
 
-  render->addRectangle(x, y, float(w - group->padding), float(h), group->bg_color, true, 0.0f, 0.1f);
+  render->addRectangle(x, y, float(w - group->padding), float(h), group->bg_color, true, 0.0f, 0.0f);
 }
 
 } // namespace rx

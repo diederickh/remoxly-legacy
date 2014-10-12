@@ -25,9 +25,9 @@
 
 #define TI_NATIVE_KEY_ENTER				 13
 #define TI_NATIVE_KEY_BACKSPACE			 8
-#define TI_NATIVE_KEY_DELETE			 46
-#define TI_NATIVE_KEY_LEFT				 37
-#define TI_NATIVE_KEY_RIGHT				 39
+#define TI_NATIVE_KEY_DELETE			 127
+#define TI_NATIVE_KEY_LEFT				 276
+#define TI_NATIVE_KEY_RIGHT				 275
 
 #define TI_CURSOR_WIDTH  9                                        /* the default cursor width; only used when cursor is not behind a character */
 
@@ -496,7 +496,7 @@ void TextInput::draw() {
     return;
   }
 
-  glEnable(GL_BLEND);
+  //glEnable(GL_BLEND);
   glBlendFunc(GL_ONE, GL_ONE);
 
   glBindVertexArray(vao);

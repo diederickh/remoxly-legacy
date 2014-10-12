@@ -12,9 +12,9 @@ void gui_fill_color(float r, float g, float b, float a, float* rgba);
 std::string gui_cleanup_string(const std::string& str);
 
 /* converts the given string to an int/float */
-int gui_string_to_int(std::string str);
-float gui_string_to_float(std::string str);
-bool gui_string_to_bool(std::string str);
+int gui_string_to_int(const std::string& str);
+float gui_string_to_float(const std::string& str);
+bool gui_string_to_bool(const std::string& str);
 
 /* color conversion */
 void gui_hsv_to_rgb(float h, float s, float v, float& r, float& g, float& b);

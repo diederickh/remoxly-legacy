@@ -119,7 +119,7 @@ Slider<T>::Slider(std::string label, T& value, T minv, T maxv, T step)
   ,plus_button(1, GUI_ICON_CHEVRON_RIGHT, slider_plus_click, this, GUI_STYLE_NONE ) //GUI_CORNER_RIGHT)
 {
   setType(T(0));
-  //setAbsoluteValue(value);
+  setAbsoluteValue(value);
 }
 
 template<class T>

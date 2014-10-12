@@ -614,18 +614,19 @@ namespace rx {
 
   void RenderGL::draw() {
 
-    glEnable(GL_BLEND);
+    //glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     if (vertices_pc.size()) {
 
-      RenderLayer* lyr = NULL;
+	  RenderLayer* lyr = NULL;
+
+	  glUseProgram(prog_pc);
+	  glBindVertexArray(vao_pc);
+
       std::map<int, RenderLayer*>::iterator it = layers.begin();
 
       while (it != layers.end()) {
-
-        glUseProgram(prog_pc);
-        glBindVertexArray(vao_pc);
 
         lyr = it->second;
 
@@ -647,8 +648,7 @@ namespace rx {
       }
     }
 
-    glDisable(GL_BLEND);
-
+	//glDisable( GL_BLEND );
 
     /*
       We still need to implement (or remove) the texture draws for the layered feature. 

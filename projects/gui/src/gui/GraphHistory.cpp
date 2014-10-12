@@ -6,7 +6,7 @@
 namespace rx { 
 
 GraphHistory::GraphHistory(std::string label, int size, float minv, float maxv, float height )
-  :Widget(GUI_TYPE_TEXT, label)
+  :Widget(GUI_TYPE_NONE, label)
   ,value(value)
   ,text_x(0)
   , frameRate( 0 )
@@ -42,7 +42,7 @@ GraphHistory::GraphHistory(std::string label, int size, float minv, float maxv, 
 
 void GraphHistory::create() {
 
-  render->addRectangle(x, y, w - group->padding, h, group->bg_color, true, 0.0, 0.1f);
+  render->addRectangle(x, y, w - group->padding, h, group->bg_color, true, 0.0, 0.2f);
   //render->writeText(x + group->xindent, y + group->yindent, label, group->label_color);
 
   std::string fpsStr = std::to_string( currMaxValue ) + " : " + std::to_string( frameRate );

@@ -113,9 +113,9 @@ void Panel::update() {
 	  {
 		h = totalHeight;
 	  }
-	  // Make enough space for the scroll arrows
-	  if( groups.size() == 1 )
-		  h = groups[0]->h*2;
+ 	  // Make enough space for the scroll arrows
+ 	  if( groups.size() == 1 && h <= groups[0]->h )
+ 		  h = groups[0]->h*2;
 
     render->clear();
     position();

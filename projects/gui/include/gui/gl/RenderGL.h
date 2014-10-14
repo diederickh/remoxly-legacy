@@ -749,7 +749,6 @@ namespace rx {
       l->number_input_font.clear();
       ++it;
     }
-
   }
 
   void RenderGL::onCharPress(unsigned int key) {
@@ -760,6 +759,7 @@ namespace rx {
 
     if(layer->number_input.mode != TI_MODE_DISABLED) {
       layer->number_input.onCharPress(key);
+      printf("-- CHAR PRESSED: %d\n", key);
     }
   }
 
@@ -770,6 +770,7 @@ namespace rx {
     }
 
     if(layer->number_input.mode != TI_MODE_DISABLED) {
+      printf("-- NUMBER_INPUT_MODE: %d\n", key);
       layer->number_input.onKeyPress(key, mods);
     }
   }

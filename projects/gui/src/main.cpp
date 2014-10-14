@@ -155,14 +155,16 @@ int main() {
   g0->add(new Text("RTMP host", rtmp_host));
 
   Group* g1 = panel.addGroup("Water Simulation");
-  g1->add(new Slider<int>("Particle Lifetime", lifetime, 0, 10, 1));
+  Slider<int>* test_slider = new Slider<int>("Particle Lifetime", lifetime, 0, 10, 1);
+  g1->add(test_slider);
+#if 0
   g1->add(new Slider<int>("Particle Amount", amount, 0, 10, 1));
   g1->add(new Select("Webcam", 2, options, on_select_click, NULL, GUI_STYLE_NONE));
   g1->add(new Toggle("Render Particles", render_particles));
   g1->add(new Toggle("Render Water", render_water));
   g1->add(new Toggle("Render Spirals", render_spirals));
   g1->add(new Toggle("Render Marker", render_marker));
-
+#endif
 
   Group* g2 = panel.addGroup("Special FX");
 
@@ -170,6 +172,7 @@ int main() {
   g1->padding = 1;
   g2->padding = 1;
 
+#if 0
   Slider<float>* aging_slider = new Slider<float>("Aging", aging, 0.0f, 50.0f, 0.1f);
   //aging_slider->hide();
 
@@ -188,6 +191,25 @@ int main() {
   g2->add(new Button("Twitter", 1, GUI_ICON_TWITTER, on_group_button_click, NULL, GUI_STYLE_NONE));
   g2->add(new Button("Cloud Burst", 2, GUI_ICON_CLOUD, on_group_button_click, NULL, GUI_STYLE_NONE));
   g2->add(new Button("Extrude Region", 2, GUI_ICON_CLOUD, on_group_button_click, NULL, GUI_CORNER_BOTTOM));
+#endif
+
+#if 0
+  int num_els = 250;
+  for (int i = 0; i < num_els; ++i) {
+    char tmp_buf[1024];
+    sprintf(tmp_buf, "Trail Size Alias %02d", i);
+    g2->add(new Slider<int>(tmp_buf, trail_size, 0, 450, 1));
+  }
+#endif
+
+  float time;
+  float moo1;
+  float moo2;
+  Slider<float>* changing_slider = new Slider<float>("Time", time, 0.0f, 2000000.0f, 0.1f );
+
+  g2->add(new Slider<float>("moo1", moo1, 0.0f, 2000000.0f, 0.1f));
+  g2->add(new Slider<float>("moo2", moo1, 0.0f, 2000000.0f, 0.1f));
+  g2->add(changing_slider);
 
   panel.x = 10;
   panel_ptr = &panel;
@@ -210,6 +232,9 @@ int main() {
   */
   remoxly_ptr->load("remoxly_test.xml");
 
+#if USE_PANEL
+  float test_slider_value = 0.0f;
+#endif
 
   while(!glfwWindowShouldClose(win)) {
     glClearColor(0.445f, 0.445f, 0.445f, 1.0f);
@@ -221,7 +246,16 @@ int main() {
 #endif
 
 #if USE_PANEL
+# if 1
+    test_slider->setAbsoluteValue( (0.5 + sin(test_slider_value) * 0.5) * 10.0f);
+    test_slider->needs_redraw = true;
+#endif
+
     panel.draw();
+    changing_slider->setAbsoluteValue( (0.5 + sin(test_slider_value) * 0.5) * 1000000.0f);
+    changing_slider->needs_redraw = true;
+    test_slider_value += 0.3;
+
 #endif
 
 #if USE_CONTAINER

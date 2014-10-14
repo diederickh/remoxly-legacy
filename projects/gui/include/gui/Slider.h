@@ -11,6 +11,7 @@
 
 #include <string>
 #include <cmath>
+//#include <sstream>
 #include <gui/Group.h>
 #include <gui/Render.h>
 #include <gui/IconButton.h>
@@ -151,7 +152,7 @@ void Slider<T>::position() {
 
 template<class T>
 void Slider<T>::create() {
-  
+
   num_w = 75;
   num_x = min_button.x - num_w - group->padding;
   text_w = w - (min_button.w + plus_button.w + num_w + 3 * group->padding);
@@ -177,7 +178,33 @@ template<class T>
 void Slider<T>::onCharPress(unsigned int key) {
 
   if(state & GUI_STATE_EDITABLE) {
+
     render->onCharPress(key);
+
+#if 0
+    /* Quickfix, enabling text input when ::create() is called every frame. */
+    /*
+      The problem here is that we're calling 'enableNumberInput()' every 
+       frame when ::create() is called every frame. This will disallow us
+       from adding keys to the input field because it will 'select()' the 
+       complete text -every- frame. We probably need another kind of function/state.
+    */
+    char ckey = static_cast<char>(key);
+
+    std::stringstream ss;
+    ss << value;
+    ss << ckey;
+    if (ckey == '.') {
+      ss << 0;
+    }
+    ss >> value;
+
+    render->onCharPress(key);
+    if (ckey == '.') {
+      render->onCharPress('0');
+    }
+#endif
+
   }
 }
 

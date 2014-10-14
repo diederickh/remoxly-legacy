@@ -273,6 +273,7 @@ void TextInput::onCharPress(unsigned int key) {
     return;
   }
 
+  printf("-- WRITING CHAR: %c\n", key);
   contents.insert(char_dx, 1, (char)key);
 
   moveCursorToRight();
@@ -282,7 +283,6 @@ void TextInput::onCharPress(unsigned int key) {
 void TextInput::onKeyPress(int key, int mods) {
 
   if(mode == TI_MODE_INPUT) {
-
     switch(key) {
       case TI_KEY_BACKSPACE: {
         removeCharacterAtPrevPosition();

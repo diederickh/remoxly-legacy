@@ -40,9 +40,6 @@ fi
 extern_path=${d}/../../../extern/${triplet}
 install_path=${d}/../../../install/${triplet}
 
-echo "NEED TO UPDATE THE GUI BUILD SCRIPT SO IT USES BUILD_*_DEPENDENCIES.SH"
-exit
-
 cd build.release
 cmake \
     -DCMAKE_BUILD_TYPE=Release \

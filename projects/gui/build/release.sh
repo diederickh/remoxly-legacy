@@ -37,11 +37,20 @@ elif [ "$(expr substr $(uname -s) 1 10)" = "MINGW32_NT" ]; then
     triplet="win-vs2012-x86_64"
 fi
 
-extern_path=${d}/../extern/${triplet}
+extern_path=${d}/../../../extern/${triplet}
 install_path=${d}/../../../install/${triplet}
 
 cd build.release
-cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${install_path} ${cmake_extra_vars} ../ 
+cmake \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=${install_path} \
+    -DEXTERN_LIB_DIR=${extern_path}/lib \
+    -DEXTERN_INC_DIR=${extern_path}/include \
+    -DEXTERN_SRC_DIR=${extern_path}/src \
+    -DTINYLIB_DIR=${d}/../../../build/sources/tinylib \
+    ${cmake_extra_vars} \
+    ../ 
+
 cmake --build . --target install --config Release
 
 if [ "$(uname)" == "Darwin" ] ; then 

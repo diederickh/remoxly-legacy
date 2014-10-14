@@ -1,13 +1,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#if defined(__linux) || defined(_WIN32)
-#  include <GLXW/glxw.h>
-#endif
-
 #include "App.h"
 
-#define GLFW_INCLUDE_GLCOREARB
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 #define ROXLU_USE_OPENGL
@@ -60,12 +56,10 @@ int main() {
   glfwMakeContextCurrent(win);
   glfwSwapInterval(1);
  
-#if defined(__linux) || defined(_WIN32)
-  if(glxwInit() != 0) {
-    printf("Error: cannot initialize glxw.\n");
-    ::exit(EXIT_FAILURE);
+  if (!gladLoadGL()) {
+    printf("Cannot load GL.\n");
+    exit(1);
   }
-#endif
 
   // ----------------------------------------------------------------
   // THIS IS WHERE YOU START CALLING OPENGL FUNCTIONS, NOT EARLIER!!

@@ -51,38 +51,50 @@ if(APPLE)
     )
 
   set(remoxly_extern_libs
-    ${extern_lib_dir}/libglfw3.a
-    ${extern_lib_dir}/libpng.a
-#      ${extern_lib_dir}/libjansson.a
-#      ${extern_lib_dir}/libwebsockets.a
-#      ${extern_lib_dir}/libssl.a
-#      ${extern_lib_dir}/libcrypto.a
+    ${EXTERN_LIB_DIR}/libglfw3.a
+    ${EXTERN_LIB_DIR}/libpng.a
+#      ${EXTERN_LIB_DIR}/libjansson.a
+#      ${EXTERN_LIB_DIR}/libwebsockets.a
+#      ${EXTERN_LIB_DIR}/libssl.a
+#      ${EXTERN_LIB_DIR}/libcrypto.a
      )
 
 elseif(UNIX)
 
-  list(APPEND app_sources
-    ${extern_source_dir}/GLXW/glxw.c
-    )
+  # 2014.10.11, using glad now.
+#  list(APPEND app_sources
+#    ${EXTERN_SRC_DIR}/GLXW/glxw.c
+#    )
+
+#  list(APPEND app_sources
+#    ${EXTERN_SRC_DIR}/glad.c
+#    )
   
   set(remoxly_app_libs
-    ${extern_lib_dir}/libglfw3.a
-    ${extern_lib_dir}/libpng16.a
-    ${extern_lib_dir}/libz.a
+    ${EXTERN_LIB_DIR}/libglfw3.a
+    ${EXTERN_LIB_DIR}/libpng.a
+    ${EXTERN_LIB_DIR}/libz.a
+    pthread
+    dl
+    rt
     GL
     X11
     Xxf86vm
     Xrandr
-    pthread
     dl
     Xi
+    Xcursor
+    Xinerama
+    udev                                   # libvideocapture
+    asound                                 # audio capture
     )
 
 elseif(WIN32)
 
-  list(APPEND remoxly_app_sources
-    ${extern_source_dir}/GLXW/glxw.c
-    )
+  # 2014.10.11, using glad now.
+  #list(APPEND remoxly_app_sources
+  #  ${EXTERN_SRC_DIR}/GLXW/glxw.c
+  #  )
 
   add_definitions(
     -DWIN32_LEAN_AND_MEAN
@@ -96,25 +108,26 @@ elseif(WIN32)
     )
 
   list(APPEND remoxly_extern_libs
-    ${extern_lib_dir}/glfw3.lib
-    ${extern_lib_dir}/libeay32.lib
-    ${extern_lib_dir}/ssleay32.lib
-    ${extern_lib_dir}/websockets_static.lib
+    ${EXTERN_LIB_DIR}/glfw3.lib
+# 2014.10.11, we disabled remoting (not sure if we're going to use websockets or osc)
+#    ${EXTERN_LIB_DIR}/libeay32.lib
+#    ${EXTERN_LIB_DIR}/ssleay32.lib
+#    ${EXTERN_LIB_DIR}/websockets_static.lib
     )
 
   if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 
     list(APPEND remoxly_extern_libs
-      ${extern_lib_dir}/libpng16_staticd.lib
-      ${extern_lib_dir}/zlibstaticd.lib
-      ${extern_lib_dir}/jansson_d.lib
+      ${EXTERN_LIB_DIR}/libpng12_staticd.lib
+      ${EXTERN_LIB_DIR}/zlibstaticd.lib
+      ${EXTERN_LIB_DIR}/jansson_d.lib
       )
   else()
 
     list(APPEND remoxly_extern_libs
-      ${extern_lib_dir}/libpng16_static.lib
-      ${extern_lib_dir}/zlibstatic.lib
-      ${extern_lib_dir}/jansson.lib
+      ${EXTERN_LIB_DIR}/libpng12_static.lib
+      ${EXTERN_LIB_DIR}/zlibstatic.lib
+#      ${EXTERN_LIB_DIR}/jansson.lib
       )
 
   endif()
@@ -122,25 +135,25 @@ elseif(WIN32)
 endif()
 
 set(remoxly_remote_extern_headers
-  ${extern_include_dir}/jansson_config.h
-  ${extern_include_dir}/jansson.h
-  ${extern_include_dir}/libwebsockets.h
-  ${extern_include_dir}/rapidxml_iterators.hpp
-  ${extern_include_dir}/rapidxml_print.hpp
-  ${extern_include_dir}/rapidxml_utils.hpp
-  ${extern_include_dir}/rapidxml.hpp    
-  ${extern_include_dir}/zconf.h
-  ${extern_include_dir}/zlib.h  
+  ${EXTERN_INC_DIR}/jansson_config.h
+  ${EXTERN_INC_DIR}/jansson.h
+  ${EXTERN_INC_DIR}/libwebsockets.h
+  ${EXTERN_INC_DIR}/rapidxml_iterators.hpp
+  ${EXTERN_INC_DIR}/rapidxml_print.hpp
+  ${EXTERN_INC_DIR}/rapidxml_utils.hpp
+  ${EXTERN_INC_DIR}/rapidxml.hpp    
+  ${EXTERN_INC_DIR}/zconf.h
+  ${EXTERN_INC_DIR}/zlib.h  
   )
 
 set(remoxly_remote_extern_ssl_headers
-  ${extern_include_dir}/openssl
+  ${EXTERN_INC_DIR}/openssl
   )
 
 if(WIN32)
   list(APPEND remoxly_remote_extern_headers
-    ${extern_include_dir}/gettimeofday.h
-    ${extern_include_dir}/websock-w32.h
+    ${EXTERN_INC_DIR}/gettimeofday.h
+    ${EXTERN_INC_DIR}/websock-w32.h
     )
 endif()
 
@@ -153,8 +166,8 @@ endif()
 #   find_library(fr_corevideo CoreVideo)
 # 
 #   set(app_libs
-#     ${extern_lib_dir}/libglfw3.a
-#     ${extern_lib_dir}/libpng.a
+#     ${EXTERN_LIB_DIR}/libglfw3.a
+#     ${EXTERN_LIB_DIR}/libpng.a
 #     ${fr_corefoundation}
 #     ${fr_cocoa}
 #     ${fr_opengl}
@@ -166,13 +179,13 @@ endif()
 # elseif(UNIX)
 # 
 #   list(APPEND app_sources
-#     ${extern_source_dir}/GLXW/glxw.c
+#     ${EXTERN_SRC_DIR}/GLXW/glxw.c
 #     )
 #   
 #   set(app_libs
-#     ${extern_lib_dir}/libglfw3.a
-#     ${extern_lib_dir}/libpng16.a
-#     ${extern_lib_dir}/libz.a
+#     ${EXTERN_LIB_DIR}/libglfw3.a
+#     ${EXTERN_LIB_DIR}/libpng16.a
+#     ${EXTERN_LIB_DIR}/libz.a
 #     GL
 #     X11
 #     Xxf86vm
@@ -193,13 +206,13 @@ endif()
 #  find_library(fr_corevideo CoreVideo)
 #
 #  set(app_libs
-#    ${extern_lib_dir}/libglfw3.a
-#    ${extern_lib_dir}/libwebsockets.a
-#    ${extern_lib_dir}/libssl.a
-#    ${extern_lib_dir}/libcrypto.a
-#    ${extern_lib_dir}/libjansson.a
-#    ${extern_lib_dir}/libuv.a
-#    ${extern_lib_dir}/libpng.a
+#    ${EXTERN_LIB_DIR}/libglfw3.a
+#    ${EXTERN_LIB_DIR}/libwebsockets.a
+#    ${EXTERN_LIB_DIR}/libssl.a
+#    ${EXTERN_LIB_DIR}/libcrypto.a
+#    ${EXTERN_LIB_DIR}/libjansson.a
+#    ${EXTERN_LIB_DIR}/libuv.a
+#    ${EXTERN_LIB_DIR}/libpng.a
 #    ${fr_foundation}
 #    ${fr_cs}
 #    ${fr_opengl}
@@ -218,7 +231,7 @@ endif()
 #if(WIN32)
 #
 #  list(APPEND app_sources
-#    ${extern_source_dir}/GLXW/glxw.c
+#    ${EXTERN_SRC_DIR}/GLXW/glxw.c
 #    )
 #
 #  add_definitions(
@@ -234,11 +247,11 @@ endif()
 ##   "/wd4305"
 #
 #  set(app_libs
-#    ${extern_lib_dir}/glfw3.lib
-#    ${extern_lib_dir}/libeay32.lib
-#    ${extern_lib_dir}/ssleay32.lib
-#    ${extern_lib_dir}/jansson.lib
-#    ${extern_lib_dir}/websockets_static.lib
+#    ${EXTERN_LIB_DIR}/glfw3.lib
+#    ${EXTERN_LIB_DIR}/libeay32.lib
+#    ${EXTERN_LIB_DIR}/ssleay32.lib
+#    ${EXTERN_LIB_DIR}/jansson.lib
+#    ${EXTERN_LIB_DIR}/websockets_static.lib
 #    Opengl32.lib
 #    ws2_32.lib
 #    psapi.lib
@@ -247,13 +260,13 @@ endif()
 #
 #  if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 #    list(APPEND app_libs  
-#      ${extern_lib_dir}/libpng16_staticd.lib
-#      ${extern_lib_dir}/zlibstaticd.lib
+#      ${EXTERN_LIB_DIR}/libpng16_staticd.lib
+#      ${EXTERN_LIB_DIR}/zlibstaticd.lib
 #      )
 #  else()
 #    list(APPEND app_libs  
-#      ${extern_lib_dir}/libpng16_static.lib
-#      ${extern_lib_dir}/zlibstatic.lib
+#      ${EXTERN_LIB_DIR}/libpng16_static.lib
+#      ${EXTERN_LIB_DIR}/zlibstatic.lib
 #      )
 #  endif()
 #
@@ -263,24 +276,24 @@ endif()
 # 
 #   # Used when packing the OF addon 
 #   set(remoxly_remote_extern_libs
-#     ${extern_lib_dir}/libjansson.a
-#     ${extern_lib_dir}/libwebsockets.a
-#     ${extern_lib_dir}/libssl.a
-#     ${extern_lib_dir}/libcrypto.a
+#     ${EXTERN_LIB_DIR}/libjansson.a
+#     ${EXTERN_LIB_DIR}/libwebsockets.a
+#     ${EXTERN_LIB_DIR}/libssl.a
+#     ${EXTERN_LIB_DIR}/libcrypto.a
 #     )
 # 
 #   set(remoxly_remote_extern_headers
-#     ${extern_include_dir}/jansson_config.h
-#     ${extern_include_dir}/jansson.h
-#     ${extern_include_dir}/libwebsockets.h
-#     ${extern_include_dir}/rapidxml_iterators.hpp
-#     ${extern_include_dir}/rapidxml_print.hpp
-#     ${extern_include_dir}/rapidxml_utils.hpp
-#     ${extern_include_dir}/rapidxml.hpp
+#     ${EXTERN_INC_DIR}/jansson_config.h
+#     ${EXTERN_INC_DIR}/jansson.h
+#     ${EXTERN_INC_DIR}/libwebsockets.h
+#     ${EXTERN_INC_DIR}/rapidxml_iterators.hpp
+#     ${EXTERN_INC_DIR}/rapidxml_print.hpp
+#     ${EXTERN_INC_DIR}/rapidxml_utils.hpp
+#     ${EXTERN_INC_DIR}/rapidxml.hpp
 #     )
 # 
 #   set(remoxly_remote_extern_ssl_headers
-#     ${extern_include_dir}/openssl
+#     ${EXTERN_INC_DIR}/openssl
 #     )
 # 
 # endif()
@@ -294,8 +307,8 @@ endif()
 #   find_library(fr_corevideo CoreVideo)
 # 
 #   set(app_libs
-#     ${extern_lib_dir}/libglfw3.a
-#     ${extern_lib_dir}/libpng.a
+#     ${EXTERN_LIB_DIR}/libglfw3.a
+#     ${EXTERN_LIB_DIR}/libpng.a
 #     ${fr_corefoundation}
 #     ${fr_cocoa}
 #     ${fr_opengl}
@@ -307,13 +320,13 @@ endif()
 # elseif(UNIX)
 # 
 #   list(APPEND app_sources
-#     ${extern_source_dir}/GLXW/glxw.c
+#     ${EXTERN_SRC_DIR}/GLXW/glxw.c
 #     )
 #   
 #   set(app_libs
-#     ${extern_lib_dir}/libglfw3.a
-#     ${extern_lib_dir}/libpng16.a
-#     ${extern_lib_dir}/libz.a
+#     ${EXTERN_LIB_DIR}/libglfw3.a
+#     ${EXTERN_LIB_DIR}/libpng16.a
+#     ${EXTERN_LIB_DIR}/libz.a
 #     GL
 #     X11
 #     Xxf86vm
@@ -328,7 +341,7 @@ endif()
 # if(WIN32)
 # 
 #   list(APPEND app_sources
-#     ${extern_source_dir}/GLXW/glxw.c
+#     ${EXTERN_SRC_DIR}/GLXW/glxw.c
 #     )
 # 
 #   add_definitions(
@@ -336,7 +349,7 @@ endif()
 #     )
 # 
 #   set(app_libs
-#     ${extern_lib_dir}/glfw3.lib
+#     ${EXTERN_LIB_DIR}/glfw3.lib
 # 
 #     Opengl32.lib
 #     ws2_32.lib
@@ -346,13 +359,13 @@ endif()
 # 
 #   if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 #     list(APPEND app_libs  
-#       ${extern_lib_dir}/libpng16_staticd.lib
-#       ${extern_lib_dir}/zlibstaticd.lib
+#       ${EXTERN_LIB_DIR}/libpng16_staticd.lib
+#       ${EXTERN_LIB_DIR}/zlibstaticd.lib
 #       )
 #   else()
 #     list(APPEND app_libs  
-#       ${extern_lib_dir}/libpng16_static.lib
-#       ${extern_lib_dir}/zlibstatic.lib
+#       ${EXTERN_LIB_DIR}/libpng16_static.lib
+#       ${EXTERN_LIB_DIR}/zlibstatic.lib
 #       )
 #   endif()
 # 
@@ -368,8 +381,8 @@ endif()
 #   find_library(fr_corevideo CoreVideo)
 # 
 #   set(app_libs
-#     ${extern_lib_dir}/libglfw3.a
-#     ${extern_lib_dir}/libpng.a
+#     ${EXTERN_LIB_DIR}/libglfw3.a
+#     ${EXTERN_LIB_DIR}/libpng.a
 #     ${fr_corefoundation}
 #     ${fr_cocoa}
 #     ${fr_opengl}
@@ -381,13 +394,13 @@ endif()
 # elseif(UNIX)
 # 
 #   list(APPEND app_sources
-#     ${extern_source_dir}/GLXW/glxw.c
+#     ${EXTERN_SRC_DIR}/GLXW/glxw.c
 #     )
 #   
 #   set(app_libs
-#     ${extern_lib_dir}/libglfw3.a
-#     ${extern_lib_dir}/libpng16.a
-#     ${extern_lib_dir}/libz.a
+#     ${EXTERN_LIB_DIR}/libglfw3.a
+#     ${EXTERN_LIB_DIR}/libpng16.a
+#     ${EXTERN_LIB_DIR}/libz.a
 #     GL
 #     X11
 #     Xxf86vm
@@ -402,7 +415,7 @@ endif()
 # if(WIN32)
 # 
 #   list(APPEND app_sources
-#     ${extern_source_dir}/GLXW/glxw.c
+#     ${EXTERN_SRC_DIR}/GLXW/glxw.c
 #     )
 # 
 #   add_definitions(
@@ -410,7 +423,7 @@ endif()
 #     )
 # 
 #   set(app_libs
-#     ${extern_lib_dir}/glfw3.lib
+#     ${EXTERN_LIB_DIR}/glfw3.lib
 #     Opengl32.lib
 #     ws2_32.lib
 #     psapi.lib
@@ -419,13 +432,13 @@ endif()
 # 
 #   if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 #     list(APPEND app_libs  
-#       ${extern_lib_dir}/libpng16_staticd.lib
-#       ${extern_lib_dir}/zlibstaticd.lib
+#       ${EXTERN_LIB_DIR}/libpng16_staticd.lib
+#       ${EXTERN_LIB_DIR}/zlibstaticd.lib
 #       )
 #   else()
 #     list(APPEND app_libs  
-#       ${extern_lib_dir}/libpng16_static.lib
-#       ${extern_lib_dir}/zlibstatic.lib
+#       ${EXTERN_LIB_DIR}/libpng16_static.lib
+#       ${EXTERN_LIB_DIR}/zlibstatic.lib
 #       )
 #   endif()
 # 

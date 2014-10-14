@@ -28,9 +28,8 @@ namespace rx {
       render->writeIcon(x + group->xindent, y + (group->yindent - 2) + bt_click_offset, GUI_ICON_TIMES_CIRCLE, group->label_color);
     }
 
-    render->writeText(x + group->xindent + 20, y + (group->yindent - 2) + bt_click_offset, label, group->label_color);
+    render->writeText(x + group->xindent + 20, y + group->yindent + bt_click_offset, label, group->label_color);
   }
-
 
   void Toggle::onMousePress(float mx, float my, int button, int modkeys) {
 

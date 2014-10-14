@@ -11,6 +11,7 @@
 
 #include <string>
 #include <cmath>
+//#include <sstream>
 #include <gui/Group.h>
 #include <gui/Render.h>
 #include <gui/IconButton.h>
@@ -136,12 +137,6 @@ void Slider<T>::setGroup(Group* g) {
 
   min_button.setGroup(g);
   plus_button.setGroup(g);
-
-  /* @todo experimental */
-  //  add(&min_button, g);
-  //  add(&plus_button, g);
-  /* @todo end experimental */
-
 }
 
 template<class T>
@@ -183,7 +178,33 @@ template<class T>
 void Slider<T>::onCharPress(unsigned int key) {
 
   if(state & GUI_STATE_EDITABLE) {
+
     render->onCharPress(key);
+
+#if 0
+    /* Quickfix, enabling text input when ::create() is called every frame. */
+    /*
+      The problem here is that we're calling 'enableNumberInput()' every 
+       frame when ::create() is called every frame. This will disallow us
+       from adding keys to the input field because it will 'select()' the 
+       complete text -every- frame. We probably need another kind of function/state.
+    */
+    char ckey = static_cast<char>(key);
+
+    std::stringstream ss;
+    ss << value;
+    ss << ckey;
+    if (ckey == '.') {
+      ss << 0;
+    }
+    ss >> value;
+
+    render->onCharPress(key);
+    if (ckey == '.') {
+      render->onCharPress('0');
+    }
+#endif
+
   }
 }
 
@@ -285,7 +306,7 @@ void Slider<T>::setMousePositionValue(float mx) {
   // @todo - in Slider, we need to softly change the values when shift or right mouse button is pressed.
   float slide_v = 0.0f;
   int slide_x = 0;
-  
+
   slide_x = gui_clamp<int>((int)mx, text_x, (text_x + text_w));
   slide_v = float(slide_x - text_x) / text_w;
 
@@ -314,16 +335,12 @@ bool Slider<T>::needsRedraw() {
 
 template<class T>
 void Slider<T>::stepMin() {
-
-  value -= step;
-  setAbsoluteValue(value);
+  setAbsoluteValue(value - step);
 }
 
 template<class T>
 void Slider<T>::stepPlus() {
-
-  value += step;
-  setAbsoluteValue(value);
+  setAbsoluteValue(value + step);
 }
 
 template<class T> 

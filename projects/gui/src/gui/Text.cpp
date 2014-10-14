@@ -10,7 +10,7 @@ Text::Text(std::string label, std::string& value, int textw)
   ,text_x(0)
   ,text_w(textw)
 {
-  h = 22;
+  h = GUI_WIDGET_DEFAULT_HEIGHT;
 }
 
 void Text::create() {

@@ -85,10 +85,10 @@ namespace rx {
     Slider<float>* addSliderFloat(std::string label, float& value, float minv, float maxv, float stepv);
     ColorRGB* addColor(std::string label, float* rgb, int ncolors = 50, float sat = 0.8, float val = 1.0);
     Button* addButton(std::string label, int id, unsigned int icon, gui_button_callback cb, void* user, int iconx = 0, int icony = 0);
-    Text* addText(std::string label, std::string& value, int textWidth = 220);
+    Text* addText(std::string label, std::string& value, int textWidth = 180);
 	GraphHistory* addGraphHistory(std::string label, int size, float minv, float maxv, float height = 166);
 	Texture* addTexture(std::string label, TextureInfo* texinfo);
-    Separator* addSeparator( int height = 22 );
+    Separator* addSeparator( int height = GUI_WIDGET_DEFAULT_HEIGHT );
 
     /* interaction */
     void onCharPress(unsigned int key);         

@@ -17,7 +17,7 @@ namespace rx {
     this->style = style;
     menu.style = style;
 
-    h = 22;
+    h = GUI_WIDGET_DEFAULT_HEIGHT;
     icon_button.icon_x = 1;
     icon_button.icon_y = 0;
     menu.hide();

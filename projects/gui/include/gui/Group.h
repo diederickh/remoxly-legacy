@@ -100,7 +100,7 @@ namespace rx {
 
   inline void Group::showHeader() {
     show_header = true;
-    h = 22;
+    h = GUI_WIDGET_DEFAULT_HEIGHT;
   }
 
   inline void Group::hideHeader() {

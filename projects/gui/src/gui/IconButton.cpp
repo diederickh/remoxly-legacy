@@ -19,8 +19,8 @@ IconButton::IconButton(int callid, unsigned int icon, gui_button_callback cb, vo
 {
   this->style = style;
 
-  w = 22;
-  h = 22;
+  w = GUI_WIDGET_DEFAULT_HEIGHT;
+  h = GUI_WIDGET_DEFAULT_HEIGHT;
 }
 
 void IconButton::setGroup(Group* g) {

@@ -11,7 +11,7 @@ Panel::Panel(Render* r, int height)
 {
   x = 10;
   y = 10;
-  w = 275;
+  w = 250;
   h = height;
   originalHeight = h;
   render = r;

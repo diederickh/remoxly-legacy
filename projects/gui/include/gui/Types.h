@@ -4,6 +4,8 @@
 #define GUI_IS_INSIDE_WIDGET(wid, mx, my) ((mx >= wid->x) && (mx <= (wid->x + wid->w)) && (my >= wid->y)  && (my <= (wid->y + wid->h)))
 #define GUI_IS_INSIDE(mx, my, x, y, w, h) ((mx >= x) && (mx <= (x+w)) && (my >= y) && (my <= (y+h)))
 
+#define GUI_WIDGET_DEFAULT_HEIGHT			 19
+
 #define GUI_TYPE_NONE                        0
 #define GUI_TYPE_GROUP                       1          /* The Group instance. */
 #define GUI_TYPE_SLIDER_INT                  2          /* Slider for integer values. */
@@ -20,6 +22,7 @@
 #define GUI_TYPE_MENU                        13         /* Menu */ 
 #define GUI_TYPE_CONTAINER                   14         /* Like `Group` but doesn't draw anything itself. */ 
 #define GUI_TYPE_SEPARATOR					 15			/* A Separator */
+#define GUI_TYPE_GRAPH_HISTORY				 16			/* A Graph History */
 
 #define GUI_DIRECTION_UP                     1          /* Can be used by e.g. menus, selects, etc.. can be used to tell that a popup needs to popup to the up, down, right, left. */ 
 #define GUI_DIRECTION_DOWN                   2          /* "" */     

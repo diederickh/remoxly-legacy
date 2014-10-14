@@ -18,7 +18,7 @@ namespace rx {
 class Separator : public Widget {
 
  public:
-  Separator( int height = 22 );
+  Separator( int height = 14 );
   void create();
 
  public:

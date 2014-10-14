@@ -13,7 +13,7 @@ ColorRGB::ColorRGB(std::string label, float* rgb, int ncolors, float sat, float 
   ,sat(sat)
   ,val(val)
 {
-  h = 22;
+  h = GUI_WIDGET_DEFAULT_HEIGHT;
 
   for(int i = 0; i < ncolors; ++i) {
     float p = float(i)/(ncolors-1);
@@ -39,7 +39,7 @@ void ColorRGB::create() {
   ColorRect& curr_rect = colors[color_dx];
   float curr_col[] = { curr_rect.rgba[0], curr_rect.rgba[1], curr_rect.rgba[2], 1.0 } ;
 
-  render->addRectangle(x + w - 22, y, 22, h, curr_col);
+  render->addRectangle(x + w - GUI_WIDGET_DEFAULT_HEIGHT, y, GUI_WIDGET_DEFAULT_HEIGHT, h, curr_col);
   render->writeText(x + group->xindent, y + group->yindent, label, group->label_color);
 }
 
@@ -74,8 +74,8 @@ void ColorRGB::setMousePositionValue(int mx) {
   float pos_v = 0.0f;
   int pos_x = 0;
   
-  pos_x = gui_clamp<int>((int)mx, x, (x + (w-22)));
-  pos_v = 1.0 - float((x + w - 22) - pos_x) / (w-22);
+  pos_x = gui_clamp<int>((int)mx, x, (x + (w-GUI_WIDGET_DEFAULT_HEIGHT)));
+  pos_v = 1.0 - float((x + w - GUI_WIDGET_DEFAULT_HEIGHT) - pos_x) / (w-GUI_WIDGET_DEFAULT_HEIGHT);
 
   setPercentageValue(pos_v);
   needs_redraw = true ;

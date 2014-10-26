@@ -125,7 +125,7 @@ elseif(WIN32)
   else()
 
     list(APPEND remoxly_extern_libs
-      ${EXTERN_LIB_DIR}/libpng12_static.lib
+      ${EXTERN_LIB_DIR}/libpng16_static.lib
       ${EXTERN_LIB_DIR}/zlibstatic.lib
 #      ${EXTERN_LIB_DIR}/jansson.lib
       )

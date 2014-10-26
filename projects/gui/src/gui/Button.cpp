@@ -49,7 +49,6 @@ namespace rx {
       render->addRoundedShadowLine(x + 0.5, y + 1.0, w, h, 6.0, group->fg_color, GUI_CORNER_BOTTOM);
     }
 
-
     render->writeText(x + group->xindent, y + group->yindent + bt_click_offset, label, group->getButtonLabelStateColor(this));
   }
 

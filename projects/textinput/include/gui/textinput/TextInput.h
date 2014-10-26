@@ -273,7 +273,6 @@ void TextInput::onCharPress(unsigned int key) {
     return;
   }
 
-  printf("-- WRITING CHAR: %c\n", key);
   contents.insert(char_dx, 1, (char)key);
 
   moveCursorToRight();

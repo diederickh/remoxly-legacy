@@ -1140,7 +1140,7 @@ namespace rx {
         vertices_pc.push_back(GuiVertexPC(x, y + h, color));
       }
 
-      /* back to botom right again to close loop. */
+      /* back to bottom right again to close loop. */
       if (corners & GUI_CORNER_BOTTOM_RIGHT) {
         rx = x + w - radius;
         ry = y + h - radius;

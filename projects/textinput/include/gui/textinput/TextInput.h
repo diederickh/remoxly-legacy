@@ -79,10 +79,10 @@ static const char* TEXT_INPUT_VS = ""
   "uniform mat4 u_pm;"
   "uniform vec4 u_pos;"
   "const vec2[4] pos = vec2[]("
-  "      vec2(1.0, 0.0), "
   "      vec2(0.0, 0.0), "
-  "      vec2(1.0, 1.0), "
-  "      vec2(0.0, 1.0)  "
+  "      vec2(0.0, 1.0), "
+  "      vec2(1.0, 0.0), "
+  "      vec2(1.0, 1.0)  "
   ");"
   "void main() {"
   "  vec2 p = pos[gl_VertexID];"
@@ -201,9 +201,7 @@ TextInput::TextInput(float x, float y, float w, BitmapFont& font)
     glGenVertexArrays(1, &vao);
 
 #if BITMAP_FONT_GL == BITMAP_FONT_GL2
-    printf("@todo I change the winding order of these vertices, check if the ones used (new, second) work with culling.\n");
-    // float caret_pos[] = { 0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0, 1.0 } ;
-    float caret_pos[] = { 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0 } ;
+    float caret_pos[] = { 0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0, 1.0 } ;
 
     glBindVertexArray(vao);
     glGenBuffers(1, &vbo);
@@ -279,7 +277,6 @@ void TextInput::onCharPress(unsigned int key) {
     return;
   }
 
-  printf("-- WRITING CHAR: %c\n", key);
   contents.insert(char_dx, 1, (char)key);
 
   moveCursorToRight();
@@ -289,6 +286,7 @@ void TextInput::onCharPress(unsigned int key) {
 void TextInput::onKeyPress(int key, int mods) {
 
   if(mode == TI_MODE_INPUT) {
+
     switch(key) {
 	  case TI_NATIVE_KEY_BACKSPACE:
       case TI_KEY_BACKSPACE: {
@@ -378,15 +376,7 @@ void TextInput::updateCursor() {
     }
 
     Character ch;
-
-    /*
-      @todo we need to remove this, but leaving it here as I guess this -1 was 
-      important. It was like this before 2014.10.09, curious why they -1, just a bug? 
-      When using -1, the wrong width is selected. W/o -1 it works good.
-    */
-    /* if(font.getChar(contents[char_dx - 1], ch)) { */
-
-    if(font.getChar(contents[char_dx], ch)) {
+    if(font.getChar(contents[ char_dx ], ch)) {
       cursor_w = ch.xadvance; 
     }
     else {
@@ -462,7 +452,7 @@ void TextInput::removeCharacterAtCurrentPosition() {
 void TextInput::removeCharacterAtPrevPosition() {
 
   if(canMoveCursorToLeft()) {
-    contents.erase(contents.begin() + (char_dx - 1));
+    contents.erase(contents.begin() + (char_dx-1));
     updateContents();
     moveCursorToLeft();
   }
@@ -507,7 +497,8 @@ void TextInput::draw() {
   }
 
   //glEnable(GL_BLEND);
-  glBlendFunc(GL_ONE, GL_ONE);
+  glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA); // premultiplied alpha
+  //glBlendFunc(GL_ONE, GL_ONE);
 
   glBindVertexArray(vao);
   glUseProgram(prog);
@@ -516,8 +507,8 @@ void TextInput::draw() {
     glUniform4f(u_pos, x + cursor_x, y, cursor_w, font.line_height);
   }
   else if(mode == TI_MODE_SELECT) {
-    int m = (align == BITMAP_FONT_ALIGN_RIGHT) ? -content_w : 0;
-    glUniform4f(u_pos, x + m, y, content_w, font.line_height);
+    int m = (align == BITMAP_FONT_ALIGN_RIGHT) ? -1 : 1;
+    glUniform4f(u_pos, x, y, content_w * m, font.line_height);
   }
 
   glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);

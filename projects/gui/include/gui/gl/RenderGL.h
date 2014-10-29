@@ -189,7 +189,7 @@ namespace rx {
     void print();
 
   public:
-    float pos[2];
+    float pos[4];
     float color[4];
   };
 
@@ -206,8 +206,8 @@ namespace rx {
     const float* ptr() { return &pos[0]; } 
 
   public:
-    float pos[2];
-    float tex[2];
+    float pos[4];
+    float tex[4];
   };
 
   /* -------------------------------------------------------------------------------------------------------------- */
@@ -294,6 +294,7 @@ namespace rx {
     void addRoundedRectangle(float x, float y, float w, float h, float radius, float* color, bool filled = true, float shadetop = 0.10f, float shadebot = -0.10f, int corners = GUI_CORNER_ALL); /* Draw a shaded rounded rectangle. shadetop and shadebot works the same as `addRectangle`. */
     void addRoundedShadowLine(float x, float y, float w, float h, float radius, float* color, int corners);
     void setLayer(int layer);                                                                                                                                                   /* Set the active layer to draw on. Layer 0 is the bottom layer, on which most elements are drawn. This allowed you to create overlays. Though, make sure that you don't create too many different layers because each font needs some GL resources. */ 
+	void addLineStrip( int size, float* points, float* color );
 
     /* Font */
     void enableTextInput(float x, float y, float maxw, std::string value, float* color); 
@@ -513,6 +514,10 @@ namespace rx {
       glUniformMatrix4fv(glGetUniformLocation(prog_pt_rect, "u_pm"), 1, GL_FALSE, pm);
       glUniform1i(glGetUniformLocation(prog_pt_rect, "u_tex"), 0);
 
+	  vertices_pc.reserve( 1<<16 );
+	  vertices_pt.reserve( 1<<16 );
+	  texture_draws.reserve( 1<<4 );
+
       is_initialized = true;
     }
 
@@ -526,8 +531,8 @@ namespace rx {
     glEnableVertexAttribArray(0); /* pos */
     glEnableVertexAttribArray(1); /* color */
 
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(GuiVertexPC), (GLvoid*)0); /* pos */
-    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(GuiVertexPC), (GLvoid*)8); /* col */
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(GuiVertexPC), (GLvoid*)0); /* pos */
+    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(GuiVertexPC), (GLvoid*)16); /* col */
 
     /* pos + texcoord vao,vbo */
     glGenVertexArrays(1, &vao_pt);
@@ -539,8 +544,8 @@ namespace rx {
     glEnableVertexAttribArray(0); /* pos */
     glEnableVertexAttribArray(1); /* texcoord */
 
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(GuiVertexPT), (GLvoid*)0); /* pos */
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(GuiVertexPT), (GLvoid*)8); /* texcoord */
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(GuiVertexPT), (GLvoid*)0); /* pos */
+    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(GuiVertexPT), (GLvoid*)16); /* texcoord */
 
     /* Create the bottom layer. */
     setLayer(0);
@@ -609,18 +614,19 @@ namespace rx {
 
   void RenderGL::draw() {
 
-    glEnable(GL_BLEND);
+    //glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     if (vertices_pc.size()) {
 
-      RenderLayer* lyr = NULL;
+	  RenderLayer* lyr = NULL;
+
+	  glUseProgram(prog_pc);
+	  glBindVertexArray(vao_pc);
+
       std::map<int, RenderLayer*>::iterator it = layers.begin();
 
       while (it != layers.end()) {
-
-        glUseProgram(prog_pc);
-        glBindVertexArray(vao_pc);
 
         lyr = it->second;
 
@@ -642,8 +648,7 @@ namespace rx {
       }
     }
 
-    glDisable(GL_BLEND);
-
+	//glDisable( GL_BLEND );
 
     /*
       We still need to implement (or remove) the texture draws for the layered feature. 
@@ -965,12 +970,12 @@ namespace rx {
 
     /* Calculate the sin/cos values. */
     /* @todo we could cache the output of sin/cos to optimize a bit. */
-    std::vector<float> points;
+    std::vector<float> points( (resolution+1) * 2 );
     for (int i = 0; i <= resolution; ++i) {
       ca = radius * cos(angle);
       sa = radius * sin(angle);
-      points.push_back(ca);
-      points.push_back(sa);
+      points[ i*2 ] = ca;
+      points[ i*2+1 ] = sa;
       angle += (HALF_PI / resolution);
     }
 
@@ -1173,12 +1178,12 @@ namespace rx {
 
     /* Calculate the sin/cos values. */
     /* @todo we could cache the output of sin/cos to optimize a bit. */
-    std::vector<float> points;
+    std::vector<float> points( (resolution+1) * 2 );
     for (int i = 0; i <= resolution; ++i) {
       ca = radius * cos(angle);
       sa = radius * sin(angle);
-      points.push_back(ca);
-      points.push_back(sa);
+      points[ i*2 ] = ca;
+      points[ i*2+1 ] = sa;
       angle += (HALF_PI / resolution);
     }
 
@@ -1220,6 +1225,22 @@ namespace rx {
     needs_update_pc = true;
   }
 
+	void RenderGL::addLineStrip(int size, float* points, float* color )
+	{
+		layer->fg_offsets.push_back( vertices_pc.size() );
+
+		for( int i=0; i<size; i++ )
+		{
+			float x = points[ i * 2 + 0 ];
+			float y = points[ i * 2 + 1 ];
+			GuiVertexPC p( x, y, color );
+			vertices_pc.push_back( p );
+		}
+
+		layer->fg_counts.push_back(vertices_pc.size() - layer->fg_offsets.back());
+		needs_update_pc = true;
+	}
+
   /* -------------------------------------------------------------------------------------------------------------- */
 
   GuiVertexPC::GuiVertexPC() {
@@ -1240,6 +1261,8 @@ namespace rx {
   void GuiVertexPC::setPos(float x, float y) {
     pos[0] = x;
     pos[1] = y;
+	pos[2] = 0.0f;
+	pos[3] = 1.0f;
   }
 
   void GuiVertexPC::setColor(float r, float g, float b, float a) {
@@ -1268,11 +1291,15 @@ namespace rx {
   void GuiVertexPT::setPos(float x, float y) {
     pos[0] = x;
     pos[1] = y;
+	pos[2] = 0.0f;
+	pos[3] = 1.0f;
   }
 
   void GuiVertexPT::setTexCoord(float u, float v) {
     tex[0] = u;
     tex[1] = v;
+	tex[2] = 0.0f;
+	tex[3] = 0.0f;
   }
 
   /* -------------------------------------------------------------------------------------------------------------- */

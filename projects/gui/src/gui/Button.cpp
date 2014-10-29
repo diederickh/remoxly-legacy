@@ -15,7 +15,7 @@ namespace rx {
 
     this->style = style;
 
-    h = 22;
+    h = GUI_WIDGET_DEFAULT_HEIGHT;
 
     if(iconx) {
       icon_button.icon_x = iconx;

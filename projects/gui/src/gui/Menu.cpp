@@ -14,7 +14,7 @@ namespace rx {
     ,cb(cb)
     ,user(user)
   {
-    h = 22;
+    h = GUI_WIDGET_DEFAULT_HEIGHT;
     popup_height = options.size() * h;
   }
 

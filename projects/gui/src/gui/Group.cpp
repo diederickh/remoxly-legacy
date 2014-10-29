@@ -4,6 +4,7 @@
 #endif
 #include <gui/Utils.h>
 #include <gui/Group.h>
+#include <gui/Panel.h>
 
 namespace rx { 
 
@@ -36,8 +37,8 @@ namespace rx {
     ,padding(0)
     ,xindent(7)
     ,yindent(6)
-    ,close_button(0, GUI_ICON_CARET_DOWN, group_close_click, this, GUI_CORNER_RIGHT)
-    ,open_button(0, GUI_ICON_CARET_RIGHT, group_open_click, this, GUI_CORNER_RIGHT)
+    ,close_button(0, GUI_ICON_CARET_DOWN, group_close_click, this, GUI_STYLE_NONE ) //GUI_CORNER_RIGHT)
+    ,open_button(0, GUI_ICON_CARET_RIGHT, group_open_click, this, GUI_STYLE_NONE ) //GUI_CORNER_RIGHT)
     ,shade_top(0.1f)
     ,shade_bottom(-0.1f)
   {
@@ -51,7 +52,9 @@ namespace rx {
     /* Initialize with some default colors @todo, we could simply put this colors directly in setColors. */
     float theme_fg_color[] = { 0.6, 0.6, 0.6, 1.0};
     float theme_bg_color[] = { 0.5351, 0.5351, 0.5351, 1.0 };
-    float theme_hl_color[] = { 0.394, 0.0f, 0.917, 1.0 };
+    float theme_hl_color[] = { 0.1394f, 0.1394f, 0.1394f, 1.0f }; 
+    //float theme_hl_color[] = { 0.94f, 0.94f, 0.94f, 1.0f }; 
+// 	float theme_hl_color[] = { 0.394, 0.0f, 0.917, 1.0 };
     setColors(theme_bg_color, theme_fg_color, theme_hl_color);
 
     close_button.setGroup(this);
@@ -70,10 +73,14 @@ namespace rx {
     gui_fill_color(fg[0], fg[1], fg[2], fg[3], fg_color);
     gui_fill_color(fg[0], fg[1], fg[2], fg[3], button_color);
     gui_fill_color(highlight[0], highlight[1], highlight[2], highlight[3], highlight_color);
-    gui_fill_color(0.337, 0.502, 0.761, 1.0, selected_color); /* blue */
-    gui_fill_color(0.247, 0.257, 0.247, 1.0, header_color);   /* gray */
-    gui_fill_color(0.706, 0.706, 0.706, 1.0, text_bg_color);  /* light gray */
-    gui_fill_color(0.098, 0.098, 0.098, 0.80, line_color);    /* blackish */
+    gui_fill_color( 0.864f, 0.864f, 0.864f, 1.0, selected_color);
+    gui_fill_color( 0.247, 0.257, 0.247, 1.0, header_color);
+    gui_fill_color( 0.706, 0.706, 0.706, 1.0, text_bg_color);
+	gui_fill_color( 0.098, 0.098, 0.098, 0.80, line_color);
+//     gui_fill_color(0.337, 0.502, 0.761, 1.0, selected_color); /* blue */
+//     gui_fill_color(0.247, 0.257, 0.247, 1.0, header_color);   /* gray */
+//     gui_fill_color(0.706, 0.706, 0.706, 1.0, text_bg_color);  /* light gray */
+//     gui_fill_color(0.098, 0.098, 0.098, 0.80, line_color);    /* blackish */
   }
 
   float* Group::getStateColor(Widget* w, int flag, float* off, float* on) {
@@ -153,8 +160,6 @@ namespace rx {
 
     int curr_x = x;
     int curr_y = y + h + padding;
-    int el_w = 0;
-    int el_h = 0;
     int count = 0;
 
     for(std::vector<Widget*>::iterator it = children.begin(); it != children.end(); ++it) {

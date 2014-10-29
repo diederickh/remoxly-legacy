@@ -10,7 +10,7 @@ Text::Text(std::string label, std::string& value, int textw)
   ,text_x(0)
   ,text_w(textw)
 {
-  h = 22;
+  h = GUI_WIDGET_DEFAULT_HEIGHT;
 }
 
 void Text::create() {
@@ -40,12 +40,16 @@ void Text::onCharPress(unsigned int key) {
 
 void Text::onKeyPress(int key, int modkeys) {
   if(state & GUI_STATE_EDITABLE) {
-    if(key == GUI_KEY_ENTER) {
-      disableInputAndCopyValue();
-    }
-    else {
-      render->onKeyPress(key, modkeys);
-    }
+	  switch( key )
+	  {
+	  case GUI_KEY_ENTER:
+	  case GUI_NATIVE_KEY_ENTER:
+	      disableInputAndCopyValue();
+		  break;
+	  default:
+	      render->onKeyPress(key, modkeys);
+		  break;
+	  }
   }
 }
 

@@ -17,7 +17,7 @@ namespace rx {
     this->style = style;
     menu.style = style;
 
-    h = 22;
+    h = GUI_WIDGET_DEFAULT_HEIGHT;
     icon_button.icon_x = 1;
     icon_button.icon_y = 0;
     menu.hide();
@@ -34,7 +34,6 @@ namespace rx {
     int bt_click_offset = 0;
     int corn_sel = style;
     int corn_off = 0;
-    int corn_icon = icon_button.style;
     float* label_color = group->label_color;
 
     corn_sel = (style & ~GUI_CORNER_RIGHT);

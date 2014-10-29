@@ -52,6 +52,8 @@
 #include <gui/Slider.h>
 #include <gui/Storage.h>
 #include <gui/Text.h>
+#include <gui/Separator.h>
+#include <gui/GraphHistory.h>
 #include <gui/Texture.h>
 #include <gui/Toggle.h>
 #include <gui/Types.h>
@@ -76,15 +78,17 @@ namespace rx {
     void resize(int w, int h);
 
     /* widgets */
-    Panel* addPanel(int h = 300);
+    Panel* addPanel(int h = 500);
     Group* addGroup(std::string label);
     Toggle* addToggle(std::string label, bool& value);
     Slider<int>* addSliderInt(std::string label, int& value, int minv, int maxv, int stepv);
     Slider<float>* addSliderFloat(std::string label, float& value, float minv, float maxv, float stepv);
     ColorRGB* addColor(std::string label, float* rgb, int ncolors = 50, float sat = 0.8, float val = 1.0);
     Button* addButton(std::string label, int id, unsigned int icon, gui_button_callback cb, void* user, int iconx = 0, int icony = 0);
-    Text* addText(std::string label, std::string& value, int textWidth = 220);
-    Texture* addTexture(std::string label, TextureInfo* texinfo);
+    Text* addText(std::string label, std::string& value, int textWidth = 180);
+	GraphHistory* addGraphHistory(std::string label, int size, float minv, float maxv, float height = 166);
+	Texture* addTexture(std::string label, TextureInfo* texinfo);
+    Separator* addSeparator( int height = GUI_WIDGET_DEFAULT_HEIGHT );
 
     /* interaction */
     void onCharPress(unsigned int key);         
@@ -245,6 +249,23 @@ namespace rx {
     Texture* t = new Texture(label, texinfo);
     curr_group->add(t);
 
+    return t;
+  }
+
+  Separator* Remoxly::addSeparator(int height)
+  {
+	REMOXLY_CHECK_GROUP("Error: no group added, cannot add a texture.\n");
+	Separator* s = new Separator( height );
+	curr_group->add( s );
+	return s;
+  }
+
+  GraphHistory* Remoxly::addGraphHistory(std::string label, int size, float minv, float maxv, float height) {
+  
+    REMOXLY_CHECK_GROUP("Error: no group added, cannot add a graph history input.\n");
+  
+    GraphHistory* t = new GraphHistory(label, size, minv, maxv, height );
+    curr_group->add(t);
     return t;
   }
 

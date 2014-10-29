@@ -13,7 +13,7 @@ void gui_fill_color(float r, float g, float b, float a, float* rgba) {
   rgba[3] = a;
 }
 
-std::string gui_cleanup_string(std::string str) {
+std::string gui_cleanup_string(const std::string& str) {
 
   std::string result;
   bool was_underscore = false;
@@ -21,7 +21,7 @@ std::string gui_cleanup_string(std::string str) {
   for(size_t i = 0; i < str.size(); ++i) {
 
     if(std::isalnum(str[i])) {
-      result.push_back(str[i]);
+      result.push_back( ::tolower( str[i] ) );
       was_underscore = false;
     }
     else if(!was_underscore && i < (str.size() - 1)){
@@ -30,36 +30,22 @@ std::string gui_cleanup_string(std::string str) {
     }
   }
 
-  std::transform(result.begin(), result.end(), result.begin(), ::tolower);
-  
   return result;
 }
 
-int gui_string_to_int(std::string str) {
+int gui_string_to_int(const std::string& str) {
 
-  int result = 0;
-  std::stringstream ss;
-  ss << str;
-  ss >> result;
-  return result;
+	return atoi( str.c_str() );
 }
 
-float gui_string_to_float(std::string str) {
+float gui_string_to_float(const std::string& str) {
 
-  float result = 0.0f;
-  std::stringstream ss;
-  ss << str;
-  ss >> result;
-  return result;
+	return (float)atof( str.c_str() );
 }
 
-bool gui_string_to_bool(std::string str) {
+bool gui_string_to_bool( const std::string& str) {
 
-  bool result = false;
-  std::stringstream ss;
-  ss << str;
-  ss >> result;
-  return result;
+	return gui_string_to_int( str ) ? true : false;
 }
 
 void gui_hsv_to_rgb(float h, float s, float v, float& r, float& g, float& b) {

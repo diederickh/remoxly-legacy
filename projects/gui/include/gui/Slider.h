@@ -116,8 +116,8 @@ Slider<T>::Slider(std::string label, T& value, T minv, T maxv, T step)
   ,num_w(0)
   ,text_x(0)
   ,text_w(0)
-  ,min_button(0, GUI_ICON_CHEVRON_LEFT, slider_min_click, this, GUI_CORNER_LEFT)
-  ,plus_button(1, GUI_ICON_CHEVRON_RIGHT, slider_plus_click, this, GUI_CORNER_RIGHT)
+  ,min_button(0, GUI_ICON_CHEVRON_LEFT, slider_min_click, this, GUI_STYLE_NONE ) //GUI_CORNER_LEFT)
+  ,plus_button(1, GUI_ICON_CHEVRON_RIGHT, slider_plus_click, this, GUI_STYLE_NONE ) //GUI_CORNER_RIGHT)
 {
   setType(T(0));
   setAbsoluteValue(value);
@@ -152,8 +152,8 @@ void Slider<T>::position() {
 
 template<class T>
 void Slider<T>::create() {
-
-  num_w = 75;
+  
+  num_w = 66;
   num_x = min_button.x - num_w - group->padding;
   text_w = w - (min_button.w + plus_button.w + num_w + 3 * group->padding);
   text_x = x;
@@ -214,11 +214,15 @@ void Slider<T>::onKeyPress(int key, int modkeys) {
   Widget::onKeyPress(key, modkeys);
 
   if(state & GUI_STATE_EDITABLE) {
-    if(key == GUI_KEY_ENTER) {
-      disableInputAndCopyValue();
-    }
-    else {
-      render->onKeyPress(key, modkeys);
+    switch(key) 
+	{
+	case GUI_NATIVE_KEY_ENTER:
+	case GUI_KEY_ENTER:
+		disableInputAndCopyValue();
+		break;
+	default: 
+		render->onKeyPress(key, modkeys);
+		break;
     }
   }
 }
@@ -306,8 +310,8 @@ void Slider<T>::setMousePositionValue(float mx) {
   slide_x = gui_clamp<int>((int)mx, text_x, (text_x + text_w));
   slide_v = float(slide_x - text_x) / text_w;
 
-  //  setPercentageValue(slide_v );
-  setAbsoluteValue(minv + slide_v * (maxv - minv));
+  //setAbsoluteValue( minv + slide_v * (maxv - minv) );
+  setPercentageValue(slide_v);
   needs_redraw = true ;
 }
 
@@ -351,21 +355,27 @@ void Slider<T>::setType(float dummy) {
 
 template<class T>
 void Slider<T>::setAbsoluteValue(T v) {
-  setPercentageValue(float(v-minv)/(maxv-minv));
+
+  value = v;
+  setPercentageValue( float(v-minv)/(maxv-minv) );
+  //setPercentageValue(float(value)/maxv);
 }
 
 // whenever a value changes, this function will be called
 template<class T>
 void Slider<T>::setPercentageValue(float p) {
 
-  float tmp;
+	T range = (maxv - minv);
+	perc_value = gui_clamp<float>(p, 0.0f, 1.0f);
+	value = minv + range * perc_value ;
 
-  perc_value = gui_clamp<float>(p, 0.0f, 1.0f);
-  value = minv + (maxv-minv) * perc_value ;
+	float tmp = float(value);
+	value = (T)(floorf((tmp/step)) * step);
 
-  tmp = float(value);
-  value = (T)floorf((tmp/step)+0.5f) * step;
-  notify(GUI_EVENT_VALUE_CHANGED);
+	// Make sure we stay between min and max
+	value = gui_clamp( value, minv, maxv );
+
+	notify(GUI_EVENT_VALUE_CHANGED);
 }
 
 template<class T>

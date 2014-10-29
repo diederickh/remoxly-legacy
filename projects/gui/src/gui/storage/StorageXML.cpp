@@ -5,7 +5,7 @@
 #include <gui/Text.h>
 #include <gui/ColorRGB.h>
 #include <gui/storage/StorageXML.h>
-#include <rapidxml.hpp>
+#include <rapidxml/rapidxml.hpp>
 
 #define REMOXLY_XML_CHECK(n,s) { if(!n) { printf("%s", s); return false; } } 
 

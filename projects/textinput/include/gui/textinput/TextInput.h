@@ -23,6 +23,12 @@
 #define TI_KEY_RIGHT     262
 #define TI_KEY_LEFT      263
 
+#define TI_NATIVE_KEY_ENTER				 13
+#define TI_NATIVE_KEY_BACKSPACE			 8
+#define TI_NATIVE_KEY_DELETE			 127
+#define TI_NATIVE_KEY_LEFT				 276
+#define TI_NATIVE_KEY_RIGHT				 275
+
 #define TI_CURSOR_WIDTH  9                                        /* the default cursor width; only used when cursor is not behind a character */
 
 #if defined(__APPLE__) && BITMAP_FONT_GL == BITMAP_FONT_GL2
@@ -73,10 +79,10 @@ static const char* TEXT_INPUT_VS = ""
   "uniform mat4 u_pm;"
   "uniform vec4 u_pos;"
   "const vec2[4] pos = vec2[]("
-  "      vec2(1.0, 0.0), "
   "      vec2(0.0, 0.0), "
-  "      vec2(1.0, 1.0), "
-  "      vec2(0.0, 1.0)  "
+  "      vec2(0.0, 1.0), "
+  "      vec2(1.0, 0.0), "
+  "      vec2(1.0, 1.0)  "
   ");"
   "void main() {"
   "  vec2 p = pos[gl_VertexID];"
@@ -195,9 +201,7 @@ TextInput::TextInput(float x, float y, float w, BitmapFont& font)
     glGenVertexArrays(1, &vao);
 
 #if BITMAP_FONT_GL == BITMAP_FONT_GL2
-    printf("@todo I change the winding order of these vertices, check if the ones used (new, second) work with culling.\n");
-    // float caret_pos[] = { 0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0, 1.0 } ;
-    float caret_pos[] = { 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0 } ;
+    float caret_pos[] = { 0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0, 1.0 } ;
 
     glBindVertexArray(vao);
     glGenBuffers(1, &vbo);
@@ -282,19 +286,24 @@ void TextInput::onCharPress(unsigned int key) {
 void TextInput::onKeyPress(int key, int mods) {
 
   if(mode == TI_MODE_INPUT) {
+
     switch(key) {
+	  case TI_NATIVE_KEY_BACKSPACE:
       case TI_KEY_BACKSPACE: {
         removeCharacterAtPrevPosition();
         break;
       }
+      case TI_NATIVE_KEY_DELETE:
       case TI_KEY_DELETE: {
         removeCharacterAtCurrentPosition();
         break;
       }
+	  case TI_NATIVE_KEY_LEFT:
       case TI_KEY_LEFT: {
         moveCursorToLeft();
         break;
       }
+	  case TI_NATIVE_KEY_RIGHT:
       case TI_KEY_RIGHT: {
         moveCursorToRight();
       }
@@ -303,17 +312,20 @@ void TextInput::onKeyPress(int key, int mods) {
   }
   else if(mode == TI_MODE_SELECT) {
     switch(key) {
+	  case TI_NATIVE_KEY_BACKSPACE:
       case TI_KEY_DELETE:
       case TI_KEY_BACKSPACE: {
         clear();
         mode = TI_MODE_INPUT;
         break;
       }
+	  case TI_NATIVE_KEY_LEFT:
       case TI_KEY_LEFT: {
         moveCursorToMostLeft();
         deselect();
         break;
       }
+	  case TI_NATIVE_KEY_RIGHT:
       case TI_KEY_RIGHT: {
         moveCursorToMostRight();
         deselect();
@@ -364,15 +376,7 @@ void TextInput::updateCursor() {
     }
 
     Character ch;
-
-    /*
-      @todo we need to remove this, but leaving it here as I guess this -1 was 
-      important. It was like this before 2014.10.09, curious why they -1, just a bug? 
-      When using -1, the wrong width is selected. W/o -1 it works good.
-    */
-    /* if(font.getChar(contents[char_dx - 1], ch)) { */
-
-    if(font.getChar(contents[char_dx], ch)) {
+    if(font.getChar(contents[ char_dx ], ch)) {
       cursor_w = ch.xadvance; 
     }
     else {
@@ -448,7 +452,7 @@ void TextInput::removeCharacterAtCurrentPosition() {
 void TextInput::removeCharacterAtPrevPosition() {
 
   if(canMoveCursorToLeft()) {
-    contents.erase(contents.begin() + (char_dx - 1));
+    contents.erase(contents.begin() + (char_dx-1));
     updateContents();
     moveCursorToLeft();
   }
@@ -492,8 +496,9 @@ void TextInput::draw() {
     return;
   }
 
-  glEnable(GL_BLEND);
-  glBlendFunc(GL_ONE, GL_ONE);
+  //glEnable(GL_BLEND);
+  glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA); // premultiplied alpha
+  //glBlendFunc(GL_ONE, GL_ONE);
 
   glBindVertexArray(vao);
   glUseProgram(prog);
@@ -502,8 +507,8 @@ void TextInput::draw() {
     glUniform4f(u_pos, x + cursor_x, y, cursor_w, font.line_height);
   }
   else if(mode == TI_MODE_SELECT) {
-    int m = (align == BITMAP_FONT_ALIGN_RIGHT) ? -content_w : 0;
-    glUniform4f(u_pos, x + m, y, content_w, font.line_height);
+    int m = (align == BITMAP_FONT_ALIGN_RIGHT) ? -1 : 1;
+    glUniform4f(u_pos, x, y, content_w * m, font.line_height);
   }
 
   glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);

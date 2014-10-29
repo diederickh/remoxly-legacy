@@ -11,8 +11,9 @@ Panel::Panel(Render* r, int height)
 {
   x = 10;
   y = 10;
-  w = 275;
+  w = 250;
   h = height;
+  originalHeight = h;
   render = r;
   scroll.render = r;
 }
@@ -31,7 +32,6 @@ Panel::~Panel() {
 Group* Panel::addGroup(std::string title) {
 
   Group* g = new Group(title, render);
-  
   g->lockPosition();
  
   if(!groups.size()) {
@@ -51,8 +51,6 @@ void Panel::position() {
   int start_offset_y = scroll.offset_y;
   int gx = x;
   int gy = y - scroll.offset_y;
-  int gw = w;
-  int gh = h;
   int content_h = 0;
 
   for(std::vector<Group*>::iterator it = groups.begin(); it != groups.end(); ++it) {
@@ -61,8 +59,8 @@ void Panel::position() {
 
     g->x = gx;
     g->y = gy;
-    g->w = gw;
-    
+    g->w = w;
+
     g->position();
 
     gy += g->bbox[3] + g->padding;
@@ -73,7 +71,7 @@ void Panel::position() {
 
   scroll.x = x;
   scroll.y = y;
-  scroll.setVisibleArea(x - group->padding, y - group->padding, gw + group->padding * 2, h, content_h); 
+  scroll.setVisibleArea(x - group->padding, y - group->padding, w + group->padding * 2, h, content_h);
   scroll.position();
 
   // @todo - we need a better fix for this. when the content height changes, i.e. becomes smaller, then we need to reposition; this is kind of a hack which works okay, but is not perfect. 
@@ -91,6 +89,34 @@ void Panel::create() {
 void Panel::update() {
 
   if(needsRedraw()) {
+
+	  // If widgets occupy less space than the Panel, resize panel.
+	  //
+	  float totalHeight = 0.0f;
+	  for(std::vector<Group*>::iterator it = groups.begin(); it != groups.end(); ++it) 
+	  {
+		Group* g = *it;
+		totalHeight += g->h;
+		for( int i=0; i<g->children.size(); ++i )
+		{
+			if( ! (g->children[i]->state & GUI_STATE_CLOSED) )
+			{
+				totalHeight += g->children[i]->h;
+			}
+		}
+	  }
+	  if( totalHeight > originalHeight )
+	  {
+		  h = originalHeight;
+	  }
+	  else
+	  {
+		h = totalHeight;
+	  }
+ 	  // Make enough space for the scroll arrows
+ 	  if( groups.size() == 1 && h <= groups[0]->h )
+ 		  h = groups[0]->h*2;
+
     render->clear();
     position();
     build();
@@ -98,7 +124,9 @@ void Panel::update() {
     render->update();
     needs_redraw = false;
   }
+
 }
+
 
 void Panel::draw() {
 

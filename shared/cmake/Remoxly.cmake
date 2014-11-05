@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 
-include(${CMAKE_CURRENT_LIST_DIR}/Triplet.cmake)
+# Update 2014.11.05 - not using triplet anymore, we pass the flags on command line.
+# include(${CMAKE_CURRENT_LIST_DIR}/Triplet.cmake)
 
 # Use remoxly_download_data_file(texture.png) to download a file to the 
 # data directory. We use this feature of CMake so we don't have to store

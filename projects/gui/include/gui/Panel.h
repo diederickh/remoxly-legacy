@@ -28,10 +28,10 @@ namespace rx {
 class Panel : public Widget {
 
  public:
-  Panel(Render* render, int h = 200);
+  Panel(Render* render, int h = 200, int style = GUI_CORNER_ALL);
   ~Panel();
 
-  Group* addGroup(std::string title);
+  Group* addGroup(std::string title, int style = GUI_CORNER_ALL);
 
   void create();
   void draw();

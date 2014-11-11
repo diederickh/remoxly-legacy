@@ -41,7 +41,7 @@ static void scroll_down_click(int id, void* user);
 class Scroll : public Widget {
 
  public:
-  Scroll();
+  Scroll(int style = GUI_CORNER_ALL);
   void setGroup(Group* g);
   void create();
   void beginScissor();

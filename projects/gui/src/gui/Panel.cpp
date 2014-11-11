@@ -6,8 +6,9 @@
 
 namespace rx { 
 
-Panel::Panel(Render* r, int height)
+Panel::Panel(Render* r, int height, int style)
   :Widget(GUI_TYPE_PANEL, "")
+  ,scroll(style)
 {
   x = 10;
   y = 10;
@@ -28,9 +29,9 @@ Panel::~Panel() {
   groups.clear();
 }
 
-Group* Panel::addGroup(std::string title) {
+Group* Panel::addGroup(std::string title, int style) {
 
-  Group* g = new Group(title, render);
+  Group* g = new Group(title, render, style);
   
   g->lockPosition();
  
@@ -127,10 +128,12 @@ void Panel::onMousePress(float mx, float my, int button, int modkeys) {
     Widget::onMousePress(mx, my, button, modkeys);
 
     // check if we pressed inside a header of group to allow dragging
-    for(std::vector<Group*>::iterator it = groups.begin(); it != groups.end(); ++it) {
-      Group* g = *it;
-      if(GUI_IS_INSIDE(mx, my, g->x, g->y, (g->w - g->close_button.w) , g->h)) {
-        state |= GUI_STATE_DOWN_INSIDE;
+    if (false == (state & GUI_STATE_POSITION_LOCKED)) {
+      for(std::vector<Group*>::iterator it = groups.begin(); it != groups.end(); ++it) {
+        Group* g = *it;
+        if(GUI_IS_INSIDE(mx, my, g->x, g->y, (g->w - g->close_button.w) , g->h)) {
+          state |= GUI_STATE_DOWN_INSIDE;
+        }
       }
     }
   }

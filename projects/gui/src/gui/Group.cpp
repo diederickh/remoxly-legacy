@@ -29,15 +29,15 @@ namespace rx {
 
   /* -------------------------------------------------------------------------------------------------------------- */
 
-  Group::Group(std::string label, Render* r) 
+  Group::Group(std::string label, Render* r, int style) 
     :Widget(GUI_TYPE_GROUP, label)
     ,render(r)
     ,show_header(true)
     ,padding(0)
     ,xindent(7)
     ,yindent(6)
-    ,close_button(0, GUI_ICON_CARET_DOWN, group_close_click, this, GUI_CORNER_RIGHT)
-    ,open_button(0, GUI_ICON_CARET_RIGHT, group_open_click, this, GUI_CORNER_RIGHT)
+    ,close_button(0, GUI_ICON_CARET_DOWN, group_close_click, this, (style & GUI_CORNER_RIGHT) ? GUI_CORNER_RIGHT : style)
+    ,open_button(0, GUI_ICON_CARET_RIGHT, group_open_click, this, (style & GUI_CORNER_RIGHT) ? GUI_CORNER_RIGHT : style)
     ,shade_top(0.1f)
     ,shade_bottom(-0.1f)
   {

@@ -20,10 +20,10 @@ void scroll_down_click(int id, void* user) {
 
 // -------------------------------------------
 
-Scroll::Scroll()
+Scroll::Scroll(int style)
   :Widget(GUI_TYPE_SCROLL, "")
-  ,up_button(0, GUI_ICON_CHEVRON_UP, scroll_up_click, this, GUI_CORNER_TOP)
-  ,down_button(1, GUI_ICON_CHEVRON_DOWN, scroll_down_click, this, GUI_CORNER_BOTTOM)
+  ,up_button(0, GUI_ICON_CHEVRON_UP, scroll_up_click, this, (style & GUI_CORNER_TOP) ? GUI_CORNER_TOP : GUI_STYLE_NONE )
+  ,down_button(1, GUI_ICON_CHEVRON_DOWN, scroll_down_click, this, (style & GUI_CORNER_BOTTOM) ? GUI_CORNER_BOTTOM : GUI_STYLE_NONE)
   ,perc(0.0f)
   ,visible_x(0)
   ,visible_y(0)

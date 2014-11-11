@@ -35,7 +35,7 @@ namespace rx {
   class Group : public Widget {
 
   public:
-    Group(std::string label, Render* r);
+    Group(std::string label, Render* r, int style = GUI_CORNER_ALL);
     ~Group();
 
     void add(Widget* wid);                                       /* add a widget to the group */

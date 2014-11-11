@@ -30,7 +30,7 @@ template<class T>
 class Slider : public Widget {
 
  public:
-  Slider(std::string label, T& value, T minv, T maxv, T step);
+  Slider(std::string label, T& value, T minv, T maxv, T step, int style = GUI_CORNER_ALL);
   void setGroup(Group* g);
   void create();
   void position();
@@ -105,7 +105,7 @@ static void slider_plus_click(int id, void* user) {
 // -------------------------------------------
 
 template<class T>
-Slider<T>::Slider(std::string label, T& value, T minv, T maxv, T step)
+  Slider<T>::Slider(std::string label, T& value, T minv, T maxv, T step, int style)
   :Widget(GUI_TYPE_SLIDER_INT, label)
   ,value(value)
   ,minv(minv)
@@ -116,8 +116,8 @@ Slider<T>::Slider(std::string label, T& value, T minv, T maxv, T step)
   ,num_w(0)
   ,text_x(0)
   ,text_w(0)
-  ,min_button(0, GUI_ICON_CHEVRON_LEFT, slider_min_click, this, GUI_CORNER_LEFT)
-  ,plus_button(1, GUI_ICON_CHEVRON_RIGHT, slider_plus_click, this, GUI_CORNER_RIGHT)
+  ,min_button(0, GUI_ICON_CHEVRON_LEFT, slider_min_click, this, (style & GUI_CORNER_LEFT) ? GUI_CORNER_LEFT : GUI_STYLE_NONE)
+  ,plus_button(1, GUI_ICON_CHEVRON_RIGHT, slider_plus_click, this, (style & GUI_CORNER_LEFT) ? GUI_CORNER_LEFT : GUI_STYLE_NONE)
 {
   setType(T(0));
   setAbsoluteValue(value);

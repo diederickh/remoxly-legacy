@@ -64,17 +64,19 @@ void Panel::position() {
     g->w = gw;
     
     g->position();
-
     gy += g->bbox[3] + g->padding;
     content_h += g->bbox[3] + g->padding;
   }
 
-  content_h += group->padding; 
+  if (NULL != group) {
 
-  scroll.x = x;
-  scroll.y = y;
-  scroll.setVisibleArea(x - group->padding, y - group->padding, gw + group->padding * 2, h, content_h); 
-  scroll.position();
+    content_h += group->padding; 
+
+    scroll.x = x;
+    scroll.y = y;
+    scroll.setVisibleArea(x - group->padding, y - group->padding, gw + group->padding * 2, h, content_h); 
+    scroll.position();
+  }
 
   // @todo - we need a better fix for this. when the content height changes, i.e. becomes smaller, then we need to reposition; this is kind of a hack which works okay, but is not perfect. 
   if(start_offset_y != scroll.offset_y) {
@@ -84,11 +86,17 @@ void Panel::position() {
 
 void Panel::create() {
   
-  render->addRectangle(x - group->padding, y, w + group->padding * 2, h, group->panel_color); // background
-  needs_redraw = false;
+  if (NULL != group) {
+    render->addRectangle(x - group->padding, y, w + group->padding * 2, h, group->panel_color); // background
+    needs_redraw = false;
+  }
 }
 
 void Panel::update() {
+
+  if (0 == groups.size()) {
+    return;
+  }
 
   if(needsRedraw()) {
     render->clear();
@@ -101,6 +109,10 @@ void Panel::update() {
 }
 
 void Panel::draw() {
+
+  if (0 == groups.size()) {
+    return;
+  }
 
   update();
 

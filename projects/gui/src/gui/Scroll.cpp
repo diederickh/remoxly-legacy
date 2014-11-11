@@ -52,7 +52,11 @@ void Scroll::setGroup(Group* g) {
 }
 
 void Scroll::create() {
- 
+  
+  if (NULL == group) {
+    return;
+  }
+
   render->addRectangle(visible_x, y, visible_w - group->padding, visible_h - group->padding, group->panel_color, false, 0.0f, 0.0f);  // backround on visible area; e.g. adds the border at the bottom 
   render->addRectangle(scroll_bar_x, scroll_bar_y, w + group->padding, visible_h + group->padding, group->panel_color, 0.0f, 0.0f);  // background scrollbar
   render->addRectangle(scroll_bar_x, track_y, w, track_h, group->getBackgroundStateColor(this, GUI_STATE_DOWN_CUSTOM0), true, 0.0f, 0.0f); // the track 

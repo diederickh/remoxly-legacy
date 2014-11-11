@@ -96,9 +96,7 @@ namespace rx {
     }
 
     create();
-
     buildChildren();
- 
     unsetNeedsRedraw();
   }
 

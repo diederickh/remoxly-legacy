@@ -16,6 +16,7 @@ namespace rx {
     g->close_button.hide();
     g->open_button.show();
     g->needs_redraw = true;
+    g->children_closed = true;
   }
 
   void group_open_click(int id, void* user) {
@@ -25,6 +26,7 @@ namespace rx {
     g->close_button.show();
     g->open_button.hide();
     g->needs_redraw = true;
+    g->children_closed = false;
   }
 
   /* -------------------------------------------------------------------------------------------------------------- */
@@ -33,6 +35,7 @@ namespace rx {
     :Widget(GUI_TYPE_GROUP, label)
     ,render(r)
     ,show_header(true)
+    ,children_closed(false)
     ,padding(0)
     ,xindent(7)
     ,yindent(6)
@@ -106,14 +109,14 @@ namespace rx {
     return getStateColor(w, flag, label_color, number_color);
   }
 
-  void Group::add(Widget* wid) {
+  Widget& Group::add(Widget* wid) {
   
     if(!group) {
       printf("Error: first call setup() on the Group before adding elements.\n");
-      return;
+      return *wid;
     }
 
-    Widget::add(wid, this);
+    return Widget::add(wid, this);
   }
 
   void Group::create() {

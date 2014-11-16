@@ -38,12 +38,13 @@ namespace rx {
     Group(std::string label, Render* r, int style = GUI_CORNER_ALL);
     ~Group();
 
-    void add(Widget* wid);                                       /* add a widget to the group */
+    Widget& add(Widget* wid);                                    /* add a widget to the group */
     void draw();                                                 /* will draw the group */
     void create();                                               /* is called when you need to the shapes for the element(s) */
     void position();
     void hideHeader();                                           /* hide the header */
     void showHeader();                                           /* show the header (default) */
+    bool childrenClosed();                                       /* returns true when the children are closed. */
 
     /* interaction */
     void onMousePress(float mx, float my, int button, int mods);
@@ -61,13 +62,13 @@ namespace rx {
     float* getBackgroundStateColor(Widget* w, int flag = GUI_STATE_DOWN_INSIDE);    /* returns the background color. you could hightlight a background color too, which is e.g. used in the scroll bar */
     float* getSelectedStateColor(Widget* w, int flag = GUI_STATE_DOWN_INSIDE);      /* returns the highlight color when the mouse is down inside the element, else it returns the default selected color. */ 
 
-
   public:
     void update();                                                               /* should not be called by the user! */
 
   public:
     Render* render;
     bool show_header;
+    bool children_closed;           /* set to true when the children are 'hidden' or in other words if the close toggle has been clicked. use childrenClosed() */
 
     /* alignment */
     int padding;
@@ -95,6 +96,10 @@ namespace rx {
   };
 
   /* -------------------------------------------------------------------------------------------------------------- */
+
+  inline bool Group::childrenClosed(){
+    return children_closed;
+  }
 
   inline void Group::showHeader() {
     show_header = true;

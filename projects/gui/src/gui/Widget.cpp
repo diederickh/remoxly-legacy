@@ -36,6 +36,7 @@ namespace rx {
     ,press_y(0)
   {
     bbox[0] = bbox[1] = bbox[2] = bbox[3] = 0;
+    margin[0] = margin[1] = margin[2] = margin[3] = 0;
     id = generated_ids;
     generated_ids++;
   }
@@ -59,11 +60,13 @@ namespace rx {
     render = g->render;
   }
 
-  void Widget::add(Widget* w, Group* g) {
+  Widget& Widget::add(Widget* w, Group* g) {
 
     w->setGroup(g);
 
     children.push_back(w);
+
+    return *w;
   }
 
   bool Widget::needsRedraw() {
@@ -278,7 +281,7 @@ namespace rx {
     bbox[0] = x;
     bbox[1] = y;
     bbox[2] = w;
-    bbox[3] = h;
+    bbox[3] = h + margin[3];
   
     for(std::vector<Widget*>::iterator it = children.begin(); it != children.end(); ++it) {
 

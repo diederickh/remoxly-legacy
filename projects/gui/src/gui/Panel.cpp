@@ -55,6 +55,8 @@ void Panel::position() {
   int gw = w;
   int gh = h;
   int content_h = 0;
+  int visible_h = 0;
+
 
   for(std::vector<Group*>::iterator it = groups.begin(); it != groups.end(); ++it) {
 
@@ -65,6 +67,7 @@ void Panel::position() {
     g->w = gw;
     
     g->position();
+
     gy += g->bbox[3] + g->padding;
     content_h += g->bbox[3] + g->padding;
   }

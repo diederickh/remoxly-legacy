@@ -117,7 +117,7 @@ template<class T>
   ,text_x(0)
   ,text_w(0)
   ,min_button(0, GUI_ICON_CHEVRON_LEFT, slider_min_click, this, (style & GUI_CORNER_LEFT) ? GUI_CORNER_LEFT : GUI_STYLE_NONE)
-  ,plus_button(1, GUI_ICON_CHEVRON_RIGHT, slider_plus_click, this, (style & GUI_CORNER_LEFT) ? GUI_CORNER_LEFT : GUI_STYLE_NONE)
+  ,plus_button(1, GUI_ICON_CHEVRON_RIGHT, slider_plus_click, this, (style & GUI_CORNER_RIGHT) ? GUI_CORNER_RIGHT : GUI_STYLE_NONE)
 {
   setType(T(0));
   setAbsoluteValue(value);

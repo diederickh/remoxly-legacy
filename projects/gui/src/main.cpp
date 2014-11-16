@@ -148,17 +148,19 @@ int main() {
   Group* g0 = panel.addGroup("Particles");
   g0->add(new ColorRGB("Pastel Colors", color, 50, 0.5f));
   g0->add(new ColorRGB("Bright Colors", color, 150, 0.9f, 1.0f));
-  g0->add(new ColorRGB("Limited Range", color, 15, 0.7f, 0.9f));
+  g0->add(new ColorRGB("Limited Range", color, 15, 0.7f, 0.9f)).setMarginBottom(10);
   g0->add(new Button("Save Settings", 3, GUI_ICON_FLOPPY_O, on_group_button_click, NULL, GUI_CORNER_TOP));
-  g0->add(new Button("Load Settings", 4, GUI_ICON_REFRESH, on_group_button_click, NULL, GUI_CORNER_BOTTOM));
+  g0->add(new Button("Load Settings", 4, GUI_ICON_REFRESH, on_group_button_click, NULL, GUI_CORNER_BOTTOM)).setMarginBottom(10);
   g0->add(new Slider<int>("Particle velocity", velocity, 0, 100, 1));
   g0->add(new Text("RTMP host", rtmp_host));
 
   Group* g1 = panel.addGroup("Water Simulation");
+  //g1->hideHeader();
+
   Slider<int>* test_slider = new Slider<int>("Particle Lifetime", lifetime, 0, 10, 1);
   g1->add(test_slider);
-#if 0
-  g1->add(new Slider<int>("Particle Amount", amount, 0, 10, 1));
+#if 1
+  g1->add(new Slider<int>("Particle Amount", amount, 0, 10, 1)).setMarginBottom(10);
   g1->add(new Select("Webcam", 2, options, on_select_click, NULL, GUI_STYLE_NONE));
   g1->add(new Toggle("Render Particles", render_particles));
   g1->add(new Toggle("Render Water", render_water));
@@ -167,12 +169,15 @@ int main() {
 #endif
 
   Group* g2 = panel.addGroup("Special FX");
-
   g0->padding = 1;
   g1->padding = 1;
   g2->padding = 1;
 
-#if 0
+  g0->setMarginBottom(10);
+  g1->setMarginBottom(10);
+  g2->setMarginBottom(10);
+
+#if 1
   Slider<float>* aging_slider = new Slider<float>("Aging", aging, 0.0f, 50.0f, 0.1f);
   //aging_slider->hide();
 
@@ -184,13 +189,13 @@ int main() {
     g2->add(new Slider<float>("Start Size", start_size, 0.1f, 50.0f, 0.01f));
     g2->add(new Slider<float>("End Size", end_size, 0.0f, 50.0f, 0.1f));
     g2->add(new Slider<float>("Begin Angle", start_angle, 0.0f, 150.0f, 0.1f));
-    g2->add(new Slider<float>("End Angle", end_angle, 0.0f, 200.0f, 0.1f));
+    g2->add(new Slider<float>("End Angle", end_angle, 0.0f, 200.0f, 0.1f)).setMarginBottom(10);
   }
 
   g2->add(new Button("Download", 0, GUI_ICON_DOWNLOAD, on_group_button_click, NULL, GUI_CORNER_TOP));
   g2->add(new Button("Twitter", 1, GUI_ICON_TWITTER, on_group_button_click, NULL, GUI_STYLE_NONE));
   g2->add(new Button("Cloud Burst", 2, GUI_ICON_CLOUD, on_group_button_click, NULL, GUI_STYLE_NONE));
-  g2->add(new Button("Extrude Region", 2, GUI_ICON_CLOUD, on_group_button_click, NULL, GUI_CORNER_BOTTOM));
+  g2->add(new Button("Extrude Region", 2, GUI_ICON_CLOUD, on_group_button_click, NULL, GUI_CORNER_BOTTOM)).setMarginBottom(10);
 #endif
 
 #if 0

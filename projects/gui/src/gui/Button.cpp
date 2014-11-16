@@ -72,7 +72,7 @@ namespace rx {
     bbox[0] = x; 
     bbox[1] = y;
     bbox[2] = w;
-    bbox[3] = h;
+    bbox[3] = h + margin[3];
   }
 
   void Button::onMousePress(float mx, float my, int button, int modkeys) {

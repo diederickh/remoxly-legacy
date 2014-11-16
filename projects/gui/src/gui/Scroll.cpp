@@ -157,8 +157,16 @@ void Scroll::setVisibleArea(int visx, int visy, int visw, int vish, int contenth
   visible_x = visx;
   visible_y = visy;
   visible_w = visw;
-  visible_h = vish;
-  content_h = contenth;
+
+  /* when the content is tinier then allowed visible area, we don't really need a scrollbar. */
+  if (contenth < vish) {
+    visible_h = contenth;
+    content_h = contenth;
+  }
+  else {
+    visible_h = vish;
+    content_h = contenth;
+  }
 
   int div = prev_content_h - content_h;
   if(div) {

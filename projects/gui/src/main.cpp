@@ -161,7 +161,8 @@ int main() {
   g1->add(test_slider);
 #if 1
   g1->add(new Slider<int>("Particle Amount", amount, 0, 10, 1)).setMarginBottom(10);
-  g1->add(new Select("Webcam", 2, options, on_select_click, NULL, GUI_STYLE_NONE));
+  g1->add(new Select("Webcam A", 2, options, on_select_click, NULL, GUI_STYLE_NONE));
+  g1->add(new Select("Webcam B", 3, options, on_select_click, NULL, GUI_STYLE_NONE));
   g1->add(new Toggle("Render Particles", render_particles));
   g1->add(new Toggle("Render Water", render_water));
   g1->add(new Toggle("Render Spirals", render_spirals));
@@ -252,14 +253,14 @@ int main() {
 
 #if USE_PANEL
 # if 1
-    test_slider->setAbsoluteValue( (0.5 + sin(test_slider_value) * 0.5) * 10.0f);
-    test_slider->needs_redraw = true;
+    //    test_slider->setAbsoluteValue( (0.5 + sin(test_slider_value) * 0.5) * 10.0f);
+    //    test_slider->needs_redraw = true;
 #endif
 
     panel.draw();
-    changing_slider->setAbsoluteValue( (0.5 + sin(test_slider_value) * 0.5) * 1000000.0f);
-    changing_slider->needs_redraw = true;
-    test_slider_value += 0.3;
+    //    changing_slider->setAbsoluteValue( (0.5 + sin(test_slider_value) * 0.5) * 1000000.0f);
+    //    changing_slider->needs_redraw = true;
+    //test_slider_value += 0.3;
 
 #endif
 

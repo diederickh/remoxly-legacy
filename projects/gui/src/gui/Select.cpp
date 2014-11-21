@@ -9,7 +9,7 @@ namespace rx {
                  int style)
 
     :Widget(GUI_TYPE_SELECT, title)
-    ,menu(title, selectid, options, cb, user)
+    ,menu(title, selectid, options, cb, user, this)
     ,icon_button(0, GUI_ICON_UNSORTED, NULL, NULL, (style & ~GUI_CORNER_LEFT))
     ,options(options)
   {
@@ -24,6 +24,7 @@ namespace rx {
   }
 
   void Select::setGroup(Group* g) {
+
     Widget::setGroup(g);
     add(&icon_button, g);
     add(&menu, g);
@@ -99,15 +100,30 @@ namespace rx {
   }
 
   void Select::onMousePress(float mx, float my, int button, int modkeys) {
-  
+
     Widget::onMousePress(mx, my, button, modkeys);
 
     if(GUI_IS_INSIDE_WIDGET(this, mx, my)) {
       state |= GUI_STATE_DOWN_INSIDE;
       icon_button.state |= GUI_STATE_DOWN_INSIDE;
       menu.show();
+
       needs_redraw = true;
     }
+  }
+
+  void Select::onMenuShouldClose() {
+
+    menu.hide();
+
+
+    needs_redraw = true;
+    state &= ~GUI_STATE_DOWN_INSIDE;
+    icon_button.state &= ~GUI_STATE_DOWN_INSIDE;
+  }
+
+  void Select::onMenuSelected(int menuid, int optiondx) {
+    onMenuShouldClose();
   }
 
   void Select::onMouseRelease(float mx, float my, int button, int modkeys) {
@@ -115,13 +131,8 @@ namespace rx {
     Widget::onMouseRelease(mx, my, button, modkeys);
 
     if(state & GUI_STATE_DOWN_INSIDE) {
-      needs_redraw = true;
-      notify(GUI_EVENT_VALUE_CHANGED); 
+      icon_button.state |= GUI_STATE_DOWN_INSIDE;
     }
-
-    menu.hide();
-    state &= ~GUI_STATE_DOWN_INSIDE;
-    icon_button.state &= ~GUI_STATE_DOWN_INSIDE;
   }
      
 } /* namespace rx */

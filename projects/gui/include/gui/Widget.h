@@ -45,6 +45,8 @@ namespace rx {
     virtual void position();                                         /* calculate the x/y/w/h etc.. values for the widget itself and for its children. note that x/y will be set by the container which is probably Gui. position() may only be called by the parent container after the x/y are set. */
     virtual void setGroup(Group* g);                                 /* setup the widget. sets the gui + render members by default, a user shouldn't call this */
     virtual void setBoundingBox();                                   /* calculate the bounding box of this element */
+    virtual void setOverlay(int ox, int oy, int ow, int oh);         /* the overlay is used internally to prevent mouse clicks in a overlay areay. e.g. the select/menu widget shows an overlay and we have to make sure that widgets underneath do not receive mouse events. */
+    virtual void unsetOverlay();                                     /* unset the overlay; must be called when the overlay becomes hidden again. */
     virtual void print();                                            /* prints some debug info */
 
     /* layout. */

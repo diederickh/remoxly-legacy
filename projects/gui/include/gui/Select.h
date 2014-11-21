@@ -9,7 +9,7 @@
 
 namespace rx {   
 
-  class Select : public Widget { 
+  class Select : public Widget, public MenuListener { 
   public:
     Select(std::string title, int selectid, std::vector<std::string> options, gui_menu_callback cb, void* user,int style = GUI_STYLE_NONE);
     void setGroup(Group* g);
@@ -17,6 +17,10 @@ namespace rx {
     void position();
     void setBoundingBox();
     void setDirection(int dir);
+
+    /* Menu listener */
+    void onMenuShouldClose();
+    void onMenuSelected(int32_t menuid, int32_t optionid);
 
     /* Interaction */
     void onMousePress(float mx, float my, int button, int modkeys);

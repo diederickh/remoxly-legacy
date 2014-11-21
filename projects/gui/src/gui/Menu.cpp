@@ -4,7 +4,7 @@
 
 namespace rx {
 
-  Menu::Menu(std::string title, int menuid, std::vector<std::string> options, gui_menu_callback cb, void* user)
+  Menu::Menu(std::string title, int menuid, std::vector<std::string> options, gui_menu_callback cb, void* user, MenuListener* listener)
     :Widget(GUI_TYPE_MENU, title)
     ,options(options)
     ,selected_dx(-1)
@@ -13,6 +13,7 @@ namespace rx {
     ,menu_id(menuid)
     ,cb(cb)
     ,user(user)
+    ,listener(listener)
   {
     h = 22;
     popup_height = options.size() * h;
@@ -72,7 +73,6 @@ namespace rx {
 
         yy += h;
       }
-
     }
 
     render->setLayer(0);
@@ -90,10 +90,16 @@ namespace rx {
       if (GUI_IS_INSIDE(mx, my, x, y, w, (h + popup_height))) {
         needs_redraw = true;
       }
+      else {
+        listener->onMenuShouldClose();
+      }
     }
     else {
       if (GUI_IS_INSIDE(mx, my, x, y - popup_height, w, (h + popup_height))) {
         needs_redraw = true;
+      }
+      else {
+        listener->onMenuShouldClose();
       }
     }
   }
@@ -101,23 +107,51 @@ namespace rx {
   void Menu::onMouseRelease(float mx, float my, int button, int modkeys) {
 
     if (GUI_DIRECTION_DOWN == direction) { 
+
       if (GUI_IS_INSIDE(mx, my, x, y+h, w, (popup_height))) {
+
         selected_dx = draw_dx;
+
         if (NULL != cb) {
           cb(menu_id, selected_dx, user);
         }
+
+        listener->onMenuSelected(menu_id, selected_dx);
       }
     }
     else {
+
       if (GUI_IS_INSIDE(mx, my, x, y - popup_height, w, (popup_height))) {
+
         selected_dx = draw_dx;
+
         if (NULL != cb) {
           cb(menu_id, selected_dx, user);
         }
+
+        listener->onMenuSelected(menu_id, selected_dx);
       }
     }
 
     Widget::onMouseRelease(mx, my, button, modkeys);
+  }
+  
+  void Menu::show() {
+
+    if (GUI_DIRECTION_DOWN == direction) { 
+      setOverlay(x, y, w, (h + popup_height));
+    }
+    else {
+      setOverlay(x, y - popup_height, w, popup_height);
+    }
+
+    Widget::show();
+  }
+
+  void Menu::hide() {
+
+    unsetOverlay();
+    Widget::hide();
   }
 
 } /* namespace rx */

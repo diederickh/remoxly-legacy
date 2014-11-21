@@ -27,18 +27,27 @@ namespace rx {
 
   /* -------------------------------------------------------------------------------------------------------------- */
   
-  typedef void(*gui_menu_callback)(int selectid, int optionid, void* user);
+  typedef void(*gui_menu_callback)(int menuid, int optionid, void* user);
 
   /* -------------------------------------------------------------------------------------------------------------- */
 
+  class MenuListener {
+  public:
+    virtual void onMenuShouldClose() {}
+    virtual void onMenuSelected(int32_t menuid, int32_t optionid) {}
+  };
+
+  /* -------------------------------------------------------------------------------------------------------------- */
   
   class Menu : public Widget {
   public:
-    Menu(std::string title, int menuid, std::vector<std::string> options, gui_menu_callback cb, void* user);
+    Menu(std::string title, int menuid, std::vector<std::string> options, gui_menu_callback cb, void* user, MenuListener* listener);
     void create();
     void onMouseMove(float mx, float my);
     void onMouseRelease(float mx, float my, int button, int modkeys);
     void setDirection(int dir);
+    void show();
+    void hide();
 
   public:
     std::vector<std::string> options;
@@ -48,6 +57,7 @@ namespace rx {
     int direction;                        /* Set the direction into which the popup is drown; defaults to bottom. */
 
     /* Callback */
+    MenuListener* listener;
     int menu_id;                          /* Callback id, used in callback. */
     gui_menu_callback cb;                 /* The callback function that is called when the user selects an option. */
     void* user;                           /* Gets passed to the callback. */

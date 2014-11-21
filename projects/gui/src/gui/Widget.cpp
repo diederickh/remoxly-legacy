@@ -7,12 +7,6 @@
 
 namespace rx { 
 
-  /* ------------------------------------------------------------------------ */
-
-  static bool widget_depth_sort(Widget* a, Widget* b);
-
-  /* ------------------------------------------------------------------------ */
-
   uint32_t Widget::generated_ids = 0;
 
   Widget::Widget(int type, std::string label)
@@ -104,12 +98,14 @@ namespace rx {
   }
 
   void Widget::buildChildren() {
+
     for(std::vector<Widget*>::iterator it = children.begin(); it != children.end(); ++it) {
       (*it)->build();
     }
   }
 
   void Widget::onCharPress(unsigned int key) {
+
     onCharPressChildren(key);
   }
 
@@ -146,7 +142,6 @@ namespace rx {
     }
   }
 
-
   void Widget::onMousePress(float mx, float my, int button, int modkeys) {
 
     if(!isDrawn()) {
@@ -160,10 +155,25 @@ namespace rx {
     press_x = x;
     press_y = y;
 
+    if (group && group->overlay) {
+      if (GUI_IS_INSIDE(mx, my, group->overlay_bbox[0], group->overlay_bbox[1], group->overlay_bbox[2], group->overlay_bbox[3])) {
+        if (group->overlay != this) {
+          group->overlay->onMousePress(mx, my, button, modkeys);
+        }
+        return;
+      }
+    }
+
     Widget::onMousePressChildren(mx, my, button, modkeys);
   }
 
   void Widget::onMousePressChildren(float mx, float my, int button, int modkeys) {
+
+    if (group && group->overlay) {
+      if (GUI_IS_INSIDE(mx, my, group->overlay_bbox[0], group->overlay_bbox[1], group->overlay_bbox[2], group->overlay_bbox[3])) {
+        return;
+      }
+    }
 
     for(std::vector<Widget*>::iterator it = children.begin(); it != children.end(); ++it) {
 
@@ -210,10 +220,25 @@ namespace rx {
     mouse_press_x = 0;
     mouse_press_y = 0;
 
+    if (group && group->overlay) {
+      if (GUI_IS_INSIDE(mx, my, group->overlay_bbox[0], group->overlay_bbox[1], group->overlay_bbox[2], group->overlay_bbox[3])) {
+        if (group->overlay != this) {
+          group->overlay->onMouseRelease(mx, my, button, modkeys);
+        }
+        return;
+      }
+    }
+
     Widget::onMouseReleaseChildren(mx, my, button, modkeys);
   }
 
   void Widget::onMouseReleaseChildren(float mx, float my, int button, int modkeys) {
+
+    if (group && group->overlay) {
+      if (GUI_IS_INSIDE(mx, my, group->overlay_bbox[0], group->overlay_bbox[1], group->overlay_bbox[2], group->overlay_bbox[3])) {
+        return;
+      }
+    }
 
     for(std::vector<Widget*>::iterator it = children.begin(); it != children.end(); ++it) {
     
@@ -259,7 +284,8 @@ namespace rx {
   void Widget::onMouseMoveChildren(float mx, float my) {
 
     for(std::vector<Widget*>::iterator it = children.begin(); it != children.end(); ++it) {
-      (*it)->onMouseMove(mx, my);
+      Widget* wi = *it;
+      wi->onMouseMove(mx, my);
     }
   }
 
@@ -416,6 +442,22 @@ namespace rx {
     }
   }
 
-  /* ------------------------------------------------------------------------ */
+  void Widget::setOverlay(int ox, int oy, int ow, int oh) {
+    
+    if (group) {
+      group->overlay = this;
+      group->overlay_bbox[0] = ox;
+      group->overlay_bbox[1] = oy;
+      group->overlay_bbox[2] = ow;
+      group->overlay_bbox[3] = oh;
+    }
+  }
+
+  void Widget::unsetOverlay() {
+    if (group) {
+      group->overlay = NULL;
+    }
+  }
+
 
 } // namespace rx 

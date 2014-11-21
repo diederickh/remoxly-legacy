@@ -63,7 +63,7 @@ namespace rx {
     float* getSelectedStateColor(Widget* w, int flag = GUI_STATE_DOWN_INSIDE);      /* returns the highlight color when the mouse is down inside the element, else it returns the default selected color. */ 
 
   public:
-    void update();                                                               /* should not be called by the user! */
+    void update();                                                                  /* should not be called by the user! */
 
   public:
     Render* render;
@@ -74,6 +74,9 @@ namespace rx {
     int padding;
     int xindent; 
     int yindent;
+
+    Widget* overlay;
+    int overlay_bbox[4];
 
     /* theme: colors, shades */
     float fg_color[4];              /* foreground color; use this for e.g. fills */

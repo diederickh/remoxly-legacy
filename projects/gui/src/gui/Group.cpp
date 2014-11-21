@@ -43,11 +43,16 @@ namespace rx {
     ,open_button(0, GUI_ICON_CARET_RIGHT, group_open_click, this, (style & GUI_CORNER_RIGHT) ? GUI_CORNER_RIGHT : style)
     ,shade_top(0.1f)
     ,shade_bottom(-0.1f)
+    ,overlay(NULL)
   {
     x = 10;
     y = 10;
     w = 275;
     h = 22;
+    overlay_bbox[0] = 0;
+    overlay_bbox[1] = 0;
+    overlay_bbox[2] = 0; 
+    overlay_bbox[3] = 0;
   
     setGroup(this);
 

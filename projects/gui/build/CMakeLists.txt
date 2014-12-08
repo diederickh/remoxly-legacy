@@ -1,13 +1,16 @@
 # You can define the following variables on the command line:
 #
-#  - EXTERN_LIB_DIR      Path to the directory where we can find e.g. libpng, libz, etc..
-#  - EXTERN_INC_DIR      Path to the directory where we can find general headers e.g. png.h 
-#  - EXTERN_SRC_DIR      Path to the directory where we can find sources for dependencies (e.g. glad.c) 
-#  - TINYLIB_DIR         Path to tinylib base dir. 
+#  - EXTERN_LIB_DIR         Path to the directory where we can find e.g. libpng, libz, etc..
+#  - EXTERN_INC_DIR         Path to the directory where we can find general headers e.g. png.h 
+#  - EXTERN_SRC_DIR         Path to the directory where we can find sources for dependencies (e.g. glad.c) 
+#  - TINYLIB_DIR            Path to tinylib base dir. 
+#  - REMOXLY_DONT_INSTALL   Set to `On` if you don't want to install headers and libs. If you want to edit RenderGL.h for example, you probably don't want to install the headers otherwise the compiler will use the installed version. 
 
 cmake_minimum_required(VERSION 2.8)
 
 project(gui)
+
+message(STATUS "Remoxly.REMOXLY_DONT_INSTALL: ${REMOXLY_DONT_INSTALL}")
 
 include(${CMAKE_CURRENT_LIST_DIR}/../../../shared/cmake/Remoxly.cmake)
 
@@ -15,8 +18,11 @@ set(app "gui")
 
 set(bd ${CMAKE_CURRENT_LIST_DIR}/../)
 
-list(APPEND CMAKE_C_FLAGS $ENV{CFLAGS})
-list(APPEND CMAKE_CXX_FLAGS $ENV{CFLAGS})
+# Note 2014.12.08 - was messing up a build (exxon) when including.
+#list(APPEND CMAKE_C_FLAGS $ENV{CFLAGS})
+#list(APPEND CMAKE_CXX_FLAGS $ENV{CFLAGS})
+
+option(REMOXLY_DONT_INSTALL "Remoxly: do not install" OFF)        # Set to `On` if you don't want to install the headers and lib. 
 
 if(CMAKE_BUILD_TYPE STREQUAL Debug)
   set(app "${app}_debug")
@@ -139,14 +145,16 @@ if(NOT TARGET ${app})
     ${textinput_bd}/include/gui/textinput/TextInput.h
     )
 
-  install(FILES ${remoxly_lib_gui_headers} DESTINATION include/gui/  )
-  install(FILES ${remoxly_lib_storage_headers} DESTINATION include/gui/storage/ )
-  install(FILES ${remoxly_lib_storage_sources} DESTINATION src/gui/storage/ )
-  install(FILES ${remoxly_lib_gl_headers} DESTINATION include/gui/gl/ )
-  install(FILES ${remoxly_lib_font_headers} DESTINATION include/gui/fonts )
-  install(FILES ${remoxly_lib_gui_sources} DESTINATION src/gui )
-  install(FILES ${remoxly_lib_bitmapfont_headers} DESTINATION include/gui/bitmapfont/ )
-  install(FILES ${remoxly_lib_textinput_headers} DESTINATION include/gui/textinput/ )
+  if (NOT REMOXLY_DONT_INSTALL) 
+    install(FILES ${remoxly_lib_gui_headers} DESTINATION include/gui/  )
+    install(FILES ${remoxly_lib_storage_headers} DESTINATION include/gui/storage/ )
+    install(FILES ${remoxly_lib_storage_sources} DESTINATION src/gui/storage/ )
+    install(FILES ${remoxly_lib_gl_headers} DESTINATION include/gui/gl/ )
+    install(FILES ${remoxly_lib_font_headers} DESTINATION include/gui/fonts )
+    install(FILES ${remoxly_lib_gui_sources} DESTINATION src/gui )
+    install(FILES ${remoxly_lib_bitmapfont_headers} DESTINATION include/gui/bitmapfont/ )
+    install(FILES ${remoxly_lib_textinput_headers} DESTINATION include/gui/textinput/ )
+  endif()
 
 endif()
 

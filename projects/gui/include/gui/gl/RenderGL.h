@@ -609,8 +609,11 @@ namespace rx {
 
   void RenderGL::draw() {
 
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    bool is_blend_enabled = glIsEnabled(GL_BLEND);
+    if (false == is_blend_enabled) {
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    }
 
     if (vertices_pc.size()) {
 
@@ -642,7 +645,9 @@ namespace rx {
       }
     }
 
-    glDisable(GL_BLEND);
+    if (false == is_blend_enabled) {
+      glDisable(GL_BLEND);
+    }
 
 
     /*

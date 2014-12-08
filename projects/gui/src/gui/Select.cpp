@@ -31,6 +31,7 @@ namespace rx {
   }
 
   void Select::create() {
+
     /* @todo use state color func for label. */
     int bt_click_offset = 0;
     int corn_sel = style;
@@ -107,8 +108,19 @@ namespace rx {
       state |= GUI_STATE_DOWN_INSIDE;
       icon_button.state |= GUI_STATE_DOWN_INSIDE;
       menu.show();
-
       needs_redraw = true;
+
+      if (GUI_DIRECTION_DOWN == menu.direction) {
+        /* @todo: when you have a panel/group with only one select
+           and the panel/group is not big enough to contain the
+           selects, we have to add the popup_height to our height
+           otherwise the scissor test will hide our contents. Here
+           we reset the height to default. */
+
+        h = 22 + menu.popup_height;
+        
+        /* end quickfix */
+      }
     }
   }
 
@@ -116,10 +128,17 @@ namespace rx {
 
     menu.hide();
 
-
     needs_redraw = true;
     state &= ~GUI_STATE_DOWN_INSIDE;
     icon_button.state &= ~GUI_STATE_DOWN_INSIDE;
+
+    /* @todo: when you have a panel/group with only one select
+              and the panel/group is not big enough to contain the
+              selects, we have to add the popup_height to our height
+              otherwise the scissor test will hide our contents. Here
+              we reset the height to default. */
+    h = 22;
+    /* end quickfix */
   }
 
   void Select::onMenuSelected(int menuid, int optiondx) {

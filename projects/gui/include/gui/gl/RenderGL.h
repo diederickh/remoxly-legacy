@@ -1058,6 +1058,7 @@ namespace rx {
       gl_add_shaded_vertex_pc(rx, ry, min_y, max_y, coltop, colbot, intcol, vertices_pc);
       gl_add_shaded_vertex_pc(rx - radius, ry, min_y, max_y, coltop, colbot, intcol, vertices_pc);
       gl_add_shaded_vertex_pc(rx - radius, (y + h - radius), min_y, max_y, coltop, colbot, intcol, vertices_pc);
+      printf("%s : %d, I think the line below is wrong, check with line polygon mode, the rx + radius is too far to the right if I'm correct.", __FILE__, __LINE__);
       gl_add_shaded_vertex_pc(rx + radius, (y + h - radius), min_y, max_y, coltop, colbot, intcol, vertices_pc);
       gl_add_shaded_vertex_pc(rx, ry, min_y, max_y, coltop, colbot, intcol, vertices_pc);
 
